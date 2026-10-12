@@ -183,24 +183,33 @@
     update();
   }
 
-  /* ---------- Portfolio / about: lightbox ---------- */
-  function initLightbox() {
-    const triggers = document.querySelectorAll('[data-lightbox]');
-    const dialog = document.getElementById('lightbox');
-    if (!triggers.length || !dialog || typeof dialog.showModal !== 'function') return;
-
-    const img = dialog.querySelector('img');
-    const caption = dialog.querySelector('figcaption');
-    triggers.forEach((t) => {
+  /* ---------- Pricing: category tabs ----------
+     Shows one category at a time; #design / #web in the link opens that tab. */
+  function initPricingTabs() {
+    const tabs = Array.from(document.querySelectorAll('.price-tabs [role="tab"]'));
+    if (!tabs.length) return;
+    const select = (tab, focus) => {
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      });
+      if (focus) tab.focus();
+    };
+    tabs.forEach((t, i) => {
       t.addEventListener('click', () => {
-        img.src = t.dataset.lightbox;
-        img.alt = t.querySelector('img') ? t.querySelector('img').alt : '';
-        caption.textContent = t.dataset.caption || '';
-        dialog.showModal();
+        select(t);
+        history.replaceState(null, '', '#' + t.getAttribute('aria-controls'));
+      });
+      t.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        select(next, true);
       });
     });
-    dialog.querySelector('.lightbox-close').addEventListener('click', () => dialog.close());
-    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+    const fromHash = tabs.find((t) => '#' + t.getAttribute('aria-controls') === location.hash);
+    select(fromHash || tabs[0]);
   }
 
   /* ---------- FAQ: live filter ---------- */
@@ -359,7 +368,7 @@
     initReveal();
     initQuickPick();
     initBundle();
-    initLightbox();
+    initPricingTabs();
     initFaqFilter();
     initContactForm();
     initQr();

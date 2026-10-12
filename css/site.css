@@ -288,12 +288,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .nav-toggle { display: inline-flex; }
 }
 @media (min-width: 1081px) { .mobile-nav, .mobile-nav.is-open { display: none; } }
-/* Phones: show only the red W lettermark. The SVG keeps its size and the
-   wordmark is hidden; a negative margin trims the empty space it leaves. */
-@media (max-width: 640px) {
-  .logo { width: 196px; max-width: none; flex-shrink: 0; margin-right: -136px; pointer-events: none; }
-  .logo-word { display: none; }
-}
+@media (max-width: 420px) { .logo { width: 140px; } }
 
 /* ---------- Buttons ----------
    Outline buttons match the UI cards: white fill, hairline border, soft

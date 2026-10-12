@@ -43,12 +43,13 @@
     if (!btn) return;
     const root = document.documentElement;
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const current = () => root.getAttribute('data-theme') || (mq.matches ? 'dark' : 'light');
+    const current = () => root.getAttribute('data-wg-theme') || (mq.matches ? 'dark' : 'light');
     const label = () => btn.setAttribute('aria-label', current() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
     btn.addEventListener('click', () => {
       const next = current() === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
+      root.setAttribute('data-wg-theme', next);
       try { localStorage.setItem('wg-theme', next); } catch (err) { /* storage blocked */ }
+      try { sessionStorage.setItem('wg-theme', next); } catch (err) { /* storage blocked */ }
       label();
     });
     mq.addEventListener('change', label);

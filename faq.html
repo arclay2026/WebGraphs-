@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
-<script>document.documentElement.classList.replace('no-js', 'js');try{var wgT=localStorage.getItem('wg-theme');if(wgT==='dark'||wgT==='light')document.documentElement.setAttribute('data-theme',wgT);}catch(e){}try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&sessionStorage.getItem('wg-logo-intro')!=='1'){document.documentElement.classList.add('logo-intro');sessionStorage.setItem('wg-logo-intro','1');}}catch(e){}</script>
+<script>document.documentElement.classList.replace('no-js', 'js');try{var wgT=null;try{wgT=localStorage.getItem('wg-theme');}catch(e){}if(!wgT){try{wgT=sessionStorage.getItem('wg-theme');}catch(e){}}if(wgT==='dark'||wgT==='light')document.documentElement.setAttribute('data-wg-theme',wgT);}catch(e){}try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&sessionStorage.getItem('wg-logo-intro')!=='1'){document.documentElement.classList.add('logo-intro');sessionStorage.setItem('wg-logo-intro','1');}}catch(e){}</script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>

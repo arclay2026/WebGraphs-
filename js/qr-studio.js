@@ -432,6 +432,7 @@
       else if (el.type === 'checkbox') el.checked = !!S[k];
       else if (el.type !== 'file') el.value = S[k];
     });
+    if (window.wgColorPickerRefresh) window.wgColorPickerRefresh();
     syncOutputs();
   }
   function syncOutputs() {

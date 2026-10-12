@@ -26,6 +26,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
   CSS variables at the top (`--accent` red, `--ink` navy, `--mist`, `--font`, …).
 - `js/site.js` — the one script for every page: mobile menu, live open/closed status,
   scroll reveals, pricing tabs and nav dropdown, theme toggle, bundle calculator, FAQ search, contact form.
+- `js/color-picker.js` — the custom colour picker used on the QR page (replaces the browser's colour popup).
 - `js/qr-studio.js` — the QR code studio (content builders, styling, SVG and canvas export), used by `qr-code.html` only.
 - `js/vendor/qrcode.js` — QR code engine (MIT, Kazuhiko Arase), used by the studio.
 - `assets/` — logos (`logo.svg` for light backgrounds, `logo-white.svg` for navy), favicon, course icons and the driver checklist PDF. Your original logo files are in `assets/brand/`.

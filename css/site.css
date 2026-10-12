@@ -288,7 +288,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .nav-toggle { display: inline-flex; }
 }
 @media (min-width: 1081px) { .mobile-nav, .mobile-nav.is-open { display: none; } }
-@media (max-width: 420px) { .logo { width: 140px; } }
+/* Phones: show only the red W lettermark. The SVG keeps its size and the
+   wordmark is hidden; a negative margin trims the empty space it leaves. */
+@media (max-width: 640px) {
+  .logo { width: 196px; max-width: none; flex-shrink: 0; margin-right: -136px; pointer-events: none; }
+  .logo-word { display: none; }
+}
 
 /* ---------- Buttons ----------
    Outline buttons match the UI cards: white fill, hairline border, soft
@@ -1300,7 +1305,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 .socials { display: flex; gap: 10px; }
 .socials a {
   width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
-  border: 1px solid var(--dark-line); color: var(--on-dark); transition: background-color .15s, border-color .15s;
+  border: 1px solid var(--dark-line); color: var(--on-dark); transition: background-color .15s, border-color .15s, color .15s;
 }
 .socials a:hover { background: #fff; border-color: #fff; color: var(--navy); }
 .socials svg { width: 18px; height: 18px; }

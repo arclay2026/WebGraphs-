@@ -35,6 +35,14 @@
     window.matchMedia('(min-width: 1081px)').addEventListener('change', (mq) => { if (mq.matches) setOpen(false); });
   }
 
+  /* ---------- Logo intro ----------
+     The <head> script adds .logo-intro on the first page of a visit. Remove
+     it once the intro has played so hovering the logo doesn't replay it. */
+  function initLogoIntro() {
+    const root = document.documentElement;
+    if (root.classList.contains('logo-intro')) setTimeout(() => root.classList.remove('logo-intro'), 1400);
+  }
+
   /* ---------- Open / closed status (Johannesburg time) ----------
      Mon–Fri 8:00–17:00, Sat 8:00–13:00, closed Sunday. */
   const HOURS = { 1: [8, 17], 2: [8, 17], 3: [8, 17], 4: [8, 17], 5: [8, 17], 6: [8, 13] };
@@ -345,6 +353,7 @@
   /* ---------- Boot ---------- */
   function boot() {
     document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
+    initLogoIntro();
     initHeader();
     initStatus();
     initReveal();

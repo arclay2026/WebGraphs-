@@ -56,6 +56,8 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* room for the fixed header (bar + 3px red line) */
+  padding-top: calc(var(--header-h) + 3px);
 }
 img, svg, video, canvas, iframe { display: block; max-width: 100%; }
 img { height: auto; }
@@ -112,8 +114,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
    White bar with a red brand line on top. Links are navy; the current page
    gets a short red underline, hover gets a mist pill. */
 .site-header {
-  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
-  background: rgba(255, 255, 255, .92);
+  position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 50;
+  background: rgba(255, 255, 255, .97);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
   backdrop-filter: saturate(180%) blur(14px);
   border-top: 3px solid var(--accent);
@@ -123,7 +125,31 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .site-header.is-scrolled { border-bottom-color: var(--line); box-shadow: 0 6px 24px -18px rgba(0, 21, 35, .35); }
 .header-inner { display: flex; align-items: center; gap: 28px; height: var(--header-h); }
 .brand { display: inline-flex; flex-shrink: 0; border-radius: 8px; }
-.brand img { width: 156px; height: auto; }
+.brand { position: relative; padding-block: 4px; }
+
+/* Logo: the red W draws in once per visit, the wordmark follows, and the
+   W gives a quick wave on hover. Turned off for reduced motion. */
+.logo { display: block; width: 156px; height: auto; overflow: visible; }
+.logo-mark { fill: var(--accent); transform-box: fill-box; transform-origin: 0% 50%; }
+.logo-word { fill: var(--ink); transform-box: fill-box; }
+.logo-intro .logo-mark { animation: logo-mark-in .8s cubic-bezier(.2, .9, .25, 1.15) both; }
+.logo-intro .logo-word { animation: logo-word-in .6s var(--ease) .35s both; }
+.brand:hover .logo-mark, .brand:focus-visible .logo-mark { animation: logo-wave .7s var(--ease); }
+@keyframes logo-mark-in {
+  0% { opacity: 0; transform: translateX(-40%) scaleX(.3) skewX(-20deg); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes logo-word-in {
+  from { opacity: 0; transform: translateX(-14px); clip-path: inset(0 100% 0 0); }
+  to { opacity: 1; transform: none; clip-path: inset(0 0 0 0); }
+}
+@keyframes logo-wave {
+  0%, 100% { transform: none; }
+  25% { transform: translateX(4px) skewX(-14deg); }
+  50% { transform: translateX(-2px) skewX(8deg); }
+  75% { transform: translateX(1px) skewX(-3deg); }
+}
 .nav { display: flex; gap: 2px; margin-left: auto; }
 .nav a {
   position: relative; padding: 7px 13px; border-radius: 999px; color: var(--ink);
@@ -170,7 +196,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .nav-toggle { display: inline-flex; }
 }
 @media (min-width: 1081px) { .mobile-nav, .mobile-nav.is-open { display: none; } }
-@media (max-width: 420px) { .brand img { width: 140px; } }
+@media (max-width: 420px) { .logo { width: 140px; } }
 
 /* ---------- Buttons ---------- */
 .btn {

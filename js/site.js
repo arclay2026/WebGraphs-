@@ -85,7 +85,6 @@
           <div class="splash-ring"></div><div class="splash-ring"></div><div class="splash-ring"></div>
           <svg viewBox="${vb}"><path class="splash-mark" d="${mark.getAttribute('d')}"/><path class="splash-mark-line" d="${mark.getAttribute('d')}"/></svg>
           <div class="splash-word-wrap"><svg viewBox="${vb}"><path class="splash-word" d="${word.getAttribute('d')}"/></svg></div>
-          <p class="splash-tag">Technologies</p>
         </div>
       </div>
       <button type="button" class="splash-skip" tabindex="-1">Skip intro</button>`;
@@ -126,7 +125,6 @@
     // 3. the wordmark wipes in from behind the W
     play($s('.splash-word-wrap'), [{ clipPath: 'inset(-20% 71% -20% 29%)' }, { clipPath: 'inset(-20% -2% -20% 29%)' }], { duration: 700, delay: 1050, easing: out });
     play($s('.splash-word-wrap svg'), [{ transform: 'translateX(-6%)', filter: 'blur(6px)' }, { transform: 'none', filter: 'blur(0)' }], { duration: 750, delay: 1050, easing: out });
-    play($s('.splash-tag'), [{ opacity: 0, letterSpacing: '1.1em', textIndent: '1.1em' }, { opacity: 1, letterSpacing: '.5em', textIndent: '.5em' }], { duration: 800, delay: 1300, easing: out });
     play($s('.splash-skip'), [{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: 600 });
 
     // 4. curtain lifts, logo flies to the header
@@ -138,7 +136,6 @@
     play(lockup, [{ transform: 'none' }, { transform: fly }], { duration: 850, delay: T, easing: inOut });
     play($s('.splash-word'), [{ fill: '#ffffff' }, { fill: getComputedStyle(word).fill }], { duration: 850, delay: T, easing: inOut });
     if (getComputedStyle(word).display === 'none') play($s('.splash-word-wrap'), [{ opacity: 1 }, { opacity: 0 }], { duration: 400, delay: T, composite: 'replace' });
-    play($s('.splash-tag'), [{ opacity: 1 }, { opacity: 0 }], { duration: 250, delay: T, fill: 'forwards' });
     play($s('.splash-skip'), [{ opacity: 1 }, { opacity: 0 }], { duration: 200, delay: T, fill: 'forwards' });
     play($s('.splash-glow'), [{ opacity: 0.35 }, { opacity: 0 }], { duration: 300, delay: T, fill: 'forwards' });
     play($s('.splash-bg'), [{ clipPath: 'inset(0 0 0 0)' }, { clipPath: 'inset(0 0 100% 0)' }], { duration: 900, delay: T + 60, easing: inOut });

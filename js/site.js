@@ -63,6 +63,26 @@
     if (root.classList.contains('logo-intro')) setTimeout(() => root.classList.remove('logo-intro'), 1400);
   }
 
+  /* ---------- Nav dropdown (Pricing) ----------
+     CSS opens it on hover and focus; the caret button toggles it for touch
+     and keyboard, and Escape or a click elsewhere closes it. */
+  function initNavMenus() {
+    document.querySelectorAll('.nav-item.has-menu').forEach((item) => {
+      const caret = item.querySelector('.nav-caret');
+      const setOpen = (open) => {
+        item.classList.toggle('is-open', open);
+        item.classList.toggle('is-closed', !open);
+        caret.setAttribute('aria-expanded', String(open));
+      };
+      caret.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!item.classList.contains('is-open')); });
+      item.addEventListener('mouseenter', () => item.classList.remove('is-closed'));
+      item.addEventListener('focusin', () => item.classList.remove('is-closed'));
+      item.querySelectorAll('.nav-menu a').forEach((a) => a.addEventListener('click', () => { setOpen(false); a.blur(); }));
+      document.addEventListener('click', (e) => { if (!item.contains(e.target) && item.classList.contains('is-open')) setOpen(false); });
+      item.addEventListener('keydown', (e) => { if (e.key === 'Escape') { setOpen(false); caret.focus(); } });
+    });
+  }
+
   /* ---------- Open / closed status (Johannesburg time) ----------
      Mon–Fri 8:00–17:00, Sat 8:00–13:00, closed Sunday. */
   const HOURS = { 1: [8, 17], 2: [8, 17], 3: [8, 17], 4: [8, 17], 5: [8, 17], 6: [8, 13] };
@@ -228,8 +248,9 @@
         select(next, true);
       });
     });
-    const fromHash = tabs.find((t) => '#' + t.getAttribute('aria-controls') === location.hash);
-    select(fromHash || tabs[0]);
+    const fromHash = () => tabs.find((t) => '#' + t.getAttribute('aria-controls') === location.hash);
+    select(fromHash() || tabs[0]);
+    window.addEventListener('hashchange', () => { const t = fromHash(); if (t) select(t); });
   }
 
   /* ---------- FAQ: live filter ---------- */
@@ -384,6 +405,7 @@
     document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
     initLogoIntro();
     initThemeToggle();
+    initNavMenus();
     initHeader();
     initStatus();
     initReveal();

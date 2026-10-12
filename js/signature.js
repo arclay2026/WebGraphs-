@@ -14,17 +14,21 @@
   if (!pad) return;
 
   const W = 1000; const H = 400;
+  // Signature-style handwriting from Google Fonts, named by feel.
   const FONTS = [
-    { name: 'Great Vibes', css: '"Great Vibes"', size: 1 },
-    { name: 'Dancing Script', css: '"Dancing Script"', size: 0.82, weight: 600 },
-    { name: 'Sacramento', css: '"Sacramento"', size: 1.05 },
-    { name: 'Allura', css: '"Allura"', size: 1 },
-    { name: 'Alex Brush', css: '"Alex Brush"', size: 0.95 },
-    { name: 'Mr Dafoe', css: '"Mr Dafoe"', size: 1 },
-    { name: 'Homemade Apple', css: '"Homemade Apple"', size: 0.62 },
-    { name: 'Caveat', css: '"Caveat"', size: 0.9, weight: 500 },
+    { name: 'Classic', css: '"Mrs Saint Delafield"', size: 1 },
+    { name: 'Executive', css: '"Herr Von Muellerhoff"', size: 1 },
+    { name: 'Flowing', css: '"Ms Madi"', size: 0.82 },
+    { name: 'Quick', css: '"Hurricane"', size: 0.86 },
+    { name: 'Elegant', css: '"Allison"', size: 0.95 },
+    { name: 'Light', css: '"Whisper"', size: 0.9 },
+    { name: 'Formal', css: '"Mr De Haviland"', size: 1 },
+    { name: 'Everyday', css: '"Zeyada"', size: 0.8 },
   ];
   const PENS = { fine: [1.4, 3.4], medium: [2.4, 6.2], bold: [4, 10] };
+  // Typed signatures: extra ink around each letter and flourish width, as a share of the font size.
+  const INK = { fine: 0, medium: 0.014, bold: 0.034 };
+  const SWASH = { fine: 0.028, medium: 0.042, bold: 0.066 };
 
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -34,7 +38,7 @@
   const inkInput = $('#sg-ink');
   const status = $('#sg-status');
 
-  const state = { mode: 'draw', pen: 'medium', ink: '#111418', bg: 'transparent', font: 0, strokes: [] };
+  const state = { mode: 'draw', pen: 'medium', ink: '#111418', bg: 'transparent', font: 0, format: 'full', flourish: 'underline', seed: 1, strokes: [] };
   let current = null;
 
   /* ---------- rendering ---------- */
@@ -60,24 +64,151 @@
     });
   }
 
-  // Typed name: largest size that fits 86% of the width, sitting on the line.
-  function typedLayout(c) {
-    const text = nameInput.value.trim();
+  /* ---------- typed signatures ----------
+     A real signature isn't neat type: it leans, drifts uphill, starts with
+     an oversized capital, letters wobble a little, and it often ends in an
+     underline or swoosh. Each letter is placed with small seeded random
+     changes, so the same name, style and seed always draw the same way;
+     "Try another" changes the seed. */
+  const BASE = 100;
+  let fontsVersion = 0;
+  let sceneCache = { key: '', scene: null };
+
+  function rng(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const hash = (str) => { let h = 2166136261; for (const ch of str) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+
+  function signedText() {
+    const parts = nameInput.value.trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '';
+    const cap = (w) => w.charAt(0).toUpperCase() + w.slice(1);
+    if (state.format === 'initial' && parts.length > 1) return `${parts[0].charAt(0).toUpperCase()}. ${parts.slice(1).map(cap).join(' ')}`;
+    if (state.format === 'initials') return parts.map((w) => w.charAt(0).toUpperCase()).join('');
+    return parts.map(cap).join(' ');
+  }
+
+  function cubic(p0, p1, p2, p3, n, width, rand) {
+    const pts = [];
+    for (let i = 0; i <= n; i += 1) {
+      const t = i / n; const u = 1 - t;
+      const x = u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0];
+      const y = u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1];
+      // thin where the pen lands, fuller through the stroke, flicking off thin
+      const w = width * Math.max(0.18, Math.sin(Math.PI * (0.06 + 0.88 * t)) ** 0.7) * (1.05 - 0.35 * t) * (0.96 + rand() * 0.08);
+      pts.push({ x, y, w });
+    }
+    return pts;
+  }
+
+  function buildScene() {
+    const text = signedText();
     if (!text) return null;
     const f = FONTS[state.font];
-    let px = 170 * f.size;
-    c.font = fontString(f, px);
-    const maxW = W * 0.86;
-    const w = c.measureText(text).width;
-    if (w > maxW) { px *= maxW / w; c.font = fontString(f, px); }
-    return { text, font: c.font, y: H * 0.7 };
+    const rand = rng(hash(text) ^ Math.imul(state.seed, 2654435761) ^ (state.font * 7919));
+    const font = fontString(f, BASE);
+    const probe = document.createElement('canvas').getContext('2d');
+    probe.font = font;
+    const chars = Array.from(text);
+    const glyphs = [];
+    const phase = rand() * Math.PI * 2;
+    const wobble = 0.018 + rand() * 0.022;
+    let x = 0; let prev = 0;
+    chars.forEach((ch, i) => {
+      const upto = probe.measureText(chars.slice(0, i + 1).join('')).width;
+      const adv = upto - prev; prev = upto;
+      if (ch === ' ') { x += adv * (0.85 + rand() * 0.35) + 0.04 * BASE; return; }
+      const s = i === 0 ? 1.18 + rand() * 0.12 : 1 + (rand() - 0.5) * 0.07;
+      glyphs.push({
+        ch, s,
+        x: x + (rand() - 0.5) * 0.02 * BASE,
+        y: (Math.sin(i * 0.75 + phase) * wobble + (rand() - 0.5) * 0.014) * BASE,
+        r: (rand() - 0.5) * 0.05,
+      });
+      x += adv * s * (0.96 + rand() * 0.04);
+    });
+    const X = x;
+    const sw = SWASH[state.pen] * BASE;
+    let flourish = null;
+    const j = () => (rand() - 0.5) * 0.08;
+    if (state.flourish === 'underline') {
+      flourish = cubic([-0.04 * X, (0.24 + j()) * BASE], [0.3 * X, (0.4 + j()) * BASE], [0.72 * X, (0.28 + j()) * BASE], [(1.05 + j() / 2) * X, (0.06 + j()) * BASE], 90, sw, rand);
+    } else if (state.flourish === 'swoosh') {
+      flourish = cubic([0.98 * X, -0.08 * BASE], [(1.12 + j()) * X, (0.62 + j()) * BASE], [(0.5 + j()) * X, (0.6 + j()) * BASE], [-0.06 * X, (0.2 + j()) * BASE], 110, sw, rand);
+    }
+    const scene = {
+      font, glyphs, flourish, weight: INK[state.pen] * BASE,
+      slant: 0.04 + rand() * 0.08,
+      rise: -(0.015 + rand() * 0.035),
+    };
+    scene.bounds = measureScene(scene, X);
+    return scene;
   }
+
+  function paintScene(c, sc, ink) {
+    c.save();
+    c.rotate(sc.rise);
+    c.transform(1, 0, -sc.slant, 1, 0, 0);
+    c.fillStyle = ink; c.strokeStyle = ink; c.lineJoin = 'round'; c.lineCap = 'round';
+    c.textAlign = 'left'; c.textBaseline = 'alphabetic'; c.font = sc.font;
+    sc.glyphs.forEach((g) => {
+      c.save();
+      c.translate(g.x, g.y); c.rotate(g.r); c.scale(g.s, g.s);
+      c.fillText(g.ch, 0, 0);
+      if (sc.weight) { c.lineWidth = sc.weight / g.s; c.strokeText(g.ch, 0, 0); }
+      c.restore();
+    });
+    if (sc.flourish) drawStrokes(c, [sc.flourish], ink);
+    c.restore();
+  }
+
+  // Draw the scene small, off screen, and read back where the ink landed.
+  function measureScene(sc, X) {
+    const pw = 900; const ph = 500;
+    const k = Math.min(600 / Math.max(X, 1), 140 / BASE);
+    const tx = (pw - X * k) / 2; const ty = ph * 0.55;
+    const pc = document.createElement('canvas'); pc.width = pw; pc.height = ph;
+    const c = pc.getContext('2d');
+    c.translate(tx, ty); c.scale(k, k);
+    paintScene(c, sc, '#000');
+    const d = c.getImageData(0, 0, pw, ph).data;
+    let x0 = pw; let y0 = ph; let x1 = -1; let y1 = -1;
+    for (let y = 0; y < ph; y += 1) {
+      for (let x = 0; x < pw; x += 1) {
+        if (d[(y * pw + x) * 4 + 3] > 10) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+      }
+    }
+    if (x1 < 0) return { x: 0, y: -BASE, w: Math.max(X, 1), h: BASE };
+    return { x: (x0 - 1 - tx) / k, y: (y0 - 1 - ty) / k, w: (x1 - x0 + 3) / k, h: (y1 - y0 + 3) / k };
+  }
+
+  function typedScene() {
+    const key = [signedText(), state.font, state.seed, state.pen, state.flourish, fontsVersion].join('|');
+    if (sceneCache.key !== key) sceneCache = { key, scene: buildScene() };
+    return sceneCache.scene;
+  }
+
+  // Fit the signature inside the pad, resting on the signature line when it can.
   function drawTyped(c, ink) {
-    const l = typedLayout(c);
-    if (!l) return;
-    c.fillStyle = ink; c.textAlign = 'center'; c.textBaseline = 'alphabetic';
-    c.font = l.font;
-    c.fillText(l.text, W / 2, l.y);
+    const sc = typedScene();
+    if (!sc) return;
+    const b = sc.bounds;
+    const s = Math.min((W * 0.86) / b.w, (H * 0.82) / b.h, 2.1);
+    const tx = W / 2 - (b.x + b.w / 2) * s;
+    let ty = H * 0.68;
+    const minTy = H * 0.06 - b.y * s; const maxTy = H * 0.95 - (b.y + b.h) * s;
+    ty = minTy > maxTy ? H / 2 - (b.y + b.h / 2) * s : Math.min(Math.max(ty, minTy), maxTy);
+    c.save();
+    c.translate(tx, ty); c.scale(s, s);
+    paintScene(c, sc, ink);
+    c.restore();
   }
 
   function hasSignature() {
@@ -167,10 +298,10 @@
 
   /* ---------- controls ---------- */
   const fontsWrap = $('#sg-fonts');
-  fontsWrap.innerHTML = FONTS.map((f, i) => `<label class="sg-font"><input type="radio" name="sg-font" value="${i}"${i === 0 ? ' checked' : ''}><span style="font-family:${f.css.replace(/"/g, '&quot;')};font-weight:${f.weight || 400}" data-scale="${f.size}"></span><small>${f.name}</small></label>`).join('');
+  fontsWrap.innerHTML = FONTS.map((f, i) => `<label class="sg-font"><input type="radio" name="sg-font" value="${i}"${i === 0 ? ' checked' : ''}><span style="font-family:${f.css.replace(/"/g, '&quot;')}" data-scale="${f.size}"></span><small>${f.name}</small></label>`).join('');
   const paintFontSamples = () => {
-    const text = nameInput.value.trim() || 'Your Name';
-    $$('.sg-font span', fontsWrap).forEach((s) => { s.textContent = text; s.style.fontSize = `${Math.round(27 * Number(s.dataset.scale))}px`; });
+    const text = signedText() || 'Your Name';
+    $$('.sg-font span', fontsWrap).forEach((s) => { s.textContent = text; s.style.fontSize = `${Math.round(36 * Number(s.dataset.scale))}px`; });
   };
 
   function setMode(mode) {
@@ -180,14 +311,17 @@
     canvas.setAttribute('aria-label', mode === 'draw' ? 'Signature pad. Draw your signature here.' : 'Preview of your typed signature.');
     $('#sg-hint').innerHTML = mode === 'draw'
       ? 'Draw with your mouse, finger or stylus. Press <kbd>Ctrl</kbd> + <kbd>Z</kbd> to undo a stroke.'
-      : 'Type your name, then pick a handwriting style you like.';
+      : 'Pick a style you like, then press “Try another” until it looks like you.';
     $('#sg-placeholder').textContent = mode === 'draw' ? 'Sign here' : 'Type your name';
     status.textContent = '';
     render();
     if (mode === 'type' && window.matchMedia('(hover: hover)').matches) nameInput.focus({ preventScroll: true });
   }
   $$('input[name="sg-mode"]').forEach((r) => r.addEventListener('change', () => setMode(r.value)));
-  $$('input[name="sg-pen"]').forEach((r) => r.addEventListener('change', () => { state.pen = r.value; }));
+  $$('input[name="sg-pen"]').forEach((r) => r.addEventListener('change', () => { state.pen = r.value; render(); }));
+  $$('input[name="sg-format"]').forEach((r) => r.addEventListener('change', () => { state.format = r.value; paintFontSamples(); render(); }));
+  $$('input[name="sg-flourish"]').forEach((r) => r.addEventListener('change', () => { state.flourish = r.value; render(); }));
+  $('#sg-shuffle').addEventListener('click', () => { state.seed += 1; render(); });
   $$('input[name="sg-bg"]').forEach((r) => r.addEventListener('change', () => { state.bg = r.value; pad.classList.toggle('is-white', r.value === 'white'); }));
   fontsWrap.addEventListener('change', (e) => { state.font = Number(e.target.value); render(); });
   nameInput.addEventListener('input', () => { paintFontSamples(); render(); });
@@ -204,8 +338,8 @@
 
   // Re-render once the handwriting fonts have loaded.
   if (document.fonts) {
-    FONTS.forEach((f) => document.fonts.load(fontString(f, 40), 'Aa').catch(() => {}));
-    document.fonts.ready.then(() => { paintFontSamples(); render(); });
+    FONTS.forEach((f) => document.fonts.load(fontString(f, 40), 'Aa').then(() => { fontsVersion += 1; render(); }).catch(() => {}));
+    document.fonts.ready.then(() => { fontsVersion += 1; paintFontSamples(); render(); });
   }
 
   /* ---------- export ---------- */

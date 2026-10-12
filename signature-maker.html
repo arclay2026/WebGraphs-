@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&amp;family=Allura&amp;family=Caveat:wght@500&amp;family=Dancing+Script:wght@600&amp;family=Great+Vibes&amp;family=Homemade+Apple&amp;family=Mr+Dafoe&amp;family=Sacramento&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Allison&amp;family=Herr+Von+Muellerhoff&amp;family=Hurricane&amp;family=Mr+De+Haviland&amp;family=Mrs+Saint+Delafield&amp;family=Ms+Madi&amp;family=Whisper&amp;family=Zeyada&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
 <script>document.documentElement.classList.replace('no-js', 'js');try{var wgT=null;try{wgT=localStorage.getItem('wg-theme');}catch(e){}if(!wgT){try{wgT=sessionStorage.getItem('wg-theme');}catch(e){}}if(wgT==='dark'||wgT==='light')document.documentElement.setAttribute('data-wg-theme',wgT);}catch(e){}try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&sessionStorage.getItem('wg-logo-intro')!=='1'){document.documentElement.classList.add('logo-intro');sessionStorage.setItem('wg-logo-intro','1');}}catch(e){}</script>
 </head>
@@ -76,7 +76,7 @@
   <div class="container">
     <span class="eyebrow">Free tool</span>
     <h1>Signature maker.</h1>
-    <p class="lede">Draw your signature with a mouse, finger or stylus — or type your name and pick a handwriting style. Download it as a clean, transparent PNG to sign documents, emails and PDFs.</p>
+    <p class="lede">Draw your signature with a mouse, finger or stylus — or type your name and we’ll write it like a real pen signature. Download it as a clean, transparent PNG to sign documents, emails and PDFs.</p>
   </div>
 </section>
 
@@ -92,6 +92,9 @@
           <button type="button" class="sg-tool" id="sg-undo" aria-label="Undo last stroke" title="Undo (Ctrl+Z)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><span>Undo</span></button>
           <button type="button" class="sg-tool" id="sg-clear" aria-label="Clear the pad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg><span>Clear</span></button>
         </div>
+        <div class="sg-tools" data-for="type">
+          <button type="button" class="sg-tool" id="sg-shuffle" title="Write it slightly differently"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h3.5c2 0 3.3 1 4.4 2.6l2.2 4.8C14.2 16 15.5 17 17.5 17H21M18 14l3 3-3 3"/><path d="M3 17h3.5c1.4 0 2.4-.5 3.2-1.3M14.3 8.3C15.1 7.5 16.1 7 17.5 7H21M18 4l3 3-3 3"/></svg><span>Try another</span></button>
+        </div>
       </div>
       <div class="sg-pad" id="sg-pad">
         <canvas id="sg-canvas" aria-label="Signature pad. Draw your signature here." role="img"></canvas>
@@ -105,10 +108,22 @@
       <div class="qrs-card sg-card">
         <div class="sg-group" data-for="type">
           <div class="field"><label for="sg-name">Your name</label><input type="text" id="sg-name" maxlength="40" autocomplete="name" placeholder="e.g. Thabo Mokoena"></div>
-          <div class="sg-group-head"><p class="qrs-label">Handwriting style</p></div>
-          <div class="sg-fonts" id="sg-fonts" role="radiogroup" aria-label="Handwriting style"></div>
+          <p class="qrs-label">Write it as</p>
+          <div class="seg" role="radiogroup" aria-label="Write it as">
+            <label><input type="radio" name="sg-format" value="full" checked><span>Full name</span></label>
+            <label><input type="radio" name="sg-format" value="initial"><span>T. Surname</span></label>
+            <label><input type="radio" name="sg-format" value="initials"><span>Initials</span></label>
+          </div>
+          <p class="qrs-label">Signature style</p>
+          <div class="sg-fonts" id="sg-fonts" role="radiogroup" aria-label="Signature style"></div>
+          <p class="qrs-label">Flourish</p>
+          <div class="seg" role="radiogroup" aria-label="Flourish">
+            <label><input type="radio" name="sg-flourish" value="none"><span>None</span></label>
+            <label><input type="radio" name="sg-flourish" value="underline" checked><span>Underline</span></label>
+            <label><input type="radio" name="sg-flourish" value="swoosh"><span>Swoosh</span></label>
+          </div>
         </div>
-        <div class="sg-group" data-for="draw">
+        <div class="sg-group">
           <p class="qrs-label">Pen</p>
           <div class="seg" role="radiogroup" aria-label="Pen thickness">
             <label><input type="radio" name="sg-pen" value="fine"><span>Fine</span></label>

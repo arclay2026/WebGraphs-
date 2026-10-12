@@ -35,6 +35,26 @@
     window.matchMedia('(min-width: 1081px)').addEventListener('change', (mq) => { if (mq.matches) setOpen(false); });
   }
 
+  /* ---------- Light / dark theme toggle ----------
+     No saved choice = follow the device. Clicking flips to the opposite of
+     what is showing now and remembers it. */
+  function initThemeToggle() {
+    const btn = document.querySelector('.theme-toggle');
+    if (!btn) return;
+    const root = document.documentElement;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const current = () => root.getAttribute('data-theme') || (mq.matches ? 'dark' : 'light');
+    const label = () => btn.setAttribute('aria-label', current() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+    btn.addEventListener('click', () => {
+      const next = current() === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('wg-theme', next); } catch (err) { /* storage blocked */ }
+      label();
+    });
+    mq.addEventListener('change', label);
+    label();
+  }
+
   /* ---------- Logo intro ----------
      The <head> script adds .logo-intro on the first page of a visit. Remove
      it once the intro has played so hovering the logo doesn't replay it. */
@@ -363,6 +383,7 @@
   function boot() {
     document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
     initLogoIntro();
+    initThemeToggle();
     initHeader();
     initStatus();
     initReveal();

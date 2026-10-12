@@ -19,6 +19,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
 | `faq.html` | Searchable FAQ grouped by topic |
 | `contact.html` | Contact details, map and a form that opens WhatsApp pre-filled |
 | `driver-checker.html` | Uber & Bolt driver checker — what to bring for fingerprint capture, proof-of-residence date check, visit day, WhatsApp checklist |
+| `signature-maker.html` | Signature maker — draw or type a signature, download a trimmed transparent PNG, JPG or SVG |
 | `qr-code.html` | QR code studio — 10 content types, dot/corner styles, colours and gradients, logos, frames, PNG/SVG/JPG/WebP export |
 
 ## Files
@@ -28,7 +29,8 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
 - `js/site.js` — the one script for every page: mobile menu, live open/closed status,
   scroll reveals, pricing tabs and nav dropdown, theme toggle, bundle calculator, FAQ search, contact form.
 - `js/driver-checker.js` — the Uber & Bolt driver checker, used by `driver-checker.html` only (opening hours are repeated at the top).
-- `js/color-picker.js` — the custom colour picker used on the QR page (replaces the browser's colour popup).
+- `js/signature.js` — the signature maker (drawing pad, handwriting fonts, exports), used by `signature-maker.html` only.
+- `js/color-picker.js` — the custom colour picker used on the QR and signature pages (replaces the browser's colour popup).
 - `js/qr-studio.js` — the QR code studio (content builders, styling, SVG and canvas export), used by `qr-code.html` only.
 - `js/vendor/qrcode.js` — QR code engine (MIT, Kazuhiko Arase), used by the studio.
 - `assets/` — logos (`logo.svg` for light backgrounds, `logo-white.svg` for navy), favicon, course icons and the driver checklist PDF. Your original logo files are in `assets/brand/`.
@@ -43,7 +45,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
   pricing preview on `index.html`, the services page and the FAQ).
 - **Course bundles and prices** — update the `BUNDLES` list in `js/site.js` and the
   price table in `courses.html`.
-- **Header and footer** — they are repeated in every page; change all nine files.
+- **Header and footer** — they are repeated in every page; change all ten files.
 
 ## Running locally
 

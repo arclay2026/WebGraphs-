@@ -59,6 +59,15 @@ body {
   /* room for the fixed header (bar + 3px red line) */
   padding-top: calc(var(--header-h) + 3px);
 }
+/* Soft brand glow: a faint #ff4545 wash fading into white, fixed to the
+   screen corners so it shows behind every white section as you scroll. */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(42rem 30rem at 100% 0%, rgba(255, 69, 69, .13), rgba(255, 69, 69, 0) 70%),
+    radial-gradient(36rem 26rem at 0% 100%, rgba(255, 69, 69, .08), rgba(255, 69, 69, 0) 70%),
+    linear-gradient(180deg, #ffffff 0%, #fff8f8 100%);
+}
 img, svg, video, canvas, iframe { display: block; max-width: 100%; }
 img { height: auto; }
 a { color: var(--accent-ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
@@ -152,11 +161,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .nav { display: flex; gap: 2px; margin-left: auto; }
 .nav a {
-  position: relative; padding: 7px 13px; border-radius: 999px; color: var(--ink);
+  position: relative; padding: 7px 13px; color: var(--ink);
   text-decoration: none; font-size: 15px; font-weight: 500;
-  transition: background-color .15s, color .15s;
+  transition: color .2s var(--ease);
 }
-.nav a:hover { background: var(--mist); color: var(--ink); }
+.nav a:hover { color: var(--accent); }
 .nav a::after {
   content: ""; position: absolute; left: 50%; bottom: 1px; width: 18px; height: 2.5px;
   border-radius: 2px; background: var(--accent);
@@ -187,6 +196,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   color: var(--ink); font-size: 20px; font-weight: 500; text-decoration: none;
 }
 .mobile-nav a:not(.btn) svg { width: 20px; height: 20px; color: var(--mute); }
+.mobile-nav a:not(.btn):hover { color: var(--accent); }
 .mobile-nav a[aria-current="page"] { color: var(--accent-ink); }
 .mobile-nav a[aria-current="page"] svg { color: var(--accent); }
 .mobile-nav .btn { width: 100%; margin-top: 20px; }

@@ -56,8 +56,8 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /* room for the fixed header (bar + 3px red line) */
-  padding-top: calc(var(--header-h) + 3px);
+  /* room for the fixed header */
+  padding-top: var(--header-h);
 }
 
 img, svg, video, canvas, iframe { display: block; max-width: 100%; }
@@ -119,7 +119,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: rgba(255, 255, 255, .97);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
   backdrop-filter: saturate(180%) blur(14px);
-  border-top: 3px solid var(--accent);
   border-bottom: 1px solid transparent;
   transition: border-color .2s, box-shadow .2s;
 }
@@ -312,6 +311,66 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .svc-card .text-link { margin-top: auto; padding-top: 6px; }
 @media (max-width: 980px) { .svc-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 620px) { .svc-grid { grid-template-columns: 1fr; } }
+
+/* ---------- Service card motion graphics ----------
+   Looping SVG scenes, one colour per service. With reduced motion the
+   animations stop and each scene rests on a complete frame. */
+.mg { display: block; }
+.mg svg { display: block; width: 100%; height: 100%; }
+.mg text { font-family: var(--font); }
+.mg--fingerprint { background: #ff4545; }
+.mg--web { background: #001523; }
+.mg--design { background: #ffc43d; }
+.mg--courses { background: #7b5cff; }
+.mg--printing { background: #12b3a2; }
+.mg--software { background: #2f6bff; }
+.mg [class*="mg-"] { transform-box: fill-box; }
+
+.mg-ring { transform-origin: center; animation: mg-spin 14s linear infinite; }
+.mg-ring.mg-rev { animation-direction: reverse; animation-duration: 11s; }
+.mg-scan { animation: mg-scan 2.6s ease-in-out infinite alternate; }
+.mg-code rect { transform-origin: left center; animation: mg-type 4.8s var(--ease) infinite both; animation-delay: calc(var(--i) * .32s); }
+.mg-float { animation: mg-float 3.2s ease-in-out infinite alternate; }
+.mg-draw { stroke-dasharray: 100; animation: mg-draw 4.4s var(--ease) infinite; }
+.mg-bob { transform-origin: center; animation: mg-float 2.6s ease-in-out infinite alternate; }
+.mg-bob-late { animation-delay: -1.3s; }
+.mg-spin { transform-origin: center; animation: mg-spin 1.6s linear infinite; }
+.mg--design .mg-spin { animation-duration: 6s; }
+.mg-tiles > g { transform-origin: center bottom; animation: mg-hop 2.8s var(--ease) infinite; animation-delay: calc(var(--i) * .22s); }
+.mg-fill { transform-origin: left center; animation: mg-fill 2.8s var(--ease) infinite; }
+.mg-fill-slow { animation-duration: 3.6s; }
+.mg-print { animation: mg-print 3.4s ease-in-out infinite; }
+.mg-blink { animation: mg-blink 1.1s steps(2, jump-none) infinite; }
+
+@keyframes mg-spin { to { transform: rotate(360deg); } }
+@keyframes mg-scan { from { transform: translateY(-58px); } to { transform: translateY(58px); } }
+@keyframes mg-type {
+  0% { transform: scaleX(0); opacity: 1; }
+  14%, 80% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+@keyframes mg-float { from { transform: translateY(5px); } to { transform: translateY(-7px); } }
+@keyframes mg-draw {
+  0% { stroke-dashoffset: 100; opacity: 1; }
+  55%, 88% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes mg-hop {
+  0%, 30%, 100% { transform: translateY(0); }
+  12% { transform: translateY(-14px); }
+  22% { transform: translateY(2px); }
+}
+@keyframes mg-fill {
+  0% { transform: scaleX(0); opacity: 1; }
+  75%, 90% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+@keyframes mg-print {
+  0% { transform: translateY(-76px); opacity: 1; }
+  55%, 82% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(8px); opacity: 0; }
+}
+@keyframes mg-blink { 50% { opacity: .25; } }
 
 /* ---------- Fingerprint feature (dark) ---------- */
 .fp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 88px); align-items: start; }
@@ -695,15 +754,6 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 @media (max-width: 900px) { .footer-top { grid-template-columns: 1fr 1fr; } .footer-brand { grid-column: 1 / -1; } }
 @media (max-width: 480px) { .footer-top { grid-template-columns: 1fr; } }
 
-/* Floating WhatsApp button */
-.wa-float {
-  position: fixed; right: 20px; bottom: 20px; z-index: 40;
-  width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
-  background: #1f8f4e; color: #fff; box-shadow: 0 10px 30px -8px rgba(0, 0, 0, .4);
-  transition: transform .2s var(--ease);
-}
-.wa-float:hover { transform: scale(1.06); color: #fff; }
-.wa-float svg { width: 28px; height: 28px; }
 
 /* ---------- Motion ---------- */
 .js [data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
@@ -716,7 +766,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 
 /* ---------- Print ---------- */
 @media print {
-  .site-header, .mobile-nav, .wa-float, .site-footer, .map-frame { display: none !important; }
+  .site-header, .mobile-nav, .site-footer, .map-frame { display: none !important; }
   .section--dark, .cta-band { background: none; color: #000; }
 }
 

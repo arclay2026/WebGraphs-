@@ -297,8 +297,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .svc-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: transparent; color: inherit; }
 .svc-card-media { aspect-ratio: 16 / 10; overflow: hidden; background: var(--mist-2); }
-.svc-card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
-.svc-card:hover .svc-card-media img { transform: scale(1.05); }
 .svc-card-body { display: flex; flex-direction: column; gap: 10px; flex: 1; padding: 22px 24px 24px; }
 .svc-card-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .svc-num { font-size: 13px; color: var(--mute); font-variant-numeric: tabular-nums; }
@@ -313,64 +311,204 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @media (max-width: 620px) { .svc-grid { grid-template-columns: 1fr; } }
 
 /* ---------- Service card motion graphics ----------
-   Looping SVG scenes, one colour per service. With reduced motion the
-   animations stop and each scene rests on a complete frame. */
-.mg { display: block; }
-.mg svg { display: block; width: 100%; height: 100%; }
-.mg text { font-family: var(--font); }
-.mg--fingerprint { background: #ff4545; }
-.mg--web { background: #001523; }
-.mg--design { background: #ffc43d; }
-.mg--courses { background: #7b5cff; }
-.mg--printing { background: #12b3a2; }
-.mg--software { background: #2f6bff; }
-.mg [class*="mg-"] { transform-box: fill-box; }
+   Small product-style scenes: white UI cards on a soft surface with one
+   accent colour (--a) per service. Everything is sized in em and the em
+   scales with the card width (container query), so scenes keep their
+   proportions on every screen. The resting state of each element is its
+   finished state, so with reduced motion each scene shows a full frame. */
+.mg {
+  --ink2: #1a2b38; --soft: #8a97a1; --hair: #e9edf0;
+  --a-08: color-mix(in srgb, var(--a) 8%, #fff);
+  --a-15: color-mix(in srgb, var(--a) 15%, transparent);
+  --a-30: color-mix(in srgb, var(--a) 30%, transparent);
+  position: relative; overflow: hidden; container-type: inline-size;
+  background: #f7f9fa; border-bottom: 1px solid var(--line);
+}
+.mg::before {
+  content: ""; position: absolute; inset: -20%;
+  background: radial-gradient(closest-side, var(--a-15), transparent 70%);
+}
+.mg-stage {
+  position: absolute; inset: 0; font-size: clamp(9px, 3.35cqw, 15px);
+  color: var(--ink2); line-height: 1.25;
+}
+.mg-stage--top { padding: 1.4em 1.6em 0; display: grid; align-content: start; gap: .8em; }
+.mg svg { width: 1em; height: 1em; display: block; }
 
-.mg-ring { transform-origin: center; animation: mg-spin 14s linear infinite; }
-.mg-ring.mg-rev { animation-direction: reverse; animation-duration: 11s; }
-.mg-scan { animation: mg-scan 2.6s ease-in-out infinite alternate; }
-.mg-code rect { transform-origin: left center; animation: mg-type 4.8s var(--ease) infinite both; animation-delay: calc(var(--i) * .32s); }
-.mg-float { animation: mg-float 3.2s ease-in-out infinite alternate; }
-.mg-draw { stroke-dasharray: 100; animation: mg-draw 4.4s var(--ease) infinite; }
-.mg-bob { transform-origin: center; animation: mg-float 2.6s ease-in-out infinite alternate; }
-.mg-bob-late { animation-delay: -1.3s; }
-.mg-spin { transform-origin: center; animation: mg-spin 1.6s linear infinite; }
-.mg--design .mg-spin { animation-duration: 6s; }
-.mg-tiles > g { transform-origin: center bottom; animation: mg-hop 2.8s var(--ease) infinite; animation-delay: calc(var(--i) * .22s); }
-.mg-fill { transform-origin: left center; animation: mg-fill 2.8s var(--ease) infinite; }
-.mg-fill-slow { animation-duration: 3.6s; }
-.mg-print { animation: mg-print 3.4s ease-in-out infinite; }
-.mg-blink { animation: mg-blink 1.1s steps(2, jump-none) infinite; }
+/* shared parts */
+.mg-card {
+  background: #fff; border: 1px solid var(--hair); border-radius: 1em;
+  box-shadow: 0 1px 2px rgba(0, 21, 35, .04), 0 .8em 1.8em -1.2em rgba(0, 21, 35, .18);
+}
+.mg-tile {
+  position: absolute; left: 50%; top: 44%; translate: -50% -50%;
+  width: 4.6em; height: 4.6em; border-radius: 1.2em; display: grid; place-items: center;
+  background: #fff; border: 1px solid var(--hair); color: var(--a);
+  box-shadow: 0 1px 2px rgba(0, 21, 35, .05), 0 1em 2.2em -1em rgba(0, 21, 35, .22);
+}
+.mg-tile > svg { width: 2.2em; height: 2.2em; }
+.mg-check {
+  position: absolute; right: -.55em; bottom: -.55em; width: 1.6em; height: 1.6em;
+  display: grid; place-items: center; border-radius: 50%;
+  background: #fff; color: var(--a); border: .14em solid var(--a);
+}
+.mg-check svg { width: .95em; height: .95em; stroke-width: 3; }
+.mg-ring {
+  position: absolute; left: 50%; top: 44%; translate: -50% -50%;
+  width: 7.6em; height: 7.6em; border-radius: 50%; border: 1px solid var(--a-30);
+}
+.mg-ring--lg { width: 11em; height: 11em; border-color: var(--a-15); }
+.mg-chip {
+  display: inline-flex; align-items: center; gap: .45em; white-space: nowrap;
+  padding: .5em .9em; border-radius: 99em; background: #fff; border: 1px solid var(--hair);
+  font-size: .82em; font-weight: 500; color: var(--ink2);
+  box-shadow: 0 .4em 1em -.7em rgba(0, 21, 35, .25);
+}
+.mg-list { display: grid; gap: .5em; }
+.mg-list--cards .mg-row { background: #fff; border: 1px solid var(--hair); box-shadow: 0 .4em 1em -.9em rgba(0, 21, 35, .3); }
+.mg-list--cards { -webkit-mask-image: linear-gradient(#000 72%, transparent 98%); mask-image: linear-gradient(#000 72%, transparent 98%); }
+.mg-row {
+  position: relative; display: flex; align-items: center; gap: .7em;
+  padding: .55em .7em; border-radius: .8em; overflow: hidden;
+}
+.mg-ic {
+  flex-shrink: 0; width: 2em; height: 2em; border-radius: .6em; display: grid; place-items: center;
+  background: var(--a-08); color: var(--a);
+}
+.mg img.mg-app { flex-shrink: 0; width: 2em; height: 2em; border-radius: .5em; object-fit: contain; transform: none; }
+.mg-txt { display: grid; min-width: 0; flex: 1; }
+.mg-txt b { font-weight: 500; font-size: .92em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mg-txt small { font-size: .72em; color: var(--soft); white-space: nowrap; }
+.mg-pill {
+  flex-shrink: 0; display: inline-flex; align-items: center; gap: .35em;
+  padding: .25em .6em; border-radius: .5em; border: 1px solid var(--hair); background: #fff;
+  font-size: .72em; color: #5d6c77;
+}
+.mg-pill svg { width: 1em; height: 1em; stroke-width: 2.6; }
+.mg-dot { width: .5em; height: .5em; border-radius: 50%; background: #22c55e; }
+.mg-pill--done { color: #15803d; }
+.mg-head { display: flex; justify-content: space-between; font-size: .82em; color: var(--soft); padding: 0 .2em; }
 
-@keyframes mg-spin { to { transform: rotate(360deg); } }
-@keyframes mg-scan { from { transform: translateY(-58px); } to { transform: translateY(58px); } }
-@keyframes mg-type {
-  0% { transform: scaleX(0); opacity: 1; }
-  14%, 80% { transform: scaleX(1); opacity: 1; }
-  100% { transform: scaleX(1); opacity: 0; }
+/* 1 · fingerprint */
+.fp-line {
+  position: absolute; left: 8%; right: 8%; top: 44%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--a-30) 20%, var(--a-30) 80%, transparent);
 }
-@keyframes mg-float { from { transform: translateY(5px); } to { transform: translateY(-7px); } }
-@keyframes mg-draw {
-  0% { stroke-dashoffset: 100; opacity: 1; }
-  55%, 88% { stroke-dashoffset: 0; opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 0; }
+.fp-dot {
+  position: absolute; top: 50%; left: 14%; width: .55em; height: .55em; translate: -50% -50%;
+  border-radius: 50%; background: var(--a); box-shadow: 0 0 0 .3em var(--a-15);
+  animation: fp-travel 3.2s cubic-bezier(.5, 0, .5, 1) infinite;
 }
-@keyframes mg-hop {
-  0%, 30%, 100% { transform: translateY(0); }
-  12% { transform: translateY(-14px); }
-  22% { transform: translateY(2px); }
+.fp-dot--2 { animation-delay: -1.6s; }
+.fp-tile { overflow: visible; }
+.fp-scan {
+  position: absolute; left: 18%; right: 18%; top: 50%; height: 2px; border-radius: 2px;
+  background: var(--a); box-shadow: 0 0 .7em .15em var(--a-30); opacity: 0;
+  animation: fp-scan 3.2s ease-in-out infinite;
 }
-@keyframes mg-fill {
-  0% { transform: scaleX(0); opacity: 1; }
-  75%, 90% { transform: scaleX(1); opacity: 1; }
-  100% { transform: scaleX(1); opacity: 0; }
+.fp-tile .mg-check { animation: mg-pop 3.2s var(--ease) infinite; }
+.fp-chip { position: absolute; left: 50%; top: 79%; translate: -50% -50%; }
+.mg-ring { animation: mg-breathe 3.2s ease-in-out infinite; }
+.mg-ring--lg { animation-delay: -1.6s; }
+
+/* 2 · web & app */
+.web-win { overflow: hidden; }
+.web-top { display: flex; align-items: center; gap: .35em; padding: .6em .8em; border-bottom: 1px solid var(--hair); }
+.web-top i { width: .55em; height: .55em; border-radius: 50%; background: #e3e8ec; }
+.web-url { margin-left: .6em; flex: 1; padding: .25em .7em; border-radius: .5em; background: #f3f5f7; font-size: .72em; color: var(--soft); }
+.web-win .mg-list { padding: .45em; gap: .2em; }
+.web-win .mg-row { animation: web-focus 6s ease-in-out infinite; animation-delay: calc(var(--i) * 2s - 6s); }
+.mg-prog {
+  position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--a);
+  transform-origin: left; transform: scaleX(0);
+  animation: web-prog 6s ease-in-out infinite; animation-delay: calc(var(--i) * 2s - 6s);
 }
-@keyframes mg-print {
-  0% { transform: translateY(-76px); opacity: 1; }
-  55%, 82% { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(8px); opacity: 0; }
+
+/* 3 · graphic design */
+.ds-board { position: absolute; left: 50%; top: 42%; translate: -50% -50%; width: 13em; height: 7.4em; }
+.ds-shape { position: absolute; }
+.ds-circle { left: 1.6em; top: 1.5em; width: 3.4em; height: 3.4em; border-radius: 50%; background: var(--a); }
+.ds-square { left: 5.9em; top: 1.9em; width: 2.8em; height: 2.8em; border-radius: .6em; background: #001523; }
+.ds-bar { left: 9.6em; top: 2.1em; width: 2em; height: 2.4em; border-radius: .4em; background: #ff4545; }
+.ds-select {
+  position: absolute; left: 1.3em; top: 1.2em; width: 4em; height: 4em;
+  border: 1.5px solid #3b82f6; border-radius: .2em;
+  animation: ds-select 6s var(--ease) infinite;
 }
-@keyframes mg-blink { 50% { opacity: .25; } }
+.ds-select i { position: absolute; width: .5em; height: .5em; background: #fff; border: 1.5px solid #3b82f6; border-radius: .1em; }
+.ds-select i:nth-child(1) { left: -.3em; top: -.3em; } .ds-select i:nth-child(2) { right: -.3em; top: -.3em; }
+.ds-select i:nth-child(3) { left: -.3em; bottom: -.3em; } .ds-select i:nth-child(4) { right: -.3em; bottom: -.3em; }
+.ds-cursor { position: absolute; left: 4.6em; top: 4.4em; color: #001523; animation: ds-cursor 6s var(--ease) infinite; }
+.ds-cursor svg { width: 1.3em; height: 1.3em; filter: drop-shadow(0 .15em .2em rgba(0, 21, 35, .25)); }
+.ds-palette { position: absolute; left: 50%; top: 82%; translate: -50% -50%; }
+.ds-palette i { width: .9em; height: .9em; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgba(0, 21, 35, .1); }
+.ds-palette i:nth-child(3) { animation: ds-swatch 2s ease-in-out infinite; }
+.ds-palette span { margin-left: .3em; }
+
+/* 4 · courses */
+.mg-track { flex: 0 0 42%; height: .45em; border-radius: 99em; background: #eef1f4; overflow: hidden; }
+.mg-bar {
+  display: block; height: 100%; border-radius: inherit; background: var(--a);
+  transform-origin: left; transform: scaleX(var(--w));
+  animation: mg-grow 5s var(--ease) infinite; animation-delay: calc(var(--i) * .25s);
+}
+
+/* 5 · printing */
+.pq-active { border-color: var(--a-30) !important; }
+.pq-prog {
+  position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--a);
+  transform-origin: left; animation: pq-prog 4s ease-in-out infinite;
+}
+.pq-status { position: relative; }
+.pq-a { color: var(--a); animation: pq-a 4s steps(1, end) infinite; opacity: 0; }
+.pq-b { position: absolute; inset: 0; display: inline-flex; align-items: center; justify-content: center; gap: .35em; color: #15803d; animation: pq-b 4s steps(1, end) infinite; }
+
+/* 6 · software */
+.sw-ring { position: absolute; left: 50%; top: 40%; translate: -50% -50%; width: 7.4em !important; height: 7.4em !important; rotate: -90deg; }
+.sw-ring circle { fill: none; stroke: var(--a-15); stroke-width: 3; }
+.sw-ring .sw-arc { stroke: var(--a); stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 0; animation: sw-arc 4s var(--ease) infinite; }
+.sw-tile { top: 40%; }
+.sw-tile .mg-check { animation: mg-pop 4s var(--ease) infinite; animation-delay: .4s; }
+.sw-icon { animation: sw-bob 1.4s ease-in-out infinite alternate; }
+.sw-steps { position: absolute; left: 0; right: 0; top: 80%; translate: 0 -50%; display: flex; justify-content: center; gap: .5em; }
+.sw-steps .mg-chip { font-size: .76em; }
+.sw-steps i { width: 1.3em; height: 1.3em; border-radius: 50%; display: grid; place-items: center; background: var(--a); color: #fff; animation: mg-pop 4s var(--ease) infinite; animation-delay: calc(var(--i) * .5s); }
+.sw-steps i svg { width: .8em; height: .8em; stroke-width: 3.2; }
+
+@keyframes fp-travel {
+  0% { left: 12%; opacity: 0; } 15% { opacity: 1; }
+  50% { left: 42%; opacity: 1; } 60%, 100% { left: 46%; opacity: 0; }
+}
+@keyframes fp-scan {
+  0% { top: 22%; opacity: 0; } 10% { opacity: 1; }
+  45% { top: 78%; opacity: 1; } 55%, 100% { top: 78%; opacity: 0; }
+}
+@keyframes mg-pop {
+  0%, 45% { scale: 0; opacity: 0; } 55% { scale: 1.15; opacity: 1; }
+  62%, 90% { scale: 1; opacity: 1; } 100% { scale: 1; opacity: 0; }
+}
+@keyframes mg-breathe { 0%, 100% { scale: .96; opacity: .6; } 50% { scale: 1.04; opacity: 1; } }
+@keyframes web-focus {
+  0%, 2% { background: transparent; } 8%, 30% { background: var(--a-08); } 36%, 100% { background: transparent; }
+}
+@keyframes web-prog { 0%, 4% { transform: scaleX(0); opacity: 1; } 30% { transform: scaleX(1); opacity: 1; } 36%, 100% { transform: scaleX(1); opacity: 0; } }
+@keyframes ds-select {
+  0%, 22% { left: 1.3em; top: 1.2em; width: 4em; height: 4em; }
+  33%, 55% { left: 5.6em; top: 1.6em; width: 3.4em; height: 3.4em; }
+  66%, 88% { left: 9.3em; top: 1.8em; width: 2.6em; height: 3em; }
+  100% { left: 1.3em; top: 1.2em; width: 4em; height: 4em; }
+}
+@keyframes ds-cursor {
+  0%, 22% { left: 4.6em; top: 4.4em; } 33%, 55% { left: 8.3em; top: 4.2em; }
+  66%, 88% { left: 11.2em; top: 4.1em; } 100% { left: 4.6em; top: 4.4em; }
+}
+@keyframes ds-swatch { 0%, 100% { box-shadow: 0 0 0 0 var(--a-30); } 50% { box-shadow: 0 0 0 .3em var(--a-30); } }
+@keyframes mg-grow { 0% { transform: scaleX(0); } 45%, 88% { transform: scaleX(var(--w)); opacity: 1; } 100% { transform: scaleX(var(--w)); opacity: 0; } }
+@keyframes pq-prog { 0% { transform: scaleX(0); opacity: 1; } 70% { transform: scaleX(1); opacity: 1; } 78%, 100% { transform: scaleX(1); opacity: 0; } }
+@keyframes pq-a { 0% { opacity: 1; } 72% { opacity: 0; } }
+@keyframes pq-b { 0% { opacity: 0; } 72% { opacity: 1; } }
+@keyframes sw-arc { 0% { stroke-dashoffset: 100; } 55%, 92% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes sw-bob { from { translate: 0 -.12em; } to { translate: 0 .16em; } }
 
 /* ---------- Fingerprint feature (dark) ---------- */
 .fp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 88px); align-items: start; }

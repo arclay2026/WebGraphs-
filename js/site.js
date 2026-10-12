@@ -32,7 +32,7 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && menu.classList.contains('is-open')) { setOpen(false); toggle.focus(); }
     });
-    window.matchMedia('(min-width: 981px)').addEventListener('change', (mq) => { if (mq.matches) setOpen(false); });
+    window.matchMedia('(min-width: 1081px)').addEventListener('change', (mq) => { if (mq.matches) setOpen(false); });
   }
 
   /* ---------- Open / closed status (Johannesburg time) ----------

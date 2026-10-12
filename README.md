@@ -23,11 +23,11 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
 ## Files
 
 - `css/site.css` — the one stylesheet for every page. Colours, fonts and spacing are
-  CSS variables at the top (`--blue`, `--ink`, `--font`, …).
+  CSS variables at the top (`--accent` red, `--ink` navy, `--mist`, `--font`, …).
 - `js/site.js` — the one script for every page: mobile menu, live open/closed status,
   scroll reveals, bundle calculator, FAQ search, contact form, image viewer, QR tool.
 - `js/vendor/qrcode.js` — QR code engine (MIT, Kazuhiko Arase), used by `qr-code.html` only.
-- `assets/` — logos, favicon, course icons, photos and the driver checklist PDF.
+- `assets/` — logos (`logo.svg` for light backgrounds, `logo-white.svg` for navy), favicon, course icons, photos and the driver checklist PDF. Your original logo files are in `assets/brand/`.
 
 ## Common edits
 

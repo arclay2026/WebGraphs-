@@ -59,28 +59,15 @@ body {
   /* room for the fixed header (bar + 3px red line) */
   padding-top: calc(var(--header-h) + 3px);
 }
-/* Brand glow: #ff4545 rises from the top-right corner of the screen and
-   fades to white well before the middle, so white stays dominant. Fixed to
-   the viewport so it sits behind every white section as you scroll; the
-   header paints the same glow so it continues under the nav bar. */
-:root {
-  --glow:
-    radial-gradient(ellipse 60vw 70vh at 100% 0%,
-      rgba(255, 69, 69, .55) 0%, rgba(255, 69, 69, .28) 28%,
-      rgba(255, 69, 69, .1) 55%, rgba(255, 69, 69, 0) 80%);
-}
-body::before {
-  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background: var(--glow), #ffffff;
-}
+
 img, svg, video, canvas, iframe { display: block; max-width: 100%; }
 img { height: auto; }
 a { color: var(--accent-ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 a:hover { color: var(--accent-deep); }
 h1, h2, h3, h4 { margin: 0; color: var(--ink); font-weight: 500; line-height: 1.12; letter-spacing: -0.02em; }
-h1 { font-size: clamp(38px, 6.2vw, 72px); letter-spacing: -0.035em; }
-h2 { font-size: clamp(30px, 4.4vw, 48px); letter-spacing: -0.03em; }
-h3 { font-size: clamp(20px, 2vw, 23px); }
+h1 { font-size: clamp(32px, 4.4vw, 54px); letter-spacing: -0.03em; }
+h2 { font-size: clamp(26px, 3.1vw, 36px); letter-spacing: -0.025em; }
+h3 { font-size: clamp(18px, 1.6vw, 20px); }
 h1, h2, h3 { text-wrap: balance; }
 p { margin: 0; }
 ul, ol { margin: 0; padding: 0; }
@@ -109,7 +96,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .section--dark h2, .section--dark h3 { color: #fff; }
 
 .section-head { display: grid; gap: 16px; max-width: 720px; margin-bottom: clamp(36px, 5vw, 56px); }
-.section-head p { color: var(--mute); font-size: clamp(17px, 1.6vw, 19px); }
+.section-head p { color: var(--mute); font-size: 17px; }
 .section--dark .section-head p { color: var(--on-dark-mute); }
 .section-head--split {
   max-width: none; grid-template-columns: 1fr auto; align-items: end; gap: 24px;
@@ -122,14 +109,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
   color: var(--accent-ink);
 }
 .section--dark .eyebrow { color: var(--accent-on-dark); }
-.lede { font-size: clamp(18px, 1.9vw, 21px); color: var(--mute); max-width: 60ch; }
+.lede { font-size: clamp(16px, 1.4vw, 18px); color: var(--mute); max-width: 60ch; }
 
 /* ---------- Header ----------
    White bar with a red brand line on top. Links are navy; the current page
    gets a short red underline, hover gets a mist pill. */
 .site-header {
   position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 50;
-  background: var(--glow), rgba(255, 255, 255, .97);
+  background: rgba(255, 255, 255, .97);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
   backdrop-filter: saturate(180%) blur(14px);
   border-top: 3px solid var(--accent);
@@ -265,7 +252,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-top: 1px solid var(--line); list-style: none; width: 100%;
 }
 .hero-facts li { display: grid; font-size: 14px; color: var(--mute); }
-.hero-facts b { font-size: 22px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+.hero-facts b { font-size: 20px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
 
 .hero-mosaic {
   display: grid; grid-template-columns: 1.2fr 1fr; grid-template-rows: 1fr 1fr;
@@ -331,7 +318,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .fp-copy { display: grid; gap: 22px; justify-items: start; }
 .fp-copy p { color: var(--on-dark-mute); font-size: 18px; max-width: 52ch; }
 .fp-price { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
-.fp-price b { font-size: clamp(56px, 8vw, 96px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: #fff; }
+.fp-price b { font-size: clamp(44px, 5.5vw, 64px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: #fff; }
 .fp-price span { color: var(--on-dark-mute); }
 .fp-card {
   background: var(--navy-2); border: 1px solid var(--dark-line); border-radius: var(--r-lg);
@@ -386,7 +373,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .price-strip .prices { display: flex; gap: 32px; }
 .price-strip .prices div { display: grid; }
-.price-strip b { font-size: 30px; font-weight: 500; color: #fff; letter-spacing: -0.02em; line-height: 1.1; }
+.price-strip b { font-size: 26px; font-weight: 500; color: #fff; letter-spacing: -0.02em; line-height: 1.1; }
 .price-strip span { font-size: 14px; color: var(--on-dark-mute); }
 .price-strip p { flex: 1; min-width: 220px; color: var(--on-dark-mute); font-size: 15px; }
 
@@ -540,7 +527,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   display: grid; align-content: center; gap: 14px; padding: clamp(24px, 3.5vw, 36px);
   border-radius: var(--r-lg); background: var(--ink); color: var(--on-dark); min-height: 260px;
 }
-.bundle-result .amount { font-size: clamp(48px, 6vw, 72px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: #fff; }
+.bundle-result .amount { font-size: clamp(40px, 4.6vw, 56px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: #fff; }
 .bundle-result .duration { color: var(--on-dark-mute); }
 .bundle-result p { color: var(--on-dark-mute); }
 .bundle-result .combo { color: #fff; font-weight: 500; }
@@ -571,7 +558,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .faq-search svg { position: absolute; left: 14px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%); color: var(--mute); pointer-events: none; }
 .faq-search input { padding-left: 42px !important; }
 .faq-group { margin-bottom: 40px; }
-.faq-group h2 { font-size: 24px; margin-bottom: 12px; letter-spacing: -0.015em; }
+.faq-group h2 { font-size: 21px; margin-bottom: 12px; letter-spacing: -0.015em; }
 .faq-item { border-bottom: 1px solid var(--line); }
 .faq-item summary {
   display: flex; justify-content: space-between; align-items: center; gap: 16px;
@@ -618,7 +605,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .form-grid .full { grid-column: 1 / -1; }
 @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
 .form-card { padding: clamp(24px, 3.5vw, 40px); border-radius: var(--r-lg); background: var(--mist); }
-.form-card h2 { font-size: clamp(24px, 3vw, 32px); margin-bottom: 8px; }
+.form-card h2 { font-size: clamp(21px, 2.2vw, 26px); margin-bottom: 8px; }
 .form-card > p { color: var(--mute); margin-bottom: 24px; }
 .form-success {
   display: flex; gap: 12px; align-items: start; margin-top: 16px; padding: 16px;

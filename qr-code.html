@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Free QR Code Generator — Web Graphs Technologies</title>
+<title>QR Code Studio — Web Graphs Technologies</title>
 <meta name="description" content="Turn a link, WhatsApp number, email or any text into a QR code and download it as a PNG — free, in your browser.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000e17" media="(prefers-color-scheme: dark)">
@@ -32,8 +32,8 @@
           <a href="pricing.html">Pricing</a>
           <button type="button" class="nav-caret" aria-expanded="false" aria-controls="menu-pricing" aria-label="Show pricing options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
           <div class="nav-menu" id="menu-pricing">
-            <a href="pricing.html#design"><span class="nm-ic" style="--a:#f59e0b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19 7-7 3 3-7 7-3-3Z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5Z"/><path d="m2 2 7.6 7.6"/><circle cx="11" cy="11" r="2"/></svg></span><span><b>Graphic design</b><small>Logos, branding and marketing · from R1,500</small></span></a>
-            <a href="pricing.html#web"><span class="nm-ic" style="--a:#3b82f6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18"/><path d="m10 13-2 2 2 2M14 13l2 2-2 2"/></svg></span><span><b>Web design &amp; development</b><small>Landing pages to online stores · from R3,500</small></span></a>
+            <a href="pricing.html#design"><span><b>Graphic design</b><small>Logos, branding and marketing · from R1,500</small></span></a>
+            <a href="pricing.html#web"><span><b>Web design &amp; development</b><small>Landing pages to online stores · from R3,500</small></span></a>
           </div>
         </div>
         <a href="about.html">About</a>
@@ -64,64 +64,101 @@
 <section class="page-hero">
   <div class="container">
     <span class="eyebrow">Free tool</span>
-    <h1>QR code generator.</h1>
-    <p class="lede">Turn a link, WhatsApp number, email address or any text into a scannable QR code — made in your browser and ready to download as a PNG.</p>
+    <h1>QR code studio.</h1>
+    <p class="lede">Make a QR code for a link, WhatsApp, Wi-Fi, a contact card and more — then style it with your colours, logo and frame. Everything is made in your browser and downloads in high resolution.</p>
   </div>
 </section>
 
-<section class="section" style="padding-top:clamp(16px,3vw,32px)">
-  <div class="container qr-tool">
-    <div class="qr-controls">
-      <div class="field">
-        <label for="qr-content">Content <span class="opt">(link, WhatsApp number, email or any text)</span></label>
-        <textarea id="qr-content" rows="4" maxlength="800" placeholder="e.g. https://yourwebsite.co.za" aria-describedby="qr-error"></textarea>
-        <span class="error" id="qr-error" role="alert"></span>
+<section class="section" style="padding-top:clamp(8px,2vw,24px)">
+  <div class="container qrs" id="qrs">
+    <div class="qrs-controls">
+      <div class="qrs-presets">
+        <div class="qrs-presets-head"><p class="qrs-label">Start from a style</p><div class="qrs-mini-actions"><button type="button" class="text-btn" id="qrs-random">Surprise me</button><button type="button" class="text-btn" id="qrs-reset">Reset design</button></div></div>
+        <div class="preset-row"><button type="button" class="preset" data-preset="classic"><span class="preset-face"></span><span>Classic</span></button><button type="button" class="preset" data-preset="brand"><span class="preset-face"></span><span>Brand</span></button><button type="button" class="preset" data-preset="dots"><span class="preset-face"></span><span>Dots</span></button><button type="button" class="preset" data-preset="ocean"><span class="preset-face"></span><span>Ocean</span></button><button type="button" class="preset" data-preset="sunset"><span class="preset-face"></span><span>Sunset</span></button><button type="button" class="preset" data-preset="lines"><span class="preset-face"></span><span>Lines</span></button></div>
       </div>
-      <div class="quickfill">
-        <span>Quick fill:</span>
-        <button type="button" data-fill="https://wa.me/27787347867">WhatsApp</button>
-        <button type="button" data-fill="mailto:webgraphstechnologies@gmail.com">Email</button>
-        <button type="button" data-fill="tel:+27787347867">Phone call</button>
-      </div>
-      <div class="form-grid">
-        <div class="field">
-          <label for="qr-size">Size</label>
-          <select id="qr-size">
-            <option value="200">Small (200px)</option>
-            <option value="300" selected>Medium (300px)</option>
-            <option value="400">Large (400px)</option>
-            <option value="500">Extra large (500px)</option>
-            <option value="1000">Print (1000px)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="qr-ecl">Error correction</label>
-          <select id="qr-ecl">
-            <option value="L">Low</option>
-            <option value="M" selected>Medium (recommended)</option>
-            <option value="Q">Quartile</option>
-            <option value="H">High (best for print)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="qr-fg">Foreground colour</label>
-          <div class="color-field"><input type="color" id="qr-fg" value="#111111"><span>Dots &amp; squares</span></div>
-        </div>
-        <div class="field">
-          <label for="qr-bg">Background colour</label>
-          <div class="color-field"><input type="color" id="qr-bg" value="#ffffff"><span>Background</span></div>
-        </div>
-      </div>
-      <p style="color:var(--mute);font-size:15px">Tip: keep a dark foreground on a light background — low-contrast codes may not scan.</p>
+      
+        <details class="qrs-sec" open>
+          <summary><span class="qrs-n">1</span><span class="qrs-t">Content</span><span class="qrs-v" id="sv-content"></span><svg class="qrs-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <div class="qrs-body"><div class="type-grid" role="radiogroup" aria-label="Content type"><label class="type-chip"><input type="radio" name="type" value="url" data-k="type"><span>Link</span></label><label class="type-chip"><input type="radio" name="type" value="text" data-k="type"><span>Text</span></label><label class="type-chip"><input type="radio" name="type" value="wa" data-k="type"><span>WhatsApp</span></label><label class="type-chip"><input type="radio" name="type" value="phone" data-k="type"><span>Phone</span></label><label class="type-chip"><input type="radio" name="type" value="sms" data-k="type"><span>SMS</span></label><label class="type-chip"><input type="radio" name="type" value="email" data-k="type"><span>Email</span></label><label class="type-chip"><input type="radio" name="type" value="wifi" data-k="type"><span>Wi-Fi</span></label><label class="type-chip"><input type="radio" name="type" value="vcard" data-k="type"><span>Contact</span></label><label class="type-chip"><input type="radio" name="type" value="location" data-k="type"><span>Location</span></label><label class="type-chip"><input type="radio" name="type" value="event" data-k="type"><span>Event</span></label></div>
+          <div class="form-grid" data-when="type:url"><div class="field full"><label for="qc-url">Website or link</label><input type="url" id="qc-url" placeholder="https://yourwebsite.co.za" value="https://wa.me/27787347867"></div></div>
+          <div class="form-grid" data-when="type:text"><div class="field full"><label for="qc-text">Text</label><textarea id="qc-text" rows="3" placeholder="Any message, code or note"></textarea></div></div>
+          <div class="form-grid" data-when="type:wa"><div class="field"><label for="qc-wa-num">WhatsApp number</label><input type="tel" id="qc-wa-num" placeholder="e.g. 078 734 7867"></div><div class="field"><label for="qc-wa-msg">Pre-filled message <span class="opt">(optional)</span></label><input type="text" id="qc-wa-msg" placeholder="Hi, I’d like to…"></div></div>
+          <div class="form-grid" data-when="type:phone"><div class="field full"><label for="qc-phone">Phone number</label><input type="tel" id="qc-phone" placeholder="e.g. 078 734 7867"></div></div>
+          <div class="form-grid" data-when="type:sms"><div class="field"><label for="qc-sms-num">Phone number</label><input type="tel" id="qc-sms-num" placeholder="e.g. 078 734 7867"></div><div class="field"><label for="qc-sms-msg">Message <span class="opt">(optional)</span></label><input type="text" id="qc-sms-msg" placeholder="Text to send"></div></div>
+          <div class="form-grid" data-when="type:email"><div class="field full"><label for="qc-email-to">Email address</label><input type="email" id="qc-email-to" placeholder="you@example.com"></div><div class="field"><label for="qc-email-subject">Subject <span class="opt">(optional)</span></label><input type="text" id="qc-email-subject" placeholder=""></div><div class="field"><label for="qc-email-body">Message <span class="opt">(optional)</span></label><input type="text" id="qc-email-body" placeholder=""></div></div>
+          <div class="form-grid" data-when="type:wifi">
+            <div class="field"><label for="qc-wifi-ssid">Network name (SSID)</label><input type="text" id="qc-wifi-ssid" placeholder="e.g. WebGraphs-Guest"></div><div class="field"><label for="qc-wifi-pass">Password</label><input type="text" id="qc-wifi-pass" placeholder=""></div>
+            <div class="field"><label for="qc-wifi-enc">Security</label><select id="qc-wifi-enc"><option value="WPA">WPA / WPA2 / WPA3</option><option value="WEP">WEP</option><option value="nopass">No password</option></select></div>
+            <div class="field field--switch"><label class="switch"><input type="checkbox" id="qc-wifi-hidden"><span class="switch-ui" aria-hidden="true"></span><span>Hidden network</span></label></div>
+          </div>
+          <div class="form-grid" data-when="type:vcard">
+            <div class="field"><label for="qc-vc-first">First name</label><input type="text" id="qc-vc-first" placeholder=""></div><div class="field"><label for="qc-vc-last">Last name</label><input type="text" id="qc-vc-last" placeholder=""></div><div class="field"><label for="qc-vc-org">Company <span class="opt">(optional)</span></label><input type="text" id="qc-vc-org" placeholder=""></div><div class="field"><label for="qc-vc-title">Job title <span class="opt">(optional)</span></label><input type="text" id="qc-vc-title" placeholder=""></div>
+            <div class="field"><label for="qc-vc-phone">Mobile <span class="opt">(optional)</span></label><input type="tel" id="qc-vc-phone" placeholder=""></div><div class="field"><label for="qc-vc-email">Email <span class="opt">(optional)</span></label><input type="email" id="qc-vc-email" placeholder=""></div><div class="field full"><label for="qc-vc-web">Website <span class="opt">(optional)</span></label><input type="url" id="qc-vc-web" placeholder=""></div>
+            <div class="field full"><label for="qc-vc-street">Street <span class="opt">(optional)</span></label><input type="text" id="qc-vc-street" placeholder=""></div><div class="field"><label for="qc-vc-city">City <span class="opt">(optional)</span></label><input type="text" id="qc-vc-city" placeholder=""></div><div class="field"><label for="qc-vc-country">Country <span class="opt">(optional)</span></label><input type="text" id="qc-vc-country" placeholder=""></div>
+          </div>
+          <div class="form-grid" data-when="type:location"><div class="field full"><label for="qc-loc">Address or coordinates</label><input type="text" id="qc-loc" placeholder="e.g. 9 Jill Street, Johannesburg or -26.19, 28.00"></div></div>
+          <div class="form-grid" data-when="type:event">
+            <div class="field full"><label for="qc-ev-title">Event name</label><input type="text" id="qc-ev-title" placeholder="e.g. Open day"></div><div class="field"><label for="qc-ev-start">Starts</label><input type="datetime-local" id="qc-ev-start" placeholder=""></div><div class="field"><label for="qc-ev-end">Ends <span class="opt">(optional)</span></label><input type="datetime-local" id="qc-ev-end" placeholder=""></div>
+            <div class="field full"><label for="qc-ev-loc">Location <span class="opt">(optional)</span></label><input type="text" id="qc-ev-loc" placeholder=""></div><div class="field full"><label for="qc-ev-desc">Details <span class="opt">(optional)</span></label><input type="text" id="qc-ev-desc" placeholder=""></div>
+          </div>
+          </div>
+        </details>
+      
+        <details class="qrs-sec" open>
+          <summary><span class="qrs-n">2</span><span class="qrs-t">Dot pattern</span><span class="qrs-v" id="sv-pattern"></span><svg class="qrs-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <div class="qrs-body"><div class="opt-grid"><label class="opt" data-preview="dot"><input type="radio" name="dot" value="square" data-k="dot"><span class="opt-face"></span><span class="opt-name">Square</span></label><label class="opt" data-preview="dot"><input type="radio" name="dot" value="rounded" data-k="dot"><span class="opt-face"></span><span class="opt-name">Rounded</span></label><label class="opt" data-preview="dot"><input type="radio" name="dot" value="dots" data-k="dot"><span class="opt-face"></span><span class="opt-name">Dots</span></label><label class="opt" data-preview="dot"><input type="radio" name="dot" value="classy" data-k="dot"><span class="opt-face"></span><span class="opt-name">Classy</span></label><label class="opt" data-preview="dot"><input type="radio" name="dot" value="diamond" data-k="dot"><span class="opt-face"></span><span class="opt-name">Diamond</span></label><label class="opt" data-preview="dot"><input type="radio" name="dot" value="vlines" data-k="dot"><span class="opt-face"></span><span class="opt-name">Vertical</span></label><label class="opt" data-preview="dot"><input type="radio" name="dot" value="hlines" data-k="dot"><span class="opt-face"></span><span class="opt-name">Horizontal</span></label></div><div class="field rng"><label for="r-dotScale">Dot size <output data-out="dotScale" data-unit="%"></output></label><input type="range" id="r-dotScale" min="60" max="100" step="5" data-k="dotScale"></div>
+          </div>
+        </details>
+      
+        <details class="qrs-sec">
+          <summary><span class="qrs-n">3</span><span class="qrs-t">Corners</span><span class="qrs-v" id="sv-corners"></span><svg class="qrs-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <div class="qrs-body"><p class="qrs-label">Corner frame</p><div class="opt-grid"><label class="opt" data-preview="eyeOuter"><input type="radio" name="eyeOuter" value="square" data-k="eyeOuter"><span class="opt-face"></span><span class="opt-name">Square</span></label><label class="opt" data-preview="eyeOuter"><input type="radio" name="eyeOuter" value="rounded" data-k="eyeOuter"><span class="opt-face"></span><span class="opt-name">Rounded</span></label><label class="opt" data-preview="eyeOuter"><input type="radio" name="eyeOuter" value="circle" data-k="eyeOuter"><span class="opt-face"></span><span class="opt-name">Circle</span></label><label class="opt" data-preview="eyeOuter"><input type="radio" name="eyeOuter" value="leaf" data-k="eyeOuter"><span class="opt-face"></span><span class="opt-name">Leaf</span></label></div><p class="qrs-label">Corner centre</p><div class="opt-grid"><label class="opt" data-preview="eyeInner"><input type="radio" name="eyeInner" value="square" data-k="eyeInner"><span class="opt-face"></span><span class="opt-name">Square</span></label><label class="opt" data-preview="eyeInner"><input type="radio" name="eyeInner" value="rounded" data-k="eyeInner"><span class="opt-face"></span><span class="opt-name">Rounded</span></label><label class="opt" data-preview="eyeInner"><input type="radio" name="eyeInner" value="circle" data-k="eyeInner"><span class="opt-face"></span><span class="opt-name">Circle</span></label><label class="opt" data-preview="eyeInner"><input type="radio" name="eyeInner" value="diamond" data-k="eyeInner"><span class="opt-face"></span><span class="opt-name">Diamond</span></label><label class="opt" data-preview="eyeInner"><input type="radio" name="eyeInner" value="leaf" data-k="eyeInner"><span class="opt-face"></span><span class="opt-name">Leaf</span></label></div>
+          </div>
+        </details>
+      
+        <details class="qrs-sec">
+          <summary><span class="qrs-n">4</span><span class="qrs-t">Colours</span><span class="qrs-v" id="sv-colours"></span><svg class="qrs-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <div class="qrs-body"><div class="seg" role="radiogroup"><label><input type="radio" name="fillType" value="solid" data-k="fillType"><span>Solid</span></label><label><input type="radio" name="fillType" value="linear" data-k="fillType"><span>Linear gradient</span></label><label><input type="radio" name="fillType" value="radial" data-k="fillType"><span>Radial gradient</span></label></div><div class="form-grid"><div class="field"><label for="c-c1">Dot colour</label><div class="color-field"><input type="color" id="c-c1" data-k="c1"><span>Main colour</span></div></div><div data-when="fillType:linear,radial"><div class="field"><label for="c-c2">Second colour</label><div class="color-field"><input type="color" id="c-c2" data-k="c2"><span>Gradient end</span></div></div></div></div><div data-when="fillType:linear"><div class="field rng"><label for="r-angle">Gradient angle <output data-out="angle" data-unit="°"></output></label><input type="range" id="r-angle" min="0" max="360" step="15" data-k="angle"></div></div><p class="qrs-label">Click a swatch to use it as the dot colour</p><div class="swatch-row" aria-label="Brand colours"><button type="button" class="swatch" data-swatch="#001523" style="--c:#001523" aria-label="Use navy"></button><button type="button" class="swatch" data-swatch="#ff4545" style="--c:#ff4545" aria-label="Use red"></button><button type="button" class="swatch" data-swatch="#000000" style="--c:#000000" aria-label="Use black"></button><button type="button" class="swatch" data-swatch="#3b82f6" style="--c:#3b82f6" aria-label="Use blue"></button><button type="button" class="swatch" data-swatch="#7b5cff" style="--c:#7b5cff" aria-label="Use purple"></button><button type="button" class="swatch" data-swatch="#14b8a6" style="--c:#14b8a6" aria-label="Use teal"></button><button type="button" class="swatch" data-swatch="#f59e0b" style="--c:#f59e0b" aria-label="Use amber"></button><button type="button" class="swatch" data-swatch="#16a34a" style="--c:#16a34a" aria-label="Use green"></button></div><label class="switch"><input type="checkbox" data-k="eyeCustom"><span class="switch-ui" aria-hidden="true"></span><span>Different colours for the corners</span></label><div class="form-grid" data-when="eyeCustom:true"><div class="field"><label for="c-eyeOuterColor">Corner frame</label><div class="color-field"><input type="color" id="c-eyeOuterColor" data-k="eyeOuterColor"><span>Outer squares</span></div></div><div class="field"><label for="c-eyeInnerColor">Corner centre</label><div class="color-field"><input type="color" id="c-eyeInnerColor" data-k="eyeInnerColor"><span>Inner squares</span></div></div></div><div class="form-grid"><div class="field"><label for="c-bg">Background</label><div class="color-field"><input type="color" id="c-bg" data-k="bg"><span>Behind the code</span></div></div><div class="field field--switch"><label class="switch"><input type="checkbox" data-k="transparent"><span class="switch-ui" aria-hidden="true"></span><span>Transparent background</span></label></div></div>
+          </div>
+        </details>
+      
+        <details class="qrs-sec">
+          <summary><span class="qrs-n">5</span><span class="qrs-t">Logo</span><span class="qrs-v" id="sv-logo"></span><svg class="qrs-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <div class="qrs-body"><div class="opt-grid opt-grid--logo"><label class="opt" data-logo="none"><input type="radio" name="logo" value="none" data-k="logo"><span class="opt-face"><svg class="opt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="m6.5 17.5 11-11"/></svg></span><span class="opt-name">None</span></label><label class="opt" data-logo="upload"><input type="radio" name="logo" value="upload" data-k="logo"><span class="opt-face"><svg class="opt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg><img alt="" hidden></span><span class="opt-name">Upload</span></label><label class="opt" data-logo="wg"><input type="radio" name="logo" value="wg" data-k="logo"><span class="opt-face"><img alt=""></span><span class="opt-name">Web Graphs</span></label><label class="opt" data-logo="wa"><input type="radio" name="logo" value="wa" data-k="logo"><span class="opt-face"><img alt=""></span><span class="opt-name">WhatsApp</span></label><label class="opt" data-logo="wifi"><input type="radio" name="logo" value="wifi" data-k="logo"><span class="opt-face"><img alt=""></span><span class="opt-name">Wi-Fi</span></label><label class="opt" data-logo="mail"><input type="radio" name="logo" value="mail" data-k="logo"><span class="opt-face"><img alt=""></span><span class="opt-name">Email</span></label><label class="opt" data-logo="phone"><input type="radio" name="logo" value="phone" data-k="logo"><span class="opt-face"><img alt=""></span><span class="opt-name">Phone</span></label><label class="opt" data-logo="pin"><input type="radio" name="logo" value="pin" data-k="logo"><span class="opt-face"><img alt=""></span><span class="opt-name">Location</span></label><label class="opt" data-logo="link"><input type="radio" name="logo" value="link" data-k="logo"><span class="opt-face"><img alt=""></span><span class="opt-name">Link</span></label></div><input type="file" id="qrs-upload" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden><div data-when="logo:!none"><div class="field rng"><label for="r-logoSize">Logo size <output data-out="logoSize" data-unit="%"></output></label><input type="range" id="r-logoSize" min="10" max="30" step="1" data-k="logoSize"></div><div class="switch-row"><label class="switch"><input type="checkbox" data-k="logoBg"><span class="switch-ui" aria-hidden="true"></span><span>Background behind logo</span></label><label class="switch"><input type="checkbox" data-k="logoClear"><span class="switch-ui" aria-hidden="true"></span><span>Remove dots behind logo</span></label></div><div data-when="logoBg:true"><div class="seg" role="radiogroup"><label><input type="radio" name="logoShape" value="square" data-k="logoShape"><span>Square</span></label><label><input type="radio" name="logoShape" value="rounded" data-k="logoShape"><span>Rounded</span></label><label><input type="radio" name="logoShape" value="circle" data-k="logoShape"><span>Circle</span></label></div><div class="field rng"><label for="r-logoPad">Padding <output data-out="logoPad" data-unit="%"></output></label><input type="range" id="r-logoPad" min="0" max="30" step="1" data-k="logoPad"></div></div><p class="qrs-hint">Logos hide part of the code. We switch to High error correction automatically — test-scan before printing.</p></div>
+          </div>
+        </details>
+      
+        <details class="qrs-sec">
+          <summary><span class="qrs-n">6</span><span class="qrs-t">Frame &amp; caption</span><span class="qrs-v" id="sv-frame"></span><svg class="qrs-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <div class="qrs-body"><div class="opt-grid"><label class="opt"><input type="radio" name="frame" value="none" data-k="frame"><span class="opt-face"><svg viewBox="0 0 48 44"><rect x="14" y="10" width="20" height="20" rx="2" fill="currentColor" opacity=".85"/></svg></span><span class="opt-name">None</span></label><label class="opt"><input type="radio" name="frame" value="border" data-k="frame"><span class="opt-face"><svg viewBox="0 0 48 44"><rect x="10" y="6" width="28" height="34" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="10" width="20" height="20" rx="2" fill="currentColor" opacity=".85"/><rect x="18" y="33" width="12" height="3" rx="1.5" fill="currentColor"/></svg></span><span class="opt-name">Border</span></label><label class="opt"><input type="radio" name="frame" value="card" data-k="frame"><span class="opt-face"><svg viewBox="0 0 48 44"><rect x="10" y="5" width="28" height="35" rx="5" fill="currentColor" opacity=".9"/><rect x="13" y="8" width="22" height="22" rx="3" fill="var(--card)"/><rect x="18" y="33" width="12" height="3" rx="1.5" fill="var(--card)"/></svg></span><span class="opt-name">Card</span></label><label class="opt"><input type="radio" name="frame" value="card-top" data-k="frame"><span class="opt-face"><svg viewBox="0 0 48 44"><rect x="10" y="4" width="28" height="35" rx="5" fill="currentColor" opacity=".9"/><rect x="18" y="8" width="12" height="3" rx="1.5" fill="var(--card)"/><rect x="13" y="14" width="22" height="22" rx="3" fill="var(--card)"/></svg></span><span class="opt-name">Card top</span></label><label class="opt"><input type="radio" name="frame" value="pill" data-k="frame"><span class="opt-face"><svg viewBox="0 0 48 44"><rect x="14" y="5" width="20" height="20" rx="2" fill="currentColor" opacity=".85"/><rect x="12" y="30" width="24" height="8" rx="4" fill="currentColor"/></svg></span><span class="opt-name">Badge</span></label></div><div data-when="frame:!none"><div class="form-grid"><div class="field full"><label for="qrs-caption-in">Caption</label><input type="text" id="qrs-caption-in" placeholder="SCAN ME" data-k="caption" maxlength="32"></div><div class="field"><label for="c-frameColor">Frame colour</label><div class="color-field"><input type="color" id="c-frameColor" data-k="frameColor"><span>Frame and badge</span></div></div><div class="field"><label for="c-captionColor">Caption colour</label><div class="color-field"><input type="color" id="c-captionColor" data-k="captionColor"><span>Text on the frame</span></div></div></div><div class="field rng"><label for="r-captionSize">Caption size <output data-out="captionSize" data-unit="%"></output></label><input type="range" id="r-captionSize" min="60" max="140" step="5" data-k="captionSize"></div></div>
+          </div>
+        </details>
+      
+        <details class="qrs-sec">
+          <summary><span class="qrs-n">7</span><span class="qrs-t">Quality &amp; size</span><span class="qrs-v" id="sv-output"></span><svg class="qrs-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <div class="qrs-body"><p class="qrs-label">Error correction <span class="qrs-hint-inline">— higher survives damage and logos, but makes a denser code</span></p><div class="seg" role="radiogroup"><label><input type="radio" name="ecl" value="L" data-k="ecl"><span>Low 7%</span></label><label><input type="radio" name="ecl" value="M" data-k="ecl"><span>Medium 15%</span></label><label><input type="radio" name="ecl" value="Q" data-k="ecl"><span>Quartile 25%</span></label><label><input type="radio" name="ecl" value="H" data-k="ecl"><span>High 30%</span></label></div><div class="field rng"><label for="r-margin">Quiet zone (white border) <output data-out="margin" data-unit=" modules"></output></label><input type="range" id="r-margin" min="0" max="8" step="1" data-k="margin"></div><div class="field rng"><label for="r-exportSize">Download size <output data-out="exportSize" data-unit="px"></output></label><input type="range" id="r-exportSize" min="256" max="4096" step="128" data-k="exportSize"></div>
+          </div>
+        </details>
     </div>
 
-    <div class="qr-preview">
-      <div class="qr-canvas-box">
-        <canvas id="qr-canvas" hidden aria-label="Generated QR code" role="img"></canvas>
-        <div class="qr-empty" id="qr-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/></svg><p>Enter some content to create your QR code</p></div>
+    <div class="qrs-side">
+      <div class="qrs-card">
+        <div class="qrs-preview" id="qrs-preview" aria-live="polite"></div>
+        <p class="qrs-error" id="qrs-error" role="alert" hidden>That’s too much for one QR code. Shorten the content or lower the error correction.</p>
+        <p class="qrs-info" id="qrs-info"></p>
+        <ul class="qrs-notes" id="qrs-notes"></ul>
+        <div class="qrs-export">
+          <button type="button" class="btn btn--primary" data-export="png">Download PNG</button>
+          <div class="qrs-export-row">
+            <button type="button" class="btn btn--sm" data-export="svg">SVG</button>
+            <button type="button" class="btn btn--sm" data-export="jpg">JPG</button>
+            <button type="button" class="btn btn--sm" data-export="webp">WebP</button>
+            <button type="button" class="btn btn--sm" id="qrs-copy">Copy</button>
+          </div>
+          <p class="qrs-status" id="qrs-status" role="status"></p>
+        </div>
+        <p class="qrs-note">Made entirely in your browser — nothing you type is sent anywhere. Always test-scan before printing.</p>
       </div>
-      <button type="button" class="btn btn--primary" id="qr-download" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download PNG</button>
-      <p class="qr-note">Made entirely in your browser — nothing you type is sent anywhere.</p>
     </div>
   </div>
 </section>
@@ -204,5 +241,6 @@
 
 <script src="js/vendor/qrcode.js"></script>
 <script src="js/site.js"></script>
+<script src="js/qr-studio.js"></script>
 </body>
 </html>

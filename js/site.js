@@ -330,76 +330,6 @@
     });
   }
 
-  /* ---------- QR code generator ---------- */
-  function initQr() {
-    const input = document.getElementById('qr-content');
-    if (!input || typeof qrcode !== 'function') return;
-
-    const size = document.getElementById('qr-size');
-    const ecl = document.getElementById('qr-ecl');
-    const fg = document.getElementById('qr-fg');
-    const bg = document.getElementById('qr-bg');
-    const canvas = document.getElementById('qr-canvas');
-    const empty = document.getElementById('qr-empty');
-    const download = document.getElementById('qr-download');
-    const error = document.getElementById('qr-error');
-    const ctx = canvas.getContext('2d');
-    const QUIET = 4;
-    let timer;
-
-    function render() {
-      const text = input.value.trim();
-      error.textContent = '';
-      input.closest('.field').classList.remove('has-error');
-
-      if (!text) {
-        canvas.hidden = true; empty.hidden = false; download.disabled = true;
-        return;
-      }
-
-      let qr;
-      try {
-        qr = qrcode(0, ecl.value || 'M');
-        qr.addData(text);
-        qr.make();
-      } catch (err) {
-        canvas.hidden = true; empty.hidden = false; download.disabled = true;
-        input.closest('.field').classList.add('has-error');
-        error.textContent = 'That’s too much for one QR code — shorten it, or lower the error correction.';
-        return;
-      }
-
-      const count = qr.getModuleCount();
-      const total = count + QUIET * 2;
-      const scale = Math.max(1, Math.round((parseInt(size.value, 10) || 300) / total));
-      const px = scale * total;
-      canvas.width = px;
-      canvas.height = px;
-      ctx.fillStyle = bg.value || '#ffffff';
-      ctx.fillRect(0, 0, px, px);
-      ctx.fillStyle = fg.value || '#111111';
-      for (let r = 0; r < count; r += 1) {
-        for (let c = 0; c < count; c += 1) {
-          if (qr.isDark(r, c)) ctx.fillRect((c + QUIET) * scale, (r + QUIET) * scale, scale, scale);
-        }
-      }
-      canvas.hidden = false; empty.hidden = true; download.disabled = false;
-    }
-
-    input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(render, 150); });
-    [size, ecl, fg, bg].forEach((el) => el.addEventListener('input', render));
-    document.querySelectorAll('[data-fill]').forEach((btn) => {
-      btn.addEventListener('click', () => { input.value = btn.dataset.fill; input.focus(); render(); });
-    });
-    download.addEventListener('click', () => {
-      const a = document.createElement('a');
-      a.download = 'qr-code.png';
-      a.href = canvas.toDataURL('image/png');
-      a.click();
-    });
-    render();
-  }
-
   /* ---------- Boot ---------- */
   function boot() {
     document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
@@ -414,7 +344,6 @@
     initPricingTabs();
     initFaqFilter();
     initContactForm();
-    initQr();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();

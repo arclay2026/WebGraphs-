@@ -18,15 +18,16 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
 | `about.html` | Story, mission, values and location |
 | `faq.html` | Searchable FAQ grouped by topic |
 | `contact.html` | Contact details, map and a form that opens WhatsApp pre-filled |
-| `qr-code.html` | Free in-browser QR code generator |
+| `qr-code.html` | QR code studio — 10 content types, dot/corner styles, colours and gradients, logos, frames, PNG/SVG/JPG/WebP export |
 
 ## Files
 
 - `css/site.css` — the one stylesheet for every page. Colours, fonts and spacing are
   CSS variables at the top (`--accent` red, `--ink` navy, `--mist`, `--font`, …).
 - `js/site.js` — the one script for every page: mobile menu, live open/closed status,
-  scroll reveals, pricing tabs, bundle calculator, FAQ search, contact form, QR tool.
-- `js/vendor/qrcode.js` — QR code engine (MIT, Kazuhiko Arase), used by `qr-code.html` only.
+  scroll reveals, pricing tabs and nav dropdown, theme toggle, bundle calculator, FAQ search, contact form.
+- `js/qr-studio.js` — the QR code studio (content builders, styling, SVG and canvas export), used by `qr-code.html` only.
+- `js/vendor/qrcode.js` — QR code engine (MIT, Kazuhiko Arase), used by the studio.
 - `assets/` — logos (`logo.svg` for light backgrounds, `logo-white.svg` for navy), favicon, course icons and the driver checklist PDF. Your original logo files are in `assets/brand/`.
 
 ## Common edits

@@ -272,61 +272,16 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .hero-scene .mg-ring--lg { width: 14em; height: 14em; }
 .hero-scene .mg-ring--xl { width: 20em; height: 20em; border-color: color-mix(in srgb, #ff4545 9%, transparent); animation-delay: -.8s; }
 .hs-price { position: absolute; left: 50%; top: 66%; translate: -50% -50%; font-size: .9em; }
-/* cards: slide in once, then drift on their own paths */
-.hs-card {
-  position: absolute; width: 17em; border-radius: .9em; z-index: 2;
-  animation: hs-in .9s var(--ease) both, hs-drift var(--t, 7s) ease-in-out infinite;
-}
+.hs-card { position: absolute; width: 17em; border-radius: .9em; animation: hs-float 6s ease-in-out infinite alternate; }
 .hs-card .mg-row { padding: .6em .7em; }
-.hs-a { left: 3%; top: 6%; --dx: .9em; --dy: .7em; --rz: -1.2deg; --t: 7s; animation-delay: .1s, 0s; }
-.hs-b { right: 2%; top: 19%; --dx: -.8em; --dy: .9em; --rz: 1.4deg; --t: 8s; animation-delay: .25s, -3s; }
-.hs-c { left: 2%; bottom: 14%; --dx: 1em; --dy: -.8em; --rz: 1deg; --t: 7.5s; animation-delay: .4s, -5s; }
-.hs-d { right: 3%; bottom: 4%; --dx: -.9em; --dy: -.7em; --rz: -1.3deg; --t: 6.5s; animation-delay: .55s, -2s; }
-.hs-a .pq-prog, .hs-a .pq-a, .hs-a .pq-b { animation-duration: 4.5s; }
-.hs-d .mg-ic svg { animation: hs-pen 2.4s ease-in-out infinite; }
-.hs-swatches i { animation: hs-swatch 2.4s var(--ease) infinite; }
-.hs-swatches i:nth-child(2) { animation-delay: .15s; } .hs-swatches i:nth-child(3) { animation-delay: .3s; }
-
-/* booking notification that pops in under the booking card */
-.hs-toast {
-  position: absolute; right: 6%; top: calc(19% + 4.6em); z-index: 3; font-size: .78em;
-  animation: hs-toast 5s var(--ease) infinite; animation-delay: 1.5s;
-}
-
-/* radar ripples from the scanner and coloured dots orbiting it */
-.hs-ripple {
-  position: absolute; left: 50%; top: 47%; width: 6em; height: 6em; translate: -50% -50%;
-  border-radius: 50%; border: 1.5px solid color-mix(in srgb, #ff4545 45%, transparent);
-  animation: hs-ripple 3.6s cubic-bezier(.2, .6, .3, 1) infinite;
-}
-.hs-ripple--2 { animation-delay: 1.8s; }
-.hs-orbit {
-  position: absolute; left: 50%; top: 47%; width: var(--d); height: var(--d); translate: -50% -50%;
-  animation: mg-spin var(--t) linear infinite;
-}
-.hs-orbit--rev { animation-direction: reverse; }
-.hs-orbit i { position: absolute; inset: 0; }
-.hs-orbit i::before {
-  content: ""; position: absolute; left: 50%; top: 0; width: .6em; height: .6em; translate: -50% -50%;
-  border-radius: 50%; background: var(--c); box-shadow: 0 0 0 .3em color-mix(in srgb, var(--c) 18%, transparent);
-}
-
-@keyframes hs-in { from { opacity: 0; transform: translateY(1.2em) scale(.96); } to { opacity: 1; transform: none; } }
-@keyframes hs-drift {
-  0%, 100% { translate: 0 0; rotate: 0deg; }
-  50% { translate: var(--dx) var(--dy); rotate: var(--rz); }
-}
-@keyframes hs-ripple { 0% { scale: .7; opacity: .9; } 100% { scale: 3.6; opacity: 0; } }
-@keyframes hs-toast {
-  0%, 8% { opacity: 0; transform: translateY(-.8em) scale(.9); }
-  16%, 62% { opacity: 1; transform: none; }
-  72%, 100% { opacity: 0; transform: translateY(.4em) scale(.96); }
-}
-@keyframes hs-pen { 0%, 100% { rotate: 0deg; } 30% { rotate: -14deg; } 60% { rotate: 8deg; } }
-@keyframes hs-swatch { 0%, 60%, 100% { translate: 0 0; } 20% { translate: 0 -.35em; } }
+.hs-a { left: 5%; top: 7%; }
+.hs-b { right: 4%; top: 19%; animation-delay: -2s; animation-duration: 7s; }
+.hs-c { left: 4%; bottom: 13%; animation-delay: -4s; }
+.hs-d { right: 5%; bottom: 4%; animation-delay: -1s; animation-duration: 6.5s; }
 .hs-c .mg-track { flex-basis: 34%; }
 .hs-swatches { display: flex; }
 .hs-swatches i { width: .95em; height: .95em; border-radius: 50%; background: var(--c); border: 2px solid #fff; margin-left: -.3em; }
+@keyframes hs-float { from { translate: 0 -.35em; } to { translate: 0 .35em; } }
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; }
   .hero-scene { width: 100%; max-width: 620px; }
@@ -336,7 +291,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .hero-scene .mg-stage { font-size: clamp(9px, 3.1cqw, 16px); }
   .hs-card { width: 16.5em; }
   .hs-a { top: 4%; } .hs-b { top: 17%; } .hs-c { bottom: 14%; } .hs-d { bottom: 3%; }
-  .hs-toast { top: calc(17% + 4.4em); }
 }
 
 

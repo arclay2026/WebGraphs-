@@ -475,6 +475,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .sw-steps i { width: 1.3em; height: 1.3em; border-radius: 50%; display: grid; place-items: center; background: var(--a); color: #fff; animation: mg-pop 4s var(--ease) infinite; animation-delay: calc(var(--i) * .5s); }
 .sw-steps i svg { width: .8em; height: .8em; stroke-width: 3.2; }
 
+/* Larger scenes in the services page rows (3:2 instead of 16:10) */
+.mg.mg--lg { background: #f7f9fa; border: 1px solid var(--line); }
+.mg--lg .mg-stage { font-size: clamp(10px, 3cqw, 19px); }
+.mg--lg .mg-stage--top { padding: 2em 2.4em; align-content: center; }
+.mg--lg .mg-list--cards { -webkit-mask-image: none; mask-image: none; }
+
 @keyframes fp-travel {
   0% { left: 12%; opacity: 0; } 15% { opacity: 1; }
   50% { left: 42%; opacity: 1; } 60%, 100% { left: 46%; opacity: 0; }

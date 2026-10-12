@@ -59,14 +59,19 @@ body {
   /* room for the fixed header (bar + 3px red line) */
   padding-top: calc(var(--header-h) + 3px);
 }
-/* Soft brand glow: a faint #ff4545 wash fading into white, fixed to the
-   screen corners so it shows behind every white section as you scroll. */
+/* Brand glow: #ff4545 rises from the top-right corner of the screen and
+   fades to white well before the middle, so white stays dominant. Fixed to
+   the viewport so it sits behind every white section as you scroll; the
+   header paints the same glow so it continues under the nav bar. */
+:root {
+  --glow:
+    radial-gradient(ellipse 60vw 70vh at 100% 0%,
+      rgba(255, 69, 69, .55) 0%, rgba(255, 69, 69, .28) 28%,
+      rgba(255, 69, 69, .1) 55%, rgba(255, 69, 69, 0) 80%);
+}
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background:
-    radial-gradient(42rem 30rem at 100% 0%, rgba(255, 69, 69, .13), rgba(255, 69, 69, 0) 70%),
-    radial-gradient(36rem 26rem at 0% 100%, rgba(255, 69, 69, .08), rgba(255, 69, 69, 0) 70%),
-    linear-gradient(180deg, #ffffff 0%, #fff8f8 100%);
+  background: var(--glow), #ffffff;
 }
 img, svg, video, canvas, iframe { display: block; max-width: 100%; }
 img { height: auto; }
@@ -124,7 +129,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
    gets a short red underline, hover gets a mist pill. */
 .site-header {
   position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 50;
-  background: rgba(255, 255, 255, .97);
+  background: var(--glow), rgba(255, 255, 255, .97);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
   backdrop-filter: saturate(180%) blur(14px);
   border-top: 3px solid var(--accent);

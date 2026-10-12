@@ -59,9 +59,113 @@
   /* ---------- Logo intro ----------
      The <head> script adds .logo-intro on the first page of a visit. Remove
      it once the intro has played so hovering the logo doesn't replay it. */
-  function initLogoIntro() {
+  /* ---------- Opening splash ----------
+     Once per visit: the red W is traced in light and fills, rings ripple
+     out, the wordmark wipes in, then the navy curtain lifts and the logo
+     flies into its place in the header. Click, tap or any key speeds it up. */
+  function initSplash() {
     const root = document.documentElement;
-    if (root.classList.contains('logo-intro')) setTimeout(() => root.classList.remove('logo-intro'), 1400);
+    if (!root.classList.contains('wg-splash')) return;
+    const headLogo = document.querySelector('.site-header .logo');
+    const mark = headLogo && headLogo.querySelector('.logo-mark');
+    const word = headLogo && headLogo.querySelector('.logo-word');
+    if (!mark || !word || !Element.prototype.animate) { root.classList.remove('wg-splash'); return; }
+
+    const vb = headLogo.getAttribute('viewBox');
+    const el = document.createElement('div');
+    el.className = 'splash';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = `
+      <div class="splash-bg"></div>
+      <div class="splash-edge"></div>
+      <div class="splash-stage">
+        <div class="splash-beam"></div>
+        <div class="splash-lockup">
+          <div class="splash-glow"></div>
+          <div class="splash-ring"></div><div class="splash-ring"></div><div class="splash-ring"></div>
+          <svg viewBox="${vb}"><path class="splash-mark" d="${mark.getAttribute('d')}"/><path class="splash-mark-line" d="${mark.getAttribute('d')}"/></svg>
+          <div class="splash-word-wrap"><svg viewBox="${vb}"><path class="splash-word" d="${word.getAttribute('d')}"/></svg></div>
+          <p class="splash-tag">Technologies</p>
+        </div>
+      </div>
+      <button type="button" class="splash-skip" tabindex="-1">Skip intro</button>`;
+    document.body.appendChild(el);
+    root.classList.add('splash-on');
+    root.classList.remove('wg-splash');
+
+    const $s = (q) => el.querySelector(q);
+    const lockup = $s('.splash-lockup');
+    const line = $s('.splash-mark-line');
+    const len = line.getTotalLength();
+    const out = 'cubic-bezier(.16, 1, .3, 1)';
+    const inOut = 'cubic-bezier(.76, 0, .24, 1)';
+    const anims = [];
+    const play = (node, frames, opts) => { const a = node.animate(frames, { fill: 'both', ...opts }); anims.push(a); return a; };
+
+    // 1. trace the W in light, then fill it
+    line.style.strokeDasharray = `${len}`;
+    play(line, [{ strokeDashoffset: len, opacity: 1 }, { strokeDashoffset: 0, opacity: 1 }], { duration: 950, easing: 'cubic-bezier(.65, 0, .35, 1)' });
+    play(line, [{ opacity: 1 }, { opacity: 0 }], { duration: 400, delay: 950 });
+    play($s('.splash-mark'), [
+      { opacity: 0, transform: 'scale(.94)' },
+      { opacity: 1, transform: 'scale(1.03)', offset: 0.6 },
+      { opacity: 1, transform: 'none' },
+    ], { duration: 650, delay: 700, easing: out });
+    $s('.splash-mark').style.transformBox = 'fill-box';
+    $s('.splash-mark').style.transformOrigin = '50% 50%';
+    // 2. glow and ripples
+    play($s('.splash-glow'), [{ opacity: 0, scale: 0.5 }, { opacity: 0.9, scale: 1.1, offset: 0.35 }, { opacity: 0.35, scale: 1.35 }], { duration: 1300, delay: 800, easing: out });
+    el.querySelectorAll('.splash-ring').forEach((r, i) => {
+      play(r, [{ opacity: 0, scale: 0.4 }, { opacity: 0.8, scale: 0.55, offset: 0.06 }, { opacity: 0, scale: 3.4 }], { duration: 1400, delay: 900 + i * 160, easing: 'cubic-bezier(.2, .6, .3, 1)' });
+    });
+    play($s('.splash-beam'), [
+      { opacity: 0, transform: 'scaleX(0)' },
+      { opacity: 1, transform: 'scaleX(1)', offset: 0.45 },
+      { opacity: 0, transform: 'scaleX(1.1)' },
+    ], { duration: 900, delay: 720, easing: out });
+    // 3. the wordmark wipes in from behind the W
+    play($s('.splash-word-wrap'), [{ clipPath: 'inset(-20% 71% -20% 29%)' }, { clipPath: 'inset(-20% -2% -20% 29%)' }], { duration: 700, delay: 1050, easing: out });
+    play($s('.splash-word-wrap svg'), [{ transform: 'translateX(-6%)', filter: 'blur(6px)' }, { transform: 'none', filter: 'blur(0)' }], { duration: 750, delay: 1050, easing: out });
+    play($s('.splash-tag'), [{ opacity: 0, letterSpacing: '1.1em', textIndent: '1.1em' }, { opacity: 1, letterSpacing: '.5em', textIndent: '.5em' }], { duration: 800, delay: 1300, easing: out });
+    play($s('.splash-skip'), [{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: 600 });
+
+    // 4. curtain lifts, logo flies to the header
+    const T = 1950;
+    const from = lockup.getBoundingClientRect();
+    const to = headLogo.getBoundingClientRect();
+    const k = to.width / from.width;
+    const fly = `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${k})`;
+    play(lockup, [{ transform: 'none' }, { transform: fly }], { duration: 850, delay: T, easing: inOut });
+    play($s('.splash-word'), [{ fill: '#ffffff' }, { fill: getComputedStyle(word).fill }], { duration: 850, delay: T, easing: inOut });
+    if (getComputedStyle(word).display === 'none') play($s('.splash-word-wrap'), [{ opacity: 1 }, { opacity: 0 }], { duration: 400, delay: T, composite: 'replace' });
+    play($s('.splash-tag'), [{ opacity: 1 }, { opacity: 0 }], { duration: 250, delay: T, fill: 'forwards' });
+    play($s('.splash-skip'), [{ opacity: 1 }, { opacity: 0 }], { duration: 200, delay: T, fill: 'forwards' });
+    play($s('.splash-glow'), [{ opacity: 0.35 }, { opacity: 0 }], { duration: 300, delay: T, fill: 'forwards' });
+    play($s('.splash-bg'), [{ clipPath: 'inset(0 0 0 0)' }, { clipPath: 'inset(0 0 100% 0)' }], { duration: 900, delay: T + 60, easing: inOut });
+    play($s('.splash-edge'), [
+      { transform: `translateY(${window.innerHeight}px)`, opacity: 0 },
+      { opacity: 1, offset: 0.04 },
+      { transform: 'translateY(0)', opacity: 1, offset: 0.92 },
+      { transform: 'translateY(0)', opacity: 0 },
+    ], { duration: 980, delay: T + 60, easing: inOut });
+    const main = document.querySelector('main');
+    if (main) play(main, [{ transform: 'translateY(60px) scale(.985)', opacity: 0.2 }, { transform: 'none', opacity: 1 }], { duration: 1100, delay: T + 120, easing: out, fill: 'backwards' });
+
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      root.classList.remove('splash-on');
+      el.remove();
+      anims.forEach((a) => { if (a.effect && a.effect.target === main) a.cancel(); });
+      removeEventListener('keydown', hurry, true);
+    };
+    const hurry = () => anims.forEach((a) => a.updatePlaybackRate(5));
+    Promise.all(anims.map((a) => a.finished)).then(finish, finish);
+    setTimeout(finish, 6000);
+    el.addEventListener('pointerdown', hurry);
+    el.addEventListener('wheel', hurry, { passive: true });
+    addEventListener('keydown', hurry, true);
   }
 
   /* ---------- Nav dropdown (Pricing) ----------
@@ -457,7 +561,7 @@
   /* ---------- Boot ---------- */
   function boot() {
     document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
-    initLogoIntro();
+    initSplash();
     initThemeToggle();
     initSelects();
     initNavMenus();

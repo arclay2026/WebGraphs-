@@ -47,6 +47,13 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
   price table in `courses.html`.
 - **Header and footer** — they are repeated in every page; change all ten files.
 
+## Opening intro
+
+The first page someone opens in a visit plays a short logo intro (skipped for
+visitors who prefer reduced motion; a click or key press speeds it up). It's
+`initSplash` in `js/site.js` and the "Opening splash" styles in `css/site.css`.
+Add `?intro` to any page address to replay it, e.g. `index.html?intro`.
+
 ## Running locally
 
 ```bash

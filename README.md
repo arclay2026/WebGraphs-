@@ -18,6 +18,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
 | `about.html` | Story, mission, values and location |
 | `faq.html` | Searchable FAQ grouped by topic |
 | `contact.html` | Contact details, map and a form that opens WhatsApp pre-filled |
+| `driver-checker.html` | Uber & Bolt driver checker — what to bring for fingerprint capture, proof-of-residence date check, visit day, WhatsApp checklist |
 | `qr-code.html` | QR code studio — 10 content types, dot/corner styles, colours and gradients, logos, frames, PNG/SVG/JPG/WebP export |
 
 ## Files
@@ -26,6 +27,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
   CSS variables at the top (`--accent` red, `--ink` navy, `--mist`, `--font`, …).
 - `js/site.js` — the one script for every page: mobile menu, live open/closed status,
   scroll reveals, pricing tabs and nav dropdown, theme toggle, bundle calculator, FAQ search, contact form.
+- `js/driver-checker.js` — the Uber & Bolt driver checker, used by `driver-checker.html` only (opening hours are repeated at the top).
 - `js/color-picker.js` — the custom colour picker used on the QR page (replaces the browser's colour popup).
 - `js/qr-studio.js` — the QR code studio (content builders, styling, SVG and canvas export), used by `qr-code.html` only.
 - `js/vendor/qrcode.js` — QR code engine (MIT, Kazuhiko Arase), used by the studio.
@@ -35,12 +37,13 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
 
 - **Phone / WhatsApp number** — search all files for `27787347867`.
 - **Opening hours** — update the text in the pages and the `HOURS` table near the top
-  of `js/site.js` (it powers the "Open now" badge, using Johannesburg time).
+  of `js/site.js` (it powers the "Open now" badge, using Johannesburg time) and in
+  `js/driver-checker.js` (the visit days).
 - **Package prices** — edit the cards in `pricing.html` (and the "From" prices in the
   pricing preview on `index.html`, the services page and the FAQ).
 - **Course bundles and prices** — update the `BUNDLES` list in `js/site.js` and the
   price table in `courses.html`.
-- **Header and footer** — they are repeated in every page; change all eight files.
+- **Header and footer** — they are repeated in every page; change all nine files.
 
 ## Running locally
 

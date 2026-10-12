@@ -84,6 +84,129 @@
     });
   }
 
+  /* ---------- Custom dropdowns ----------
+     Every <select> gets a styled button and option list. The native
+     select stays in the page (visually hidden) and keeps the value, so
+     forms and scripts read it as before; it receives change/input events.
+     Keyboard: arrows, Home/End, Enter/Space, Escape, type-ahead. */
+  const CHEVRON = '<svg class="sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+  const TICK = '<svg class="sel-tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+  let selCount = 0;
+
+  function initSelects() {
+    document.querySelectorAll('select:not([multiple])').forEach((sel) => {
+      const uid = sel.id || `sel-${++selCount}`;
+      const wrap = document.createElement('div');
+      wrap.className = 'sel';
+      sel.parentNode.insertBefore(wrap, sel);
+      wrap.appendChild(sel);
+      sel.classList.add('sel-native');
+      sel.tabIndex = -1;
+      sel.setAttribute('aria-hidden', 'true');
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sel-btn';
+      btn.id = `${uid}-btn`;
+      btn.setAttribute('aria-haspopup', 'listbox');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('aria-controls', `${uid}-list`);
+      btn.innerHTML = `<span class="sel-value"></span>${CHEVRON}`;
+      const label = sel.id ? document.querySelector(`label[for="${sel.id}"]`) : null;
+      if (label) {
+        label.htmlFor = btn.id;
+        if (!label.id) label.id = `${uid}-label`;
+        btn.setAttribute('aria-labelledby', `${label.id} ${btn.id}`);
+      }
+
+      const list = document.createElement('ul');
+      list.className = 'sel-list';
+      list.id = `${uid}-list`;
+      list.setAttribute('role', 'listbox');
+      list.tabIndex = -1;
+      list.hidden = true;
+      if (label) list.setAttribute('aria-labelledby', label.id);
+      const opts = Array.from(sel.options);
+      list.innerHTML = opts.map((o, i) => `<li role="option" id="${uid}-opt-${i}" data-i="${i}" aria-selected="false"><span>${o.textContent}</span>${TICK}</li>`).join('');
+      wrap.append(btn, list);
+      const items = Array.from(list.children);
+      let active = sel.selectedIndex;
+
+      const paint = () => {
+        btn.querySelector('.sel-value').textContent = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].textContent : '';
+        items.forEach((li, i) => li.setAttribute('aria-selected', String(i === sel.selectedIndex)));
+      };
+      const highlight = (i) => {
+        active = Math.max(0, Math.min(items.length - 1, i));
+        items.forEach((li, j) => li.classList.toggle('is-active', j === active));
+        btn.setAttribute('aria-activedescendant', items[active].id);
+        const li = items[active];
+        if (li.offsetTop < list.scrollTop) list.scrollTop = li.offsetTop - 6;
+        else if (li.offsetTop + li.offsetHeight > list.scrollTop + list.clientHeight) list.scrollTop = li.offsetTop + li.offsetHeight - list.clientHeight + 6;
+      };
+      const isOpen = () => !list.hidden;
+      const open = () => {
+        if (isOpen()) return;
+        document.querySelectorAll('.sel.is-open .sel-btn').forEach((b) => b !== btn && b.click());
+        list.hidden = false;
+        wrap.classList.add('is-open');
+        const r = btn.getBoundingClientRect();
+        wrap.classList.toggle('is-up', r.bottom + list.offsetHeight + 16 > window.innerHeight && r.top > list.offsetHeight + 16);
+        btn.setAttribute('aria-expanded', 'true');
+        highlight(sel.selectedIndex);
+      };
+      const close = () => {
+        if (!isOpen()) return;
+        list.hidden = true;
+        wrap.classList.remove('is-open', 'is-up');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.removeAttribute('aria-activedescendant');
+      };
+      const choose = (i) => {
+        const changed = sel.selectedIndex !== i;
+        sel.selectedIndex = i;
+        paint();
+        close();
+        btn.focus();
+        if (changed) {
+          sel.dispatchEvent(new Event('input', { bubbles: true }));
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      };
+
+      btn.addEventListener('click', () => (isOpen() ? close() : open()));
+      list.addEventListener('mousedown', (e) => e.preventDefault());
+      list.addEventListener('click', (e) => { const li = e.target.closest('li'); if (li) choose(Number(li.dataset.i)); });
+      list.addEventListener('mousemove', (e) => { const li = e.target.closest('li'); if (li && Number(li.dataset.i) !== active) highlight(Number(li.dataset.i)); });
+      let typed = ''; let typedAt = 0;
+      btn.addEventListener('keydown', (e) => {
+        const k = e.key;
+        if (!isOpen()) {
+          if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(k)) { e.preventDefault(); open(); }
+          return;
+        }
+        if (k === 'ArrowDown') { e.preventDefault(); highlight(active + 1); }
+        else if (k === 'ArrowUp') { e.preventDefault(); highlight(active - 1); }
+        else if (k === 'Home') { e.preventDefault(); highlight(0); }
+        else if (k === 'End') { e.preventDefault(); highlight(items.length - 1); }
+        else if (k === 'Enter' || k === ' ') { e.preventDefault(); choose(active); }
+        else if (k === 'Escape') { e.preventDefault(); close(); }
+        else if (k === 'Tab') close();
+        else if (k.length === 1) {
+          const t = Date.now();
+          typed = t - typedAt > 700 ? k.toLowerCase() : typed + k.toLowerCase();
+          typedAt = t;
+          const hit = opts.findIndex((o) => o.textContent.trim().toLowerCase().startsWith(typed));
+          if (hit > -1) highlight(hit);
+        }
+      });
+      document.addEventListener('pointerdown', (e) => { if (isOpen() && !wrap.contains(e.target)) close(); });
+      sel.addEventListener('change', paint);
+      if (sel.form) sel.form.addEventListener('reset', () => setTimeout(paint, 0));
+      paint();
+    });
+  }
+
   /* ---------- Open / closed status (Johannesburg time) ----------
      Mon–Fri 8:00–17:00, Sat 8:00–13:00, closed Sunday. */
   const HOURS = { 1: [8, 17], 2: [8, 17], 3: [8, 17], 4: [8, 17], 5: [8, 17], 6: [8, 13] };
@@ -336,6 +459,7 @@
     document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
     initLogoIntro();
     initThemeToggle();
+    initSelects();
     initNavMenus();
     initHeader();
     initStatus();

@@ -1381,6 +1381,22 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 @media (max-width: 480px) { .footer-top { grid-template-columns: 1fr; } }
 
 
+/* ---------- Footer wordmark ----------
+   The WebGraphs lettering from the logo, full width at the foot of every
+   page, slightly cut off by the bottom edge. It rises into place once. */
+.footer-mark { margin: clamp(32px, 5vw, 56px) 0 -28px; aspect-ratio: 6.45 / 1; overflow: hidden; }
+.footer-mark span {
+  display: block; width: 100%; aspect-ratio: 5.548 / 1;
+  background: rgba(255, 255, 255, .085);
+  -webkit-mask: url(../assets/wordmark.svg) center / 100% 100% no-repeat; mask: url(../assets/wordmark.svg) center / 100% 100% no-repeat;
+  transition: background-color .6s ease;
+}
+@media (hover: hover) { .footer-mark:hover span { background: rgba(255, 255, 255, .14); } }
+.js .footer-mark[data-reveal] { opacity: 1; transform: none; }
+.js .footer-mark[data-reveal] span { transform: translateY(75%); transition: transform 1.6s cubic-bezier(.16, 1, .3, 1), background-color .6s ease; }
+.js .footer-mark[data-reveal].is-visible span { transform: none; }
+@media (prefers-reduced-motion: reduce) { .js .footer-mark[data-reveal] span { transform: none; } }
+
 /* ---------- Theme switch (footer) + dark-only tweaks ---------- */
 .footer-end { display: inline-flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .theme-switch { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; border: 1px solid var(--dark-line); }

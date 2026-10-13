@@ -429,7 +429,17 @@
         }
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-    items.forEach((el) => io.observe(el));
+    // Items at the very foot of the page (data-reveal="edge") can never
+    // scroll past the -8% margin, so they get a plain observer.
+    const edge = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          edge.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.25 });
+    items.forEach((el) => (el.dataset.reveal === 'edge' ? edge : io).observe(el));
   }
 
   /* ---------- Services page: quick picker → WhatsApp ---------- */

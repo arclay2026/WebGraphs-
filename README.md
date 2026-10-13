@@ -62,3 +62,9 @@ python3 -m http.server 8000
 ```
 
 Then open <http://localhost:8000>.
+
+## Share previews (WhatsApp, Facebook, X)
+
+Every page has share tags in its `<head>` pointing at a card in `assets/og/` (1200×630 JPG, one per page). To change a card's wording, edit `tools/share-cards/card.html` and run `node tools/share-cards/render.js` (needs Node and Playwright).
+
+**Once the site has its domain:** WhatsApp and Facebook only show the picture when `og:image` is a full web address. In every page, change `content="assets/og/` to `content="https://YOUR-DOMAIN/assets/og/` — one find-and-replace across the `.html` files.

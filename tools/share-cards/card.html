@@ -1,0 +1,73 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --navy:#001523; --accent:#ff4545; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { width:1200px; height:630px; }
+body { font-family:'Google Sans',system-ui,sans-serif; background:var(--navy); color:#fff; overflow:hidden; }
+.card { position:relative; width:1200px; height:630px; display:flex; gap:48px; padding:56px 56px 56px 64px; }
+.copy { flex:1; display:flex; flex-direction:column; min-width:0; }
+.logo { height:46px; width:auto; align-self:flex-start; }
+.eyebrow { margin-top:auto; font-size:24px; color:#ff6b6b; font-weight:500; letter-spacing:.01em; }
+h1 { margin-top:14px; font-size:68px; line-height:1.04; font-weight:500; letter-spacing:-.025em; }
+h1 em { font-style:normal; color:var(--accent); }
+.sub { margin-top:22px; font-size:26px; line-height:1.35; color:rgba(255,255,255,.72); }
+.foot { margin-top:auto; display:flex; gap:12px; flex-wrap:wrap; }
+.chip { display:inline-flex; align-items:center; gap:10px; padding:11px 18px; border-radius:999px; background:rgba(255,255,255,.1); font-size:21px; font-weight:500; }
+.chip svg { width:22px; height:22px; }
+.chip--wa { background:#25d366; color:#04260f; }
+.media { display:flex; gap:16px; align-items:center; }
+.media img { height:518px; width:auto; border-radius:28px; display:block; }
+.media.two img { height:460px; }
+.media.two img:nth-child(2) { margin-top:58px; }
+.media.two img:first-child { margin-bottom:58px; }
+.apps { display:grid; grid-template-columns:repeat(2,150px); gap:22px; align-content:center; padding-right:24px; }
+.apps img { width:150px; height:150px; border-radius:34px; }
+.media.wide img { height:auto; width:480px; }
+.tiles { display:grid; gap:14px; align-content:center; width:430px; }
+.tile { background:rgba(255,255,255,.07); border-radius:22px; padding:20px 24px; display:grid; gap:4px; }
+.tile b { font-size:34px; font-weight:500; letter-spacing:-.01em; }
+.tile span { font-size:21px; color:rgba(255,255,255,.66); }
+.tile.q { grid-template-columns:44px 1fr; align-items:center; gap:16px; font-size:24px; line-height:1.25; }
+.tile.q i { width:44px; height:44px; border-radius:50%; background:var(--accent); display:grid; place-items:center; font-style:normal; font-weight:600; font-size:22px; }
+.tile.ic { grid-template-columns:52px 1fr; align-items:center; gap:18px; font-size:23px; line-height:1.3; }
+.tile.ic svg { width:52px; height:52px; padding:12px; border-radius:16px; background:rgba(255,69,69,.16); color:#ff6b6b; }
+.icon { width:340px; height:340px; border-radius:64px; background:#fff; display:grid; place-items:center; align-self:center; margin-right:30px; color:var(--accent); }
+.icon svg { width:170px; height:170px; }
+.icon.navy { color:var(--navy); }
+</style></head><body>
+<div class="card" id="card"></div>
+<script>
+const R = '../../assets/';
+const wa = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.2.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3Z"/></svg>';
+const pin = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+const foot = (extra='') => `<div class="foot"><span class="chip chip--wa">${wa}078 734 7867</span><span class="chip">${pin}Langlaagte North, JHB</span>${extra}</div>`;
+const ico = {
+  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>',
+  qr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/><rect x="5.5" y="5.5" width="2" height="2" fill="currentColor" stroke="none"/><rect x="16.5" y="5.5" width="2" height="2" fill="currentColor" stroke="none"/><rect x="5.5" y="16.5" width="2" height="2" fill="currentColor" stroke="none"/></svg>',
+  sig: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17c2.5-1 4-6 5.5-9.5S11 5 10.5 9 8 17 9.5 17s3-5 4.5-5-0.5 4 1 4 2.5-2 3.5-2"/><path d="M3 21h18"/></svg>',
+  pdf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>',
+};
+const page = (eyebrow, h1, sub, right) => `<div class="copy"><img class="logo" src="${R}logo-footer.svg" alt="">
+    <p class="eyebrow">${eyebrow}</p><h1>${h1}</h1><p class="sub">${sub}</p>${foot()}</div>${right}`;
+const photo = (f, cls = '') => `<div class="media ${cls}"><img src="${R}photos/${f}"></div>`;
+const C = {
+  index: page('Walk-in tech &amp; design studio', 'Tech &amp; design,<br><em>sorted in one stop.</em>', 'Uber &amp; Bolt fingerprints, websites, design,<br>Adobe courses and printing.', photo('fingerprint-capture-700.jpg')),
+  'driver-checker': page('Free checker for Uber &amp; Bolt drivers', 'Ready for your<br><em>fingerprint capture?</em>', 'See what to bring before you come in.<br>Walk-in · R350 per capture.', photo('fingerprint-uber-bolt-700.jpg')),
+  courses: page('Hands-on Adobe courses', 'Learn Photoshop,<br><em>Illustrator &amp; more.</em>', 'Photoshop, Illustrator, Lightroom and<br>Premiere Pro. From R2000.', `<div class="apps"><img src="${R}icons/ps.svg"><img src="${R}icons/ai.svg"><img src="${R}icons/lr.svg"><img src="${R}icons/pr.svg"></div>`),
+  services: page('Six services, one studio', 'Everything you need,<br><em>under one roof.</em>', 'Fingerprints, websites and apps, design,<br>courses, printing and software setup.', photo('man-laptop-700.jpg')),
+  about: page('About us', 'Tech, design<br><em>and training.</em>', 'A walk-in studio in Langlaagte North,<br>Johannesburg.', photo('coding-web-dev-1200.jpg', 'wide')),
+  pricing: page('Clear prices', 'Know the price<br><em>before you come in.</em>', 'No surprises. Ask us on WhatsApp<br>for anything not listed.',
+    `<div class="tiles"><div class="tile"><b>R350</b><span>Fingerprint capture</span></div><div class="tile"><b>From R1,500</b><span>Design packages</span></div><div class="tile"><b>From R2000</b><span>Adobe courses</span></div><div class="tile"><b>From R3,500</b><span>Websites</span></div></div>`),
+  contact: page('Contact us', 'Walk in or<br><em>WhatsApp us.</em>', 'No appointment needed. We reply fast<br>on WhatsApp.',
+    `<div class="tiles"><div class="tile ic">${ico.pin}<span>9 Jill Street, Langlaagte North, Johannesburg</span></div><div class="tile ic">${ico.clock}<span>Mon–Fri 8:00–17:00<br>Sat 8:00–13:00</span></div><div class="tile ic">${ico.mail}<span>webgraphstechnologies<br>@gmail.com</span></div></div>`),
+  faq: page('FAQ', 'Questions?<br><em>Answered.</em>', 'Fingerprints, websites, courses, prices,<br>hours and where to find us.',
+    `<div class="tiles"><div class="tile q"><i>?</i>How much does fingerprint capture cost?</div><div class="tile q"><i>?</i>What documents do I need to bring?</div><div class="tile q"><i>?</i>Do I need to book an appointment?</div></div>`),
+  'qr-code': page('Free tool', 'QR code<br><em>studio.</em>', 'Turn a link, WhatsApp number or text<br>into a QR code. Free, in your browser.', `<div class="icon navy">${ico.qr}</div>`),
+  'signature-maker': page('Free tool', 'Signature<br><em>maker.</em>', 'Draw or type your signature, then<br>download a clean, transparent image.', `<div class="icon navy">${ico.sig}</div>`),
+  'photos-to-pdf': page('Free tool', 'Photos<br><em>to PDF.</em>', 'Turn photos of your documents into<br>one neat PDF. Free, in your browser.', `<div class="icon navy">${ico.pdf}</div>`),
+};
+document.getElementById('card').innerHTML = C[new URLSearchParams(location.search).get('c') || 'index'];
+</script></body></html>

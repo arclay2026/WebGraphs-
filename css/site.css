@@ -1357,6 +1357,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 .footer-top { display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 40px; }
 .footer-brand { display: grid; gap: 18px; align-content: start; }
 .footer-brand img { width: 230px; height: auto; }
+.footer-brand .logo-on-light { display: none; }
 .footer-brand p { max-width: 34ch; }
 .footer-col { display: grid; gap: 10px; align-content: start; }
 .footer-col h2 { font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: #fff; margin-bottom: 6px; }
@@ -1390,15 +1391,66 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 .theme-switch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .theme-switch svg { width: 16px; height: 16px; }
 :root[data-wg-theme="dark"] .nav-toggle { background: var(--mist); color: var(--ink); }
-:root[data-wg-theme="dark"] .price-card.is-popular { background: var(--card); border-color: rgba(255, 69, 69, .55); box-shadow: 0 0 0 1px rgba(255, 69, 69, .25), 0 24px 60px -24px rgba(255, 69, 69, .35); }
 :root[data-wg-theme="dark"] .mg::before { opacity: .7; }
-:root[data-wg-theme="dark"] .section--dark, :root[data-wg-theme="dark"] .site-footer { background: #00121e; }
 :root[data-wg-theme="dark"] .section--mist { background: var(--surface); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-wg-theme="light"]) .nav-toggle { background: var(--mist); color: var(--ink); }
-  :root:not([data-wg-theme="light"]) .price-card.is-popular { background: var(--card); border-color: rgba(255, 69, 69, .55); box-shadow: 0 0 0 1px rgba(255, 69, 69, .25), 0 24px 60px -24px rgba(255, 69, 69, .35); }
   :root:not([data-wg-theme="light"]) .mg::before { opacity: .7; }
-  :root:not([data-wg-theme="light"]) .section--dark, :root:not([data-wg-theme="light"]) .site-footer { background: #00121e; }
+}
+
+/* ---------- Dark theme: the navy blocks turn light ----------
+   Footer, dark sections, CTA bands, the price strip and the "Most asked
+   for" price card are navy on the light site. On the dark site they would
+   melt into the page, so there they switch back to the light palette. */
+:root[data-wg-theme="dark"] :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) { --ink: #001523; --text: #0d2232; --mute: #4d5f6c; --line: #d5dee4; --line-strong: #b4c2cb; --line-soft: #e8eef1; --card: #ffffff; --surface: #f4f7f9; --mist: #e2e9ed; --mist-2: #d3dde3; --accent-ink: #d92f2f; --accent-tint: #ffe9e9; --ok-ink: #166534; --green-tint: #e8f5e9; --on-dark: #001523; --on-dark-mute: #4d5f6c; --dark-line: #cfd9e0; --accent-on-dark: #d92f2f; --navy-2: #ffffff; background: #edf2f5; color: var(--text); }
+:root[data-wg-theme="dark"] .price-card.is-popular { border-color: rgba(255, 69, 69, .5); box-shadow: 0 0 0 1px rgba(255, 69, 69, .2), 0 24px 50px -28px rgba(0, 0, 0, .7); }
+:root[data-wg-theme="dark"] :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) :is(h2, h3), :root[data-wg-theme="dark"] .fp-price b, :root[data-wg-theme="dark"] .fp-glass-head h3, :root[data-wg-theme="dark"] .fp-doc-txt b, :root[data-wg-theme="dark"] .fp-steps b, :root[data-wg-theme="dark"] .price-strip b, :root[data-wg-theme="dark"] .price-card.is-popular .price-amount b, :root[data-wg-theme="dark"] .footer-col h2, :root[data-wg-theme="dark"] .footer-col a:hover, :root[data-wg-theme="dark"] .quick-pick .field :is(input, select), :root[data-wg-theme="dark"] .quick-pick .sel-btn { color: var(--ink); }
+:root[data-wg-theme="dark"] .cta-band p { color: var(--mute); }
+:root[data-wg-theme="dark"] .price-card.is-popular .price-feats svg { color: #16a34a; }
+:root[data-wg-theme="dark"] .section--dark .eyebrow { background: #fff; color: var(--ink); }
+:root[data-wg-theme="dark"] .fp-section::before { opacity: .55; }
+:root[data-wg-theme="dark"] .fp-tags li { background: #fff; }
+:root[data-wg-theme="dark"] .fp-price span { color: var(--accent-ink); }
+:root[data-wg-theme="dark"] .fp-glass { background: #fff; border-color: var(--line); }
+:root[data-wg-theme="dark"] .fp-docs li { background: var(--surface); border-color: var(--line-soft); }
+:root[data-wg-theme="dark"] .fp-steps::before { background: var(--line); }
+:root[data-wg-theme="dark"] .fp-node { box-shadow: 0 0 0 5px #fff, 0 0 0 6px rgba(255, 69, 69, .4); }
+:root[data-wg-theme="dark"] .pl-row--dark .pl-uber { background: var(--ink); }
+:root[data-wg-theme="dark"] .quick-pick input::placeholder { color: #7d8f9c; }
+:root[data-wg-theme="dark"] :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) .btn--light, :root[data-wg-theme="dark"] :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) .btn--light:hover { background: var(--navy); border-color: var(--navy); color: #fff; box-shadow: none; }
+:root[data-wg-theme="dark"] :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) .btn--ghost-light { border-color: var(--line-strong); color: var(--ink); }
+:root[data-wg-theme="dark"] :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) .btn--ghost-light:hover { background: rgba(0, 21, 35, .06); border-color: var(--ink); color: var(--ink); }
+:root[data-wg-theme="dark"] .socials a:hover { background: var(--navy); border-color: var(--navy); color: #fff; }
+:root[data-wg-theme="dark"] .theme-switch button { color: var(--mute); }
+:root[data-wg-theme="dark"] .theme-switch button:hover { color: var(--ink); }
+:root[data-wg-theme="dark"] .theme-switch button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0, 21, 35, .12); }
+:root[data-wg-theme="dark"] .footer-brand .logo-on-navy { display: none; }
+:root[data-wg-theme="dark"] .footer-brand .logo-on-light { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-wg-theme="light"]) :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) { --ink: #001523; --text: #0d2232; --mute: #4d5f6c; --line: #d5dee4; --line-strong: #b4c2cb; --line-soft: #e8eef1; --card: #ffffff; --surface: #f4f7f9; --mist: #e2e9ed; --mist-2: #d3dde3; --accent-ink: #d92f2f; --accent-tint: #ffe9e9; --ok-ink: #166534; --green-tint: #e8f5e9; --on-dark: #001523; --on-dark-mute: #4d5f6c; --dark-line: #cfd9e0; --accent-on-dark: #d92f2f; --navy-2: #ffffff; background: #edf2f5; color: var(--text); }
+  :root:not([data-wg-theme="light"]) .price-card.is-popular { border-color: rgba(255, 69, 69, .5); box-shadow: 0 0 0 1px rgba(255, 69, 69, .2), 0 24px 50px -28px rgba(0, 0, 0, .7); }
+  :root:not([data-wg-theme="light"]) :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) :is(h2, h3), :root:not([data-wg-theme="light"]) .fp-price b, :root:not([data-wg-theme="light"]) .fp-glass-head h3, :root:not([data-wg-theme="light"]) .fp-doc-txt b, :root:not([data-wg-theme="light"]) .fp-steps b, :root:not([data-wg-theme="light"]) .price-strip b, :root:not([data-wg-theme="light"]) .price-card.is-popular .price-amount b, :root:not([data-wg-theme="light"]) .footer-col h2, :root:not([data-wg-theme="light"]) .footer-col a:hover, :root:not([data-wg-theme="light"]) .quick-pick .field :is(input, select), :root:not([data-wg-theme="light"]) .quick-pick .sel-btn { color: var(--ink); }
+  :root:not([data-wg-theme="light"]) .cta-band p { color: var(--mute); }
+  :root:not([data-wg-theme="light"]) .price-card.is-popular .price-feats svg { color: #16a34a; }
+  :root:not([data-wg-theme="light"]) .section--dark .eyebrow { background: #fff; color: var(--ink); }
+  :root:not([data-wg-theme="light"]) .fp-section::before { opacity: .55; }
+  :root:not([data-wg-theme="light"]) .fp-tags li { background: #fff; }
+  :root:not([data-wg-theme="light"]) .fp-price span { color: var(--accent-ink); }
+  :root:not([data-wg-theme="light"]) .fp-glass { background: #fff; border-color: var(--line); }
+  :root:not([data-wg-theme="light"]) .fp-docs li { background: var(--surface); border-color: var(--line-soft); }
+  :root:not([data-wg-theme="light"]) .fp-steps::before { background: var(--line); }
+  :root:not([data-wg-theme="light"]) .fp-node { box-shadow: 0 0 0 5px #fff, 0 0 0 6px rgba(255, 69, 69, .4); }
+  :root:not([data-wg-theme="light"]) .pl-row--dark .pl-uber { background: var(--ink); }
+  :root:not([data-wg-theme="light"]) .quick-pick input::placeholder { color: #7d8f9c; }
+  :root:not([data-wg-theme="light"]) :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) .btn--light, :root:not([data-wg-theme="light"]) :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) .btn--light:hover { background: var(--navy); border-color: var(--navy); color: #fff; box-shadow: none; }
+  :root:not([data-wg-theme="light"]) :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) .btn--ghost-light { border-color: var(--line-strong); color: var(--ink); }
+  :root:not([data-wg-theme="light"]) :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) .btn--ghost-light:hover { background: rgba(0, 21, 35, .06); border-color: var(--ink); color: var(--ink); }
+  :root:not([data-wg-theme="light"]) .socials a:hover { background: var(--navy); border-color: var(--navy); color: #fff; }
+  :root:not([data-wg-theme="light"]) .theme-switch button { color: var(--mute); }
+  :root:not([data-wg-theme="light"]) .theme-switch button:hover { color: var(--ink); }
+  :root:not([data-wg-theme="light"]) .theme-switch button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0, 21, 35, .12); }
+  :root:not([data-wg-theme="light"]) .footer-brand .logo-on-navy { display: none; }
+  :root:not([data-wg-theme="light"]) .footer-brand .logo-on-light { display: block; }
 }
 
 /* ---------- Home: photo band ----------

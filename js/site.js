@@ -36,21 +36,30 @@
   }
 
   /* ---------- Theme switch (footer) ----------
-     System follows the device; Light or Dark is remembered. The change
-     cross-fades where the browser supports view transitions. */
+     Light by default. Dark is remembered; System is remembered too and
+     follows the device. The change cross-fades where the browser supports
+     view transitions, and the browser bar colour follows the choice. */
   function initThemeSwitch() {
+    const root = document.documentElement;
+    const metas = Array.from(document.querySelectorAll('meta[name="theme-color"]'));
+    metas.forEach((m) => { m.dataset.auto = m.content; });
+    const syncBar = () => {
+      const forced = root.getAttribute('data-wg-theme');
+      metas.forEach((m) => { m.content = forced ? (forced === 'dark' ? '#000e17' : '#ffffff') : m.dataset.auto; });
+    };
+    syncBar();
     const btns = document.querySelectorAll('[data-theme-set]');
     if (!btns.length) return;
-    const root = document.documentElement;
     const saved = () => root.getAttribute('data-wg-theme') || 'system';
     const mark = () => btns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeSet === saved())));
     const apply = (mode) => {
       if (mode === 'system') root.removeAttribute('data-wg-theme');
       else root.setAttribute('data-wg-theme', mode);
       for (const store of [window.localStorage, window.sessionStorage]) {
-        try { if (mode === 'system') store.removeItem('wg-theme'); else store.setItem('wg-theme', mode); } catch (err) { /* storage blocked */ }
+        try { store.setItem('wg-theme', mode); } catch (err) { /* storage blocked */ }
       }
       mark();
+      syncBar();
     };
     btns.forEach((b) => b.addEventListener('click', () => {
       const mode = b.dataset.themeSet;

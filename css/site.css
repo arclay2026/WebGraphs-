@@ -1343,6 +1343,99 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
   :root:not([data-wg-theme="light"]) .section--dark, :root:not([data-wg-theme="light"]) .site-footer { background: #00121e; }
 }
 
+/* ---------- Home: free tools ----------
+   Four cards in the same style as the service cards, each with a small
+   looping scene. Resting state = finished frame (for reduced motion). */
+.tool-grid { grid-template-columns: repeat(4, 1fr); }
+.tools-note { max-width: 32ch; font-size: 15px; color: var(--mute); }
+.tool-card .svc-card-body { padding: 20px 22px 22px; }
+.tool-card .svc-card-media .mg-stage { font-size: clamp(8px, 4cqw, 15px); }
+.tool-card:hover .text-link svg { transform: translateX(3px); }
+@media (max-width: 1180px) { .tool-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 620px) { .tool-grid { grid-template-columns: 1fr; } }
+
+/* driver checker: ticks land one by one */
+.tool-card .mg-head { font-weight: 500; color: var(--ink2); }
+.tool-card .mg-stage--top { padding: 1.2em 1.4em 0; gap: .65em; }
+.tool-card .mg-list--cards { gap: .42em; -webkit-mask-image: none; mask-image: none; }
+.tool-card .mg-row { padding: .45em .65em; }
+.dk-count { color: var(--a); font-weight: 600; }
+.dk-tick {
+  flex-shrink: 0; width: 1.5em; height: 1.5em; border-radius: 50%; display: grid; place-items: center;
+  background: var(--a); color: #fff; animation: dk-tick 4.8s var(--ease) infinite; animation-delay: calc(var(--i) * .5s);
+}
+.dk-tick svg { width: .85em; height: .85em; }
+@keyframes dk-tick {
+  0%, 12% { scale: 0; opacity: 0; } 20% { scale: 1.2; opacity: 1; }
+  26%, 86% { scale: 1; opacity: 1; } 96%, 100% { scale: 1; opacity: 0; }
+}
+
+/* QR studio: a real QR (it opens our WhatsApp) with a scan line */
+.qr-tile { width: 6.6em; height: 6.6em; top: 42%; overflow: hidden; color: var(--ink); }
+.qr-tile > .qr-svg { width: 5em; height: 5em; }
+.qr-svg path { fill: currentColor; }
+.qr-scan {
+  position: absolute; left: 10%; right: 10%; height: 2px; border-radius: 2px; top: 50%;
+  background: var(--a); box-shadow: 0 0 .7em .2em var(--a-30); opacity: 0;
+  animation: fp-scan 3.4s ease-in-out infinite;
+}
+.qr-tile .qr-svg { animation: qr-tint 6.8s ease-in-out infinite; }
+@keyframes qr-tint { 0%, 40%, 100% { color: var(--ink); } 55%, 85% { color: var(--a); } }
+.qr-chip { position: absolute; left: 50%; top: 84%; translate: -50% -50%; }
+.qr-dot { width: .8em; height: .8em; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25); }
+.qr-dot:nth-of-type(3) { margin-right: .2em; }
+
+/* signature: ink writes itself on a sheet of paper */
+.sig-paper {
+  position: absolute; left: 50%; top: 42%; translate: -50% -50%; width: 17em; height: 7.4em;
+  border-radius: .9em; background: #fff; border: 1px solid #e3e9ed;
+  box-shadow: 0 1px 2px rgba(0, 21, 35, .05), 0 1em 2.2em -1em rgba(0, 21, 35, .25);
+}
+.sig-write, .sig-ink--swash { position: absolute; left: 7%; right: 7%; top: 10%; height: 72%; }
+.sig-write { clip-path: inset(-10% 0 -10% 0); animation: sig-wipe 5.2s cubic-bezier(.45, .05, .55, .95) infinite; }
+.mg .sig-ink { width: 100%; height: 100%; }
+.mg .sig-ink--swash { width: 86%; height: 72%; }
+.sig-write .sig-ink path { fill: var(--a); }
+.sig-ink--swash path { stroke: var(--a); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; animation: sig-swash 5.2s cubic-bezier(.3, 0, .2, 1) infinite; }
+.sig-line { position: absolute; left: 8%; right: 8%; top: 78%; border-top: 1px dashed #b4c2cb; }
+.sig-line span { position: absolute; left: 0; bottom: .15em; font-size: .9em; line-height: 1; color: #93a6b4; }
+.sig-chip { position: absolute; left: 50%; top: 84%; translate: -50% -50%; }
+@keyframes sig-wipe { 0%, 4% { clip-path: inset(-10% 100% -10% 0); opacity: 1; } 55%, 88% { clip-path: inset(-10% -2% -10% 0); opacity: 1; } 96%, 100% { clip-path: inset(-10% -2% -10% 0); opacity: 0; } }
+@keyframes sig-swash { 0%, 55% { stroke-dashoffset: 1; opacity: 1; } 68%, 88% { stroke-dashoffset: 0; opacity: 1; } 96%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+
+/* photos to PDF: photos slide into a PDF page */
+.p2-photos { position: absolute; left: 15%; top: 42%; translate: 0 -50%; width: 5em; height: 6.2em; }
+.p2-photo {
+  position: absolute; inset: 0; border-radius: .6em; display: grid; place-items: center;
+  background: linear-gradient(160deg, #cfe3ef, #9fc1d6); border: .2em solid #fff; color: #fff;
+  box-shadow: 0 .6em 1.2em -.8em rgba(0, 21, 35, .45);
+  rotate: calc(var(--i) * 7deg - 7deg);
+  animation: p2-fly 4.8s var(--ease) infinite; animation-delay: calc(var(--i) * .45s);
+}
+.p2-photo svg { width: 2em; height: 2em; }
+.p2-photo:nth-child(2) { background: linear-gradient(160deg, #f6dccb, #e6b394); }
+.p2-photo:nth-child(3) { background: linear-gradient(160deg, #d9d2f5, #a99be6); }
+.p2-arrow { position: absolute; left: 45%; top: 42%; translate: -50% -50%; display: flex; gap: .25em; }
+.p2-arrow i { width: .5em; height: .5em; border-top: 2px solid var(--a); border-right: 2px solid var(--a); rotate: 45deg; animation: p2-chev 1.6s ease-in-out infinite; animation-delay: calc(var(--d, 0) * 1s); }
+.p2-arrow i:nth-child(2) { --d: .2; } .p2-arrow i:nth-child(3) { --d: .4; }
+.p2-doc {
+  position: absolute; right: 13%; top: 42%; translate: 0 -50%; width: 5.4em; height: 7em; padding: 1.7em .7em .7em;
+  display: grid; align-content: start; gap: .45em; border-radius: .6em;
+  animation: p2-bump 4.8s var(--ease) infinite;
+}
+.p2-doc i { display: block; height: .3em; border-radius: 99em; background: var(--line); }
+.p2-doc i:nth-child(3) { width: 70%; } .p2-doc i:nth-child(5) { width: 55%; }
+.p2-badge { position: absolute; left: .6em; top: .55em; padding: .1em .45em; border-radius: .35em; background: var(--a); color: #fff; font-size: .62em; font-weight: 700; letter-spacing: .04em; }
+.p2-chip { position: absolute; left: 50%; top: 84%; translate: -50% -50%; }
+@keyframes p2-fly {
+  0%, 8% { translate: 0 0; opacity: 1; scale: 1; }
+  38% { translate: 7.4em 0; opacity: 0; scale: .7; }
+  39%, 70% { translate: 0 0; opacity: 0; scale: 1; }
+  80%, 100% { translate: 0 0; opacity: 1; scale: 1; }
+}
+@keyframes p2-bump { 0%, 30% { scale: 1; } 40% { scale: 1.06; } 50%, 100% { scale: 1; } }
+@keyframes p2-chev { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+
 /* ---------- Uber & Bolt logos ----------
    Drawn as masks so Uber follows the text colour (black on light, white on
    dark) and Bolt keeps its green. --pl-h is the height of the letters; Bolt's

@@ -505,7 +505,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .fp-dot {
   position: absolute; top: 50%; left: 14%; width: .55em; height: .55em; translate: -50% -50%;
   border-radius: 50%; background: var(--a); box-shadow: 0 0 0 .3em var(--a-15);
-  animation: fp-travel 3.2s cubic-bezier(.5, 0, .5, 1) infinite;
+  animation: fp-travel 3.2s linear infinite;
 }
 .fp-dot--2 { animation-delay: -1.6s; }
 .fp-tile { overflow: visible; }
@@ -589,9 +589,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .mg--lg .mg-stage--top { padding: 2em 2.4em; align-content: center; }
 .mg--lg .mg-list--cards { -webkit-mask-image: none; mask-image: none; }
 
+/* Each dot runs the full line, passing behind the scanner tile and out the
+   other side; the two dots are half a cycle apart so both are always on it. */
 @keyframes fp-travel {
-  0% { left: 12%; opacity: 0; } 15% { opacity: 1; }
-  50% { left: 42%; opacity: 1; } 60%, 100% { left: 46%; opacity: 0; }
+  0% { left: 4%; opacity: 0; } 10% { opacity: 1; }
+  90% { opacity: 1; } 100% { left: 96%; opacity: 0; }
 }
 @keyframes fp-scan {
   0% { top: 22%; opacity: 0; } 10% { opacity: 1; }

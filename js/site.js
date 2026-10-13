@@ -35,25 +35,31 @@
     window.matchMedia('(min-width: 1081px)').addEventListener('change', (mq) => { if (mq.matches) setOpen(false); });
   }
 
-  /* ---------- Light / dark theme toggle ----------
-     No saved choice = follow the device. Clicking flips to the opposite of
-     what is showing now and remembers it. */
-  function initThemeToggle() {
-    const btn = document.querySelector('.theme-toggle');
-    if (!btn) return;
+  /* ---------- Theme switch (footer) ----------
+     System follows the device; Light or Dark is remembered. The change
+     cross-fades where the browser supports view transitions. */
+  function initThemeSwitch() {
+    const btns = document.querySelectorAll('[data-theme-set]');
+    if (!btns.length) return;
     const root = document.documentElement;
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const current = () => root.getAttribute('data-wg-theme') || (mq.matches ? 'dark' : 'light');
-    const label = () => btn.setAttribute('aria-label', current() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
-    btn.addEventListener('click', () => {
-      const next = current() === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-wg-theme', next);
-      try { localStorage.setItem('wg-theme', next); } catch (err) { /* storage blocked */ }
-      try { sessionStorage.setItem('wg-theme', next); } catch (err) { /* storage blocked */ }
-      label();
-    });
-    mq.addEventListener('change', label);
-    label();
+    const saved = () => root.getAttribute('data-wg-theme') || 'system';
+    const mark = () => btns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeSet === saved())));
+    const apply = (mode) => {
+      if (mode === 'system') root.removeAttribute('data-wg-theme');
+      else root.setAttribute('data-wg-theme', mode);
+      for (const store of [window.localStorage, window.sessionStorage]) {
+        try { if (mode === 'system') store.removeItem('wg-theme'); else store.setItem('wg-theme', mode); } catch (err) { /* storage blocked */ }
+      }
+      mark();
+    };
+    btns.forEach((b) => b.addEventListener('click', () => {
+      const mode = b.dataset.themeSet;
+      if (mode === saved()) return;
+      const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (document.startViewTransition && !calm) document.startViewTransition(() => apply(mode));
+      else apply(mode);
+    }));
+    mark();
   }
 
   /* ---------- Opening splash ----------
@@ -768,7 +774,7 @@
   function boot() {
     document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
     initSplash();
-    initThemeToggle();
+    initThemeSwitch();
     initSelects();
     initNavMenus();
     initHeader();

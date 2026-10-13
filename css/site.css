@@ -1702,6 +1702,14 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
   .ph-hero-media { max-width: 400px; }
 }
 @media (prefers-reduced-motion: reduce) { .js .ph-hero-media[data-reveal] img { clip-path: none; transform: none; } }
+/* Landscape photos: courses page hero and the home courses intro */
+.page-hero--wide .container { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+.course-intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(28px, 5vw, 72px); align-items: center; margin-bottom: clamp(36px, 5vw, 56px); }
+.course-intro .section-head { margin-bottom: 0; justify-items: start; }
+@media (max-width: 860px) {
+  .page-hero--wide .container, .course-intro { grid-template-columns: 1fr; }
+  .ph-hero-media--wide { max-width: none; }
+}
 @media print {
   .dc { display: block; }
   .dc-steps, .dc-actions, .dc-reset, .dc-after, .page-hero .lede, .page-hero .status, .ph-hero-media { display: none !important; }

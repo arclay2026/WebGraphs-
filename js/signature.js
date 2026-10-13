@@ -267,6 +267,7 @@
   canvas.addEventListener('pointerdown', (e) => {
     if (state.mode !== 'draw' || (e.pointerType === 'mouse' && e.button !== 0)) return;
     e.preventDefault();
+    canvas.focus({ preventScroll: true }); // so keyboard shortcuts reach the pad
     canvas.setPointerCapture(e.pointerId);
     current = []; last = null;
     addPoint(toLocal(e));
@@ -290,8 +291,12 @@
 
   $('#sg-undo').addEventListener('click', () => { state.strokes.pop(); render(); });
   $('#sg-clear').addEventListener('click', () => { state.strokes = []; render(); });
+  // Ctrl/Cmd + Z undoes a stroke, except while typing in a text box
+  // (radio buttons and switches keep focus after a click, so they mustn't block it).
+  const isTyping = (el) => el && (el.isContentEditable || el.tagName === 'TEXTAREA'
+    || (el.tagName === 'INPUT' && !['radio', 'checkbox', 'button', 'range', 'color', 'submit', 'reset'].includes(el.type)));
   document.addEventListener('keydown', (e) => {
-    if (state.mode === 'draw' && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) {
+    if (state.mode === 'draw' && (e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'z' && !isTyping(document.activeElement)) {
       e.preventDefault(); state.strokes.pop(); render();
     }
   });

@@ -553,6 +553,110 @@
     update();
   }
 
+  /* ---------- Popups ----------
+     Two quiet, helpful popups, both in the green .wg-pop style:
+     • Fingerprint nudge: after someone scrolls past the fingerprint
+       section (home / services), a small card suggests the driver checker.
+       Once per visit.
+     • Package details: every pricing card gets a "How it works & details"
+       button that opens a dialog with what's included, the steps and an
+       Enquire on WhatsApp button. Esc, the ✕, the backdrop or "Back" close it. */
+  const CLOSE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+  function initFingerprintNudge() {
+    const target = document.querySelector('.fp-section, #fingerprint');
+    if (!target || !('IntersectionObserver' in window)) return;
+    const KEY = 'wg-nudge-fp';
+    try { if (sessionStorage.getItem(KEY)) return; } catch (err) { /* storage blocked */ }
+    const card = document.createElement('aside');
+    card.className = 'wg-pop wg-nudge';
+    card.setAttribute('role', 'dialog');
+    card.setAttribute('aria-label', 'Driver checker');
+    card.innerHTML = `
+      <button type="button" class="wg-x" aria-label="Close">${CLOSE_SVG}</button>
+      <div class="wg-nudge-top"><span class="wg-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11.5 11 13.5l4-4"/><rect x="4" y="3" width="16" height="18" rx="3"/></svg></span><b>Coming in for fingerprints?</b></div>
+      <p>Check you’ve got everything in 30 seconds — no wasted trip.</p>
+      <div class="wg-nudge-row"><a class="wg-btn" href="driver-checker.html">Check now</a><button type="button" class="wg-later">Maybe later</button></div>`;
+    const hide = () => { card.classList.remove('is-in'); setTimeout(() => card.remove(), 300); };
+    card.querySelector('.wg-x').addEventListener('click', hide);
+    card.querySelector('.wg-later').addEventListener('click', hide);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && card.isConnected) hide(); });
+    let seen = false; let shown = false;
+    const show = () => {
+      if (shown) return;
+      if (document.documentElement.classList.contains('splash-on')) { setTimeout(show, 400); return; }
+      shown = true;
+      try { sessionStorage.setItem(KEY, '1'); } catch (err) { /* storage blocked */ }
+      document.body.appendChild(card);
+      requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('is-in')));
+    };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) seen = true;
+        else if (seen && e.boundingClientRect.top < 0) { io.disconnect(); setTimeout(show, 400); }
+      });
+    });
+    io.observe(target);
+  }
+
+  function initPackageDetails() {
+    const cards = document.querySelectorAll('.price-panel .price-card');
+    if (!cards.length || !window.HTMLDialogElement) return;
+    const STEPS = {
+      design: ['Quick chat about what you need', 'We design and send you the first drafts', 'Changes until you’re happy', 'Your final files handed over'],
+      web: ['Chat about your business and the pages you need', 'We design your site and share a preview', 'Changes, then we launch it', 'Support after launch'],
+    };
+    const dlg = document.createElement('dialog');
+    dlg.className = 'wg-pop wg-modal';
+    dlg.setAttribute('aria-labelledby', 'pd-title');
+    dlg.innerHTML = `
+      <button type="button" class="wg-x" aria-label="Close">${CLOSE_SVG}</button>
+      <span class="wg-k" id="pd-kicker"></span>
+      <h2 id="pd-title"></h2>
+      <p class="wg-blurb" id="pd-blurb"></p>
+      <p class="wg-price"><b id="pd-price"></b><span id="pd-per"></span></p>
+      <div class="wg-cols">
+        <div><p class="wg-h">What’s included</p><ul class="wg-feats" id="pd-feats"></ul></div>
+        <div><p class="wg-h">How it works</p><ol class="wg-steps" id="pd-steps"></ol></div>
+      </div>
+      <div class="wg-actions"><a class="wg-btn wg-btn--lg" id="pd-cta" target="_blank" rel="noopener"><svg class="i-wa" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>Enquire on WhatsApp</a><button type="button" class="wg-later" id="pd-back">Back to packages</button></div>`;
+    document.body.appendChild(dlg);
+    const $d = (id) => dlg.querySelector(`#${id}`);
+    const TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+    let opener = null;
+    const close = () => { if (dlg.open) dlg.close(); };
+    dlg.addEventListener('close', () => { document.documentElement.classList.remove('wg-lock'); if (opener) opener.focus({ preventScroll: true }); });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });
+    $d('pd-back').addEventListener('click', close);
+    dlg.querySelector('.wg-x').addEventListener('click', close);
+
+    cards.forEach((card) => {
+      const panel = card.closest('.price-panel');
+      const kind = panel && panel.id === 'web' ? 'web' : 'design';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'text-link price-more';
+      btn.innerHTML = 'How it works &amp; details<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+      btn.setAttribute('aria-haspopup', 'dialog');
+      card.appendChild(btn);
+      btn.addEventListener('click', () => {
+        const q = (sel) => card.querySelector(sel);
+        $d('pd-kicker').textContent = `${kind === 'web' ? 'Web design & development' : 'Graphic design'} · package`;
+        $d('pd-title').textContent = q('h3').textContent;
+        $d('pd-blurb').textContent = q('.price-blurb') ? q('.price-blurb').textContent : '';
+        $d('pd-price').textContent = q('.price-amount b') ? q('.price-amount b').textContent : '';
+        $d('pd-per').textContent = q('.price-amount span') ? q('.price-amount span').textContent : '';
+        $d('pd-feats').innerHTML = Array.from(card.querySelectorAll('.price-feats li')).map((li) => `<li>${TICK}<span>${li.textContent.trim()}</span></li>`).join('');
+        $d('pd-steps').innerHTML = STEPS[kind].map((t, i) => `<li><span>${i + 1}</span>${t}</li>`).join('');
+        const go = q('.btn');
+        $d('pd-cta').href = go ? go.href : 'https://wa.me/27787347867';
+        opener = btn;
+        document.documentElement.classList.add('wg-lock');
+        dlg.showModal();
+        $d('pd-cta').focus({ preventScroll: true });
+      });
+    });
+  }
+
   /* ---------- Pricing: category tabs ----------
      Shows one category at a time; #design / #web in the link opens that tab. */
   function initPricingTabs() {
@@ -674,6 +778,8 @@
     initQuickPick();
     initBundle();
     initPricingTabs();
+    initPackageDetails();
+    initFingerprintNudge();
     initFaqFilter();
     initContactForm();
   }

@@ -1824,6 +1824,82 @@ html.splash-on .site-header .logo { opacity: 0; }
 }
 .splash-skip:hover { background: rgba(255, 255, 255, .12); color: #fff; }
 
+/* ---------- Popups (green) ----------
+   Shared look for the fingerprint nudge and the package details dialog. */
+.wg-pop {
+  --pop: #15803d; --pop-deep: #14532d;
+  background: var(--pop); color: #fff; border: 0;
+  box-shadow: 0 1px 2px rgba(0, 21, 35, .12), 0 28px 60px -22px rgba(0, 21, 35, .55);
+}
+.wg-pop p, .wg-pop li { color: rgba(255, 255, 255, .9); }
+.wg-x {
+  position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: 0;
+  display: grid; place-items: center; background: rgba(255, 255, 255, .16); color: #fff; cursor: pointer; transition: background-color .15s;
+}
+.wg-x:hover { background: rgba(255, 255, 255, .28); }
+.wg-x svg { width: 15px; height: 15px; }
+.wg-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 18px; border-radius: 999px;
+  background: #fff; color: var(--pop-deep); font-size: 15px; font-weight: 500; text-decoration: none; transition: transform .15s var(--ease), box-shadow .15s;
+}
+.wg-btn:hover { color: var(--pop-deep); transform: translateY(-1px); box-shadow: 0 8px 18px -10px rgba(0, 0, 0, .45); }
+.wg-btn svg { width: 18px; height: 18px; }
+.wg-later { border: 0; background: none; padding: 6px 4px; color: rgba(255, 255, 255, .88); font: 500 14px/1.4 var(--font); cursor: pointer; }
+.wg-later:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.wg-pop :focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+/* fingerprint nudge: slides up in the corner */
+.wg-nudge {
+  position: fixed; right: 20px; bottom: 20px; z-index: 90; width: min(330px, calc(100vw - 32px));
+  display: grid; gap: 10px; padding: 18px; border-radius: 20px;
+  opacity: 0; transform: translateY(24px); transition: opacity .3s var(--ease), transform .45s cubic-bezier(.16, 1, .3, 1);
+}
+.wg-nudge.is-in { opacity: 1; transform: none; }
+.wg-nudge-top { display: flex; align-items: center; gap: 12px; padding-right: 30px; }
+.wg-nudge-top b { font-size: 16px; font-weight: 500; line-height: 1.3; color: #fff; }
+.wg-ic { flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: rgba(255, 255, 255, .16); }
+.wg-ic svg { width: 21px; height: 21px; }
+.wg-nudge p { font-size: 14px; line-height: 1.5; }
+.wg-nudge-row { display: flex; align-items: center; gap: 12px; padding-top: 2px; }
+@media (max-width: 520px) { .wg-nudge { left: 16px; right: 16px; bottom: 16px; width: auto; } }
+
+/* package details dialog: centred card, bottom sheet on phones */
+.wg-modal {
+  width: min(600px, calc(100vw - 32px)); max-height: min(88vh, 760px); margin: auto; padding: clamp(22px, 3vw, 32px);
+  border-radius: 24px; overflow: auto; overscroll-behavior: contain;
+}
+.wg-modal[open] { display: grid; gap: 14px; animation: wg-pop-in .38s cubic-bezier(.16, 1, .3, 1); }
+.wg-modal::backdrop { background: rgba(0, 21, 35, .55); backdrop-filter: blur(3px); animation: wg-fade .3s ease; }
+@keyframes wg-pop-in { from { opacity: 0; transform: translateY(18px) scale(.98); } }
+@keyframes wg-fade { from { opacity: 0; } }
+.wg-k { font-size: 12.5px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: rgba(255, 255, 255, .8); padding-right: 40px; }
+.wg-modal h2 { font-size: clamp(24px, 3vw, 30px); color: #fff; }
+.wg-blurb { font-size: 15.5px; }
+.wg-price { display: flex; align-items: baseline; gap: 8px; }
+.wg-price b { font-size: clamp(34px, 4.4vw, 44px); font-weight: 500; letter-spacing: -0.035em; line-height: 1; color: #fff; }
+.wg-price span { font-size: 14px; color: rgba(255, 255, 255, .8); }
+.wg-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 4px; }
+.wg-cols > div { padding: 16px; border-radius: 16px; background: rgba(255, 255, 255, .1); }
+.wg-h { font-size: 13px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: #fff !important; margin-bottom: 12px; }
+.wg-feats, .wg-steps { list-style: none; display: grid; gap: 10px; padding: 0; }
+.wg-feats li { display: grid; grid-template-columns: 16px 1fr; gap: 9px; font-size: 14px; line-height: 1.45; }
+.wg-feats svg { width: 15px; height: 15px; margin-top: 2px; color: #fff; }
+.wg-steps li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.45; }
+.wg-steps li span { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: var(--pop-deep); font-size: 11.5px; font-weight: 600; }
+.wg-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
+.wg-btn--lg { padding: 12px 22px; font-size: 16px; }
+html.wg-lock { overflow: hidden; }
+.price-card .price-more { border: 0; background: none; padding: 0; font: inherit; font-size: 14.5px; cursor: pointer; align-self: flex-start; }
+.price-card.is-popular .price-more { color: var(--accent-on-dark); }
+@media (max-width: 620px) {
+  .wg-modal { width: 100%; max-width: 100%; max-height: 90vh; margin: auto 0 0; border-radius: 24px 24px 0 0; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+  .wg-modal[open] { animation-name: wg-sheet-in; }
+  .wg-cols { grid-template-columns: 1fr; }
+  .wg-actions { flex-direction: column; align-items: stretch; gap: 8px; }
+  .wg-actions .wg-later { align-self: center; }
+}
+@keyframes wg-sheet-in { from { transform: translateY(100%); } }
+
 /* ---------- Page transitions ----------
    Moving between pages cross-fades the content (old page drifts up and
    out, new page rises in) while the header stays perfectly still.

@@ -1824,29 +1824,30 @@ html.splash-on .site-header .logo { opacity: 0; }
 }
 .splash-skip:hover { background: rgba(255, 255, 255, .12); color: #fff; }
 
-/* ---------- Popups (green) ----------
-   Shared look for the fingerprint nudge and the package details dialog. */
+/* ---------- Popups (mist grey) ----------
+   Shared look for the fingerprint nudge and the package details dialog:
+   mist grey card, navy text and buttons. Follows the theme (in dark mode
+   the mist becomes a dark blue-grey and the buttons turn light). */
 .wg-pop {
-  --pop: #15803d; --pop-deep: #14532d;
-  background: var(--pop); color: #fff; border: 0;
-  box-shadow: 0 1px 2px rgba(0, 21, 35, .12), 0 28px 60px -22px rgba(0, 21, 35, .55);
+  background: var(--mist); color: var(--text); border: 1px solid var(--mist-2);
+  box-shadow: 0 1px 2px rgba(0, 21, 35, .08), 0 28px 60px -22px rgba(0, 21, 35, .45);
 }
-.wg-pop p, .wg-pop li { color: rgba(255, 255, 255, .9); }
+.wg-pop p, .wg-pop li { color: var(--text); }
 .wg-x {
   position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: 0;
-  display: grid; place-items: center; background: rgba(255, 255, 255, .16); color: #fff; cursor: pointer; transition: background-color .15s;
+  display: grid; place-items: center; background: var(--card); color: var(--mute); cursor: pointer; transition: color .15s, background-color .15s;
 }
-.wg-x:hover { background: rgba(255, 255, 255, .28); }
+.wg-x:hover { color: var(--ink); }
 .wg-x svg { width: 15px; height: 15px; }
 .wg-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 18px; border-radius: 999px;
-  background: #fff; color: var(--pop-deep); font-size: 15px; font-weight: 500; text-decoration: none; transition: transform .15s var(--ease), box-shadow .15s;
+  background: var(--ink); color: var(--paper); font-size: 15px; font-weight: 500; text-decoration: none; transition: transform .15s var(--ease), box-shadow .15s;
 }
-.wg-btn:hover { color: var(--pop-deep); transform: translateY(-1px); box-shadow: 0 8px 18px -10px rgba(0, 0, 0, .45); }
+.wg-btn:hover { color: var(--paper); transform: translateY(-1px); box-shadow: 0 8px 18px -10px rgba(0, 21, 35, .55); }
 .wg-btn svg { width: 18px; height: 18px; }
-.wg-later { border: 0; background: none; padding: 6px 4px; color: rgba(255, 255, 255, .88); font: 500 14px/1.4 var(--font); cursor: pointer; }
-.wg-later:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
-.wg-pop :focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.wg-later { border: 0; background: none; padding: 6px 4px; color: var(--mute); font: 500 14px/1.4 var(--font); cursor: pointer; }
+.wg-later:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.wg-pop :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
 /* fingerprint nudge: slides up in the corner */
 .wg-nudge {
@@ -1856,8 +1857,8 @@ html.splash-on .site-header .logo { opacity: 0; }
 }
 .wg-nudge.is-in { opacity: 1; transform: none; }
 .wg-nudge-top { display: flex; align-items: center; gap: 12px; padding-right: 30px; }
-.wg-nudge-top b { font-size: 16px; font-weight: 500; line-height: 1.3; color: #fff; }
-.wg-ic { flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: rgba(255, 255, 255, .16); }
+.wg-nudge-top b { font-size: 16px; font-weight: 500; line-height: 1.3; color: var(--ink); }
+.wg-ic { flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--card); color: var(--accent); }
 .wg-ic svg { width: 21px; height: 21px; }
 .wg-nudge p { font-size: 14px; line-height: 1.5; }
 .wg-nudge-row { display: flex; align-items: center; gap: 12px; padding-top: 2px; }
@@ -1872,20 +1873,20 @@ html.splash-on .site-header .logo { opacity: 0; }
 .wg-modal::backdrop { background: rgba(0, 21, 35, .55); backdrop-filter: blur(3px); animation: wg-fade .3s ease; }
 @keyframes wg-pop-in { from { opacity: 0; transform: translateY(18px) scale(.98); } }
 @keyframes wg-fade { from { opacity: 0; } }
-.wg-k { font-size: 12.5px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: rgba(255, 255, 255, .8); padding-right: 40px; }
-.wg-modal h2 { font-size: clamp(24px, 3vw, 30px); color: #fff; }
+.wg-k { font-size: 12.5px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--mute); padding-right: 40px; }
+.wg-modal h2 { font-size: clamp(24px, 3vw, 30px); color: var(--ink); }
 .wg-blurb { font-size: 15.5px; }
 .wg-price { display: flex; align-items: baseline; gap: 8px; }
-.wg-price b { font-size: clamp(34px, 4.4vw, 44px); font-weight: 500; letter-spacing: -0.035em; line-height: 1; color: #fff; }
-.wg-price span { font-size: 14px; color: rgba(255, 255, 255, .8); }
+.wg-price b { font-size: clamp(34px, 4.4vw, 44px); font-weight: 500; letter-spacing: -0.035em; line-height: 1; color: var(--ink); }
+.wg-price span { font-size: 14px; color: var(--mute); }
 .wg-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 4px; }
-.wg-cols > div { padding: 16px; border-radius: 16px; background: rgba(255, 255, 255, .1); }
-.wg-h { font-size: 13px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: #fff !important; margin-bottom: 12px; }
+.wg-cols > div { padding: 16px; border-radius: 16px; background: var(--card); }
+.wg-h { font-size: 13px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: var(--ink) !important; margin-bottom: 12px; }
 .wg-feats, .wg-steps { list-style: none; display: grid; gap: 10px; padding: 0; }
 .wg-feats li { display: grid; grid-template-columns: 16px 1fr; gap: 9px; font-size: 14px; line-height: 1.45; }
-.wg-feats svg { width: 15px; height: 15px; margin-top: 2px; color: #fff; }
+.wg-feats svg { width: 15px; height: 15px; margin-top: 2px; color: #16a34a; }
 .wg-steps li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.45; }
-.wg-steps li span { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: var(--pop-deep); font-size: 11.5px; font-weight: 600; }
+.wg-steps li span { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--paper); font-size: 11.5px; font-weight: 600; }
 .wg-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
 .wg-btn--lg { padding: 12px 22px; font-size: 16px; }
 html.wg-lock { overflow: hidden; }

@@ -554,7 +554,7 @@
   }
 
   /* ---------- Popups ----------
-     Two quiet, helpful popups, both in the green .wg-pop style:
+     Two quiet, helpful popups, both in the mist grey .wg-pop style:
      • Fingerprint nudge: after someone scrolls past the fingerprint
        section (home / services), a small card suggests the driver checker.
        Once per visit.

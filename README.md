@@ -35,7 +35,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
 - `js/color-picker.js` — the custom colour picker used on the QR and signature pages (replaces the browser's colour popup).
 - `js/qr-studio.js` — the QR code studio (content builders, styling, SVG and canvas export), used by `qr-code.html` only.
 - `js/vendor/qrcode.js` — QR code engine (MIT, Kazuhiko Arase), used by the studio.
-- `assets/` — logos (`logo.svg` for light backgrounds, `logo-white.svg` for navy; `logo-footer.svg` / `logo-full.svg` are the full "WebGraphs Technologies" lockup in white / navy, used in the footer and the opening intro), favicon, course icons and the driver checklist PDF. Your original logo files are in `assets/brand/`. Uber and Bolt logos are in `assets/partners/` (shown via CSS, so Uber turns white in dark mode). `wordmark.svg` is the "WebGraphs" lettering alone, used as the big footer wordmark. Home page photos are in `assets/photos/` (web-sized JPGs; your original uploads are kept in `assets/photos/source/`).
+- `assets/` — logos (`logo.svg` for light backgrounds, `logo-white.svg` for navy; `logo-footer.svg` / `logo-full.svg` are the full "WebGraphs Technologies" lockup in white / navy, used in the footer and the opening intro), favicon, course icons and the driver checklist PDF. Your original logo files are in `assets/brand/`. Uber and Bolt logos are in `assets/partners/` (shown via CSS, so Uber turns white in dark mode). Home page photos are in `assets/photos/` (web-sized JPGs; your original uploads are kept in `assets/photos/source/`).
 
 ## Common edits
 

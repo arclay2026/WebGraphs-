@@ -1756,10 +1756,32 @@ html.splash-on .site-header .logo { opacity: 0; }
 }
 .splash-skip:hover { background: rgba(255, 255, 255, .12); color: #fff; }
 
+/* ---------- Page transitions ----------
+   Moving between pages cross-fades the content (old page drifts up and
+   out, new page rises in) while the header stays perfectly still.
+   Uses the browser's cross-document View Transitions; browsers without
+   them just load the page as normal. */
+@view-transition { navigation: auto; }
+.site-header { view-transition-name: site-header; }
+::view-transition-old(site-header) { display: none; }
+::view-transition-new(site-header) { animation: none; }
+::view-transition-old(root) { animation: vt-out .2s cubic-bezier(.4, 0, 1, 1) both; }
+::view-transition-new(root) { animation: vt-in .5s cubic-bezier(.16, 1, .3, 1) both; }
+@keyframes vt-out { to { opacity: 0; transform: translateY(-14px); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(28px); } }
+
+/* ---------- Headline reveals ----------
+   site.js wraps each word of the big headings in a mask; the words rise
+   into place one after another when the heading scrolls into view. */
+.hl-w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .14em; margin-bottom: -.14em; }
+.hl-i { display: inline-block; transform: translateY(108%); transition: transform .9s cubic-bezier(.16, 1, .3, 1); transition-delay: calc(var(--hl) * 55ms); }
+.hl-in .hl-i { transform: none; }
+
 /* ---------- Motion ---------- */
 .js [data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
 .js [data-reveal].is-visible { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .js [data-reveal] { opacity: 1; transform: none; }

@@ -358,6 +358,50 @@
   }
 
   /* ---------- Scroll reveal ---------- */
+  /* ---------- Headline reveals ----------
+     Big headings rise into view word by word. Each word gets a mask
+     (.hl-w) and an inner span that slides up (.hl-i); markup inside the
+     heading (like the red <em> on the home page) is kept. Screen readers
+     get the heading's plain text. Skipped for reduced motion. */
+  function initHeadlines() {
+    const root = document.documentElement;
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const heads = document.querySelectorAll('.hero h1, .page-hero h1, .section-head h2, .fp-copy h2, .cta-band h2');
+    if (!heads.length) return;
+    heads.forEach((h) => {
+      h.setAttribute('aria-label', h.textContent.replace(/\s+/g, ' ').trim());
+      let n = 0;
+      const walk = (node) => {
+        Array.from(node.childNodes).forEach((child) => {
+          if (child.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            child.textContent.split(/(\s+)/).forEach((part) => {
+              if (!part) return;
+              if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+              const w = document.createElement('span'); w.className = 'hl-w'; w.setAttribute('aria-hidden', 'true');
+              const i = document.createElement('span'); i.className = 'hl-i'; i.style.setProperty('--hl', n++);
+              i.textContent = part; w.appendChild(i); frag.appendChild(w);
+            });
+            child.replaceWith(frag);
+          } else if (child.nodeType === 1 && child.tagName !== 'BR') {
+            child.setAttribute('aria-hidden', 'true');
+            walk(child);
+          }
+        });
+      };
+      walk(h);
+    });
+    const show = (h) => {
+      // wait for the opening intro to finish so the first headline isn't hidden behind it
+      if (root.classList.contains('splash-on') || root.classList.contains('wg-splash')) { setTimeout(() => show(h), 150); return; }
+      h.classList.add('hl-in');
+    };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+    }, { threshold: 0.3 });
+    heads.forEach((h) => io.observe(h));
+  }
+
   function initReveal() {
     const items = document.querySelectorAll('[data-reveal]');
     if (!items.length) return;
@@ -564,6 +608,7 @@
     initNavMenus();
     initHeader();
     initStatus();
+    initHeadlines();
     initReveal();
     initQuickPick();
     initBundle();

@@ -1423,7 +1423,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
   position: absolute; left: 14px; bottom: 14px; z-index: 1; display: inline-flex; align-items: center; gap: 8px;
   padding: 9px 14px; border-radius: 999px; color: #fff; font-size: 14.5px; font-weight: 500;
   /* Frosted glass: blurs the photo behind it; tinted dark so white text reads on light and dark photos */
-  background: rgba(0, 21, 35, .28); border: 1px solid rgba(255, 255, 255, .28);
+  background: rgba(0, 21, 35, .28);
   -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5);
   text-shadow: 0 1px 2px rgba(0, 0, 0, .25);
 }

@@ -45,8 +45,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
   `js/driver-checker.js` (the visit days).
 - **Package prices** — edit the cards in `pricing.html` (and the "From" prices in the
   pricing preview on `index.html`, the services page and the FAQ).
-- **Course bundles and prices** — update the `BUNDLES` list in `js/site.js` and the
-  price table in `courses.html`.
+- **Course bundles and prices** — update the `BUNDLES` list in `js/site.js`; the bundle builder and the bundle cards on `courses.html` are both drawn from it.
 - **Header and footer** — they are repeated in every page; change all eleven files.
 
 ## Opening intro

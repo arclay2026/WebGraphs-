@@ -56,9 +56,6 @@
     label();
   }
 
-  /* ---------- Logo intro ----------
-     The <head> script adds .logo-intro on the first page of a visit. Remove
-     it once the intro has played so hovering the logo doesn't replay it. */
   /* ---------- Opening splash ----------
      Once per visit, on a plain navy screen: the red W is traced and fills,
      "WebGraphs" wipes in, "TECHNOLOGIES" follows, then the curtain lifts
@@ -357,7 +354,6 @@
     setInterval(update, 60 * 1000);
   }
 
-  /* ---------- Scroll reveal ---------- */
   /* ---------- Headline reveals ----------
      Big headings rise into view word by word. Each word gets a mask
      (.hl-w) and an inner span that slides up (.hl-i); markup inside the
@@ -402,6 +398,7 @@
     heads.forEach((h) => io.observe(h));
   }
 
+  /* ---------- Scroll reveal ---------- */
   function initReveal() {
     const items = document.querySelectorAll('[data-reveal]');
     if (!items.length) return;
@@ -445,49 +442,113 @@
     const root = document.getElementById('bundle');
     if (!root) return;
 
+    // Bundle prices and lengths. "months" is the longest length, used for the timeline.
     const BUNDLES = [
-      { combo: ['Ai'], price: 2000, duration: '1 month' },
-      { combo: ['Ai', 'Lr'], price: 2500, duration: '1/2 months' },
-      { combo: ['Ps', 'Ai'], price: 4500, duration: '2 months' },
-      { combo: ['Ps', 'Ai', 'Lr'], price: 4500, duration: '3 months' },
-      { combo: ['Ai', 'Pr'], price: 5000, duration: '2 months' },
-      { combo: ['Ps', 'Ai', 'Lr', 'Pr'], price: 7500, duration: '4 months' },
+      { combo: ['Ai'], price: 2000, duration: '1 month', months: 1 },
+      { combo: ['Ai', 'Lr'], price: 2500, duration: '1–2 months', months: 2 },
+      { combo: ['Ps', 'Ai'], price: 4500, duration: '2 months', months: 2 },
+      { combo: ['Ps', 'Ai', 'Lr'], price: 4500, duration: '3 months', months: 3 },
+      { combo: ['Ai', 'Pr'], price: 5000, duration: '2 months', months: 2 },
+      { combo: ['Ps', 'Ai', 'Lr', 'Pr'], price: 7500, duration: '4 months', months: 4, tag: 'All four apps' },
     ];
     const NAMES = { Ps: 'Photoshop', Ai: 'Illustrator', Lr: 'Lightroom', Pr: 'Premiere Pro' };
     const ORDER = ['Ps', 'Ai', 'Lr', 'Pr'];
+    const ICON = (k, size) => `<img src="assets/icons/${k.toLowerCase()}.svg" alt="" width="${size}" height="${size}">`;
+    const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+    const WA = '<svg class="i-wa" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>';
+    const sort = (list) => ORDER.filter((k) => list.includes(k));
+    const nameOf = (list) => (list.length === 4 ? 'All four apps' : sort(list).map((k) => NAMES[k]).join(' + '));
+    const sameSet = (a, b) => a.length === b.length && a.every((v) => b.includes(v));
+    const money = (n) => `R${n}`;
 
     const boxes = Array.from(root.querySelectorAll('input[type="checkbox"]'));
-    const empty = document.getElementById('bundle-empty');
-    const match = document.getElementById('bundle-match');
-    const nomatch = document.getElementById('bundle-nomatch');
-    const amount = document.getElementById('bundle-amount');
-    const duration = document.getElementById('bundle-duration');
-    const combo = document.getElementById('bundle-combo');
-    const enroll = document.getElementById('bundle-enroll');
-    const custom = document.getElementById('bundle-custom');
+    const out = document.getElementById('bundle-out');
+    const list = document.getElementById('bundle-list');
+    const picked = () => boxes.filter((b) => b.checked).map((b) => b.value);
+    const setPicked = (combo) => { boxes.forEach((b) => { b.checked = combo.includes(b.value); }); update(); };
 
-    const sameSet = (a, b) => a.length === b.length && a.every((v) => b.includes(v));
+    // Month-by-month length bar (the course runs up to 4 months).
+    const timeline = (b) => `<div class="bb-months" aria-hidden="true">${[1, 2, 3, 4].map((m) => `<i class="${m <= b.months ? 'is-on' : ''}"></i>`).join('')}</div>`;
 
-    function update() {
-      const picked = boxes.filter((b) => b.checked).map((b) => b.value);
-      empty.hidden = picked.length > 0;
-      if (!picked.length) { match.hidden = true; nomatch.hidden = true; return; }
-
-      const names = ORDER.filter((k) => picked.includes(k)).map((k) => NAMES[k]).join(' + ');
-      const found = BUNDLES.find((b) => sameSet(b.combo, picked));
-      match.hidden = !found;
-      nomatch.hidden = Boolean(found);
-
-      if (found) {
-        amount.textContent = `R${found.price}`;
-        duration.textContent = found.duration;
-        combo.textContent = names;
-        enroll.href = waLink(`Hi, I'd like to enroll in the ${names} course bundle (R${found.price}).`);
-      } else {
-        custom.href = waLink(`Hi, I'd like a quote for a custom course bundle: ${names}.`);
-      }
+    let shown = 0;
+    function countTo(el, target) {
+      const from = shown; shown = target;
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches || from === target) { el.textContent = money(target); return; }
+      const t0 = performance.now(); const dur = 520;
+      const step = (t) => {
+        const k = Math.min(1, (t - t0) / dur); const e = 1 - Math.pow(1 - k, 3);
+        el.textContent = money(Math.round((from + (target - from) * e) / 10) * 10);
+        if (k < 1) requestAnimationFrame(step); else el.textContent = money(target);
+      };
+      requestAnimationFrame(step);
     }
 
+    function update() {
+      const p = picked();
+      if (!p.length) {
+        shown = 0;
+        out.dataset.state = 'empty';
+        out.innerHTML = `
+          <div class="bb-empty">
+            <div class="bb-ghosts" aria-hidden="true">${ORDER.map((k) => ICON(k, 44)).join('')}</div>
+            <p class="bb-empty-t">Pick one or more apps</p>
+            <p>Courses start from <b>${money(Math.min(...BUNDLES.map((b) => b.price)))}</b> for one app over a month.</p>
+          </div>`;
+      } else {
+        const found = BUNDLES.find((b) => sameSet(b.combo, p));
+        if (found) {
+          out.dataset.state = 'match';
+          const names = nameOf(found.combo);
+          out.innerHTML = `
+            <div class="bb-sum">
+              <div class="bb-sum-top"><div class="bb-stack">${sort(found.combo).map((k) => ICON(k, 44)).join('')}</div><span class="bb-badge">${CHECK}Bundle available</span></div>
+              <p class="bb-sum-name">${names}</p>
+              <p class="bb-price"><span id="bundle-amount">${money(shown || found.price)}</span><small>once-off</small></p>
+              <div class="bb-len"><span>Course length</span><b>${found.duration}</b></div>
+              ${timeline(found)}
+              <ul class="bb-incl">${sort(found.combo).map((k) => `<li>${CHECK}${NAMES[k]}</li>`).join('')}</ul>
+              <a class="btn btn--primary bb-cta" target="_blank" rel="noopener" href="${waLink(`Hi, I'd like to enrol in the ${names} course bundle (${money(found.price)}, ${found.duration}).`)}">${WA}Enrol on WhatsApp</a>
+            </div>`;
+          countTo(out.querySelector('#bundle-amount'), found.price);
+        } else {
+          out.dataset.state = 'suggest';
+          shown = 0;
+          const names = nameOf(p);
+          const covers = BUNDLES.filter((b) => p.every((k) => b.combo.includes(k))).sort((a, b) => a.price - b.price)[0];
+          out.innerHTML = `
+            <div class="bb-sum">
+              <p class="bb-sum-kicker">${names}</p>
+              <p class="bb-sum-name">${p.length === 1 ? `${NAMES[p[0]]} isn’t offered on its own yet.` : 'This exact mix isn’t a set bundle yet.'}</p>
+              ${covers ? `
+              <div class="bb-suggest">
+                <span class="bb-suggest-k">Closest bundle that includes it</span>
+                <div class="bb-suggest-row"><div class="bb-stack bb-stack--sm">${sort(covers.combo).map((k) => ICON(k, 32)).join('')}</div><div><b>${nameOf(covers.combo)}</b><small>${covers.duration}</small></div><strong>${money(covers.price)}</strong></div>
+                <button type="button" class="btn btn--primary bb-switch" data-combo="${covers.combo.join(',')}">Switch to this bundle</button>
+              </div>` : ''}
+              <a class="text-link bb-quote" target="_blank" rel="noopener" href="${waLink(`Hi, I'd like a quote for a custom course bundle: ${names}.`)}">Or ask us for a custom quote<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </div>`;
+        }
+      }
+      list.querySelectorAll('.bb-card').forEach((c) => {
+        const on = sameSet(c.dataset.combo.split(','), p);
+        c.classList.toggle('is-on', on); c.setAttribute('aria-pressed', String(on));
+      });
+    }
+
+    list.innerHTML = BUNDLES.map((b) => `
+      <button type="button" class="bb-card" data-combo="${b.combo.join(',')}" aria-pressed="false">
+        <span class="bb-card-top"><span class="bb-stack bb-stack--sm">${sort(b.combo).map((k) => ICON(k, 34)).join('')}</span>${b.tag ? `<span class="bb-card-tag">${b.tag}</span>` : ''}</span>
+        <span class="bb-card-name">${nameOf(b.combo)}</span>
+        <span class="bb-card-foot"><span class="bb-card-len">${b.duration}</span><span class="bb-card-price">${money(b.price)}</span></span>
+        <span class="bb-card-on">${CHECK}Selected</span>
+      </button>`).join('');
+
+    list.addEventListener('click', (e) => {
+      const c = e.target.closest('.bb-card'); if (!c) return;
+      setPicked(c.dataset.combo.split(','));
+      if (root.getBoundingClientRect().top < 0) root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    out.addEventListener('click', (e) => { const b = e.target.closest('.bb-switch'); if (b) setPicked(b.dataset.combo.split(',')); });
     boxes.forEach((b) => b.addEventListener('change', update));
     update();
   }

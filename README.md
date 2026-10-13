@@ -21,6 +21,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
 | `driver-checker.html` | Uber & Bolt driver checker — what to bring for fingerprint capture, proof-of-residence date check, visit day, WhatsApp checklist |
 | `signature-maker.html` | Signature maker — draw a signature, or type a name and get a realistic pen-style signature (style, flourish, "Try another"), download a trimmed transparent PNG, JPG or SVG |
 | `photos-to-pdf.html` | Photos to PDF — combine document photos into one PDF (reorder, rotate, scanned look, A4/Letter, download or share) |
+| `bg-remover.html` | Background remover — AI cut-out (tap to keep/remove), plain-backdrop mode, erase/restore brush, new backgrounds, PNG/JPG export |
 | `qr-code.html` | QR code studio — 10 content types, dot/corner styles, colours and gradients, logos, frames, PNG/SVG/JPG/WebP export |
 
 ## Files
@@ -32,6 +33,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
 - `js/driver-checker.js` — the Uber & Bolt driver checker, used by `driver-checker.html` only (opening hours are repeated at the top).
 - `js/signature.js` — the signature maker (drawing pad, handwriting fonts, exports), used by `signature-maker.html` only.
 - `js/photos-to-pdf.js` — the photos to PDF tool, with its own small PDF writer, used by `photos-to-pdf.html` only.
+- `js/bg-remover.js` — the background remover, used by `bg-remover.html` only. Its AI is MediaPipe (Apache 2.0), kept in `js/vendor/mediapipe/` with the model in `assets/models/`; both only download when someone uses the tool.
 - `js/color-picker.js` — the custom colour picker used on the QR and signature pages (replaces the browser's colour popup).
 - `js/qr-studio.js` — the QR code studio (content builders, styling, SVG and canvas export), used by `qr-code.html` only.
 - `js/vendor/qrcode.js` — QR code engine (MIT, Kazuhiko Arase), used by the studio.
@@ -47,7 +49,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
   pricing preview on `index.html`, the services page and the FAQ).
 - **Course bundles and prices** — update the `BUNDLES` list in `js/site.js` and the
   price table in `courses.html`.
-- **Header and footer** — they are repeated in every page; change all eleven files.
+- **Header and footer** — they are repeated in every page; change all twelve files.
 
 ## Opening intro
 

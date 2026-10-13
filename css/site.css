@@ -1291,7 +1291,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 .site-footer { background: var(--navy); color: var(--on-dark-mute); padding-block: clamp(56px, 7vw, 88px) 28px; font-size: 15px; }
 .footer-top { display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 40px; }
 .footer-brand { display: grid; gap: 18px; align-content: start; }
-.footer-brand img { width: 190px; }
+.footer-brand img { width: 230px; height: auto; }
 .footer-brand p { max-width: 34ch; }
 .footer-col { display: grid; gap: 10px; align-content: start; }
 .footer-col h2 { font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: #fff; margin-bottom: 6px; }
@@ -1731,7 +1731,8 @@ kbd { display: inline-block; padding: 1px 6px; border-radius: 6px; border: 1px s
    Plays once per visit (see the inline script in each page's <head> and
    initSplash in site.js). html.wg-splash covers the page in navy from the
    very first paint until the splash takes over; if the script never runs,
-   the cover fades itself out after 4 seconds. */
+   the cover fades itself out after 4 seconds. Kept deliberately plain:
+   a solid navy screen, the logo, and one crisp red line. */
 html.wg-splash body::after {
   content: ""; position: fixed; inset: 0; z-index: 999; background: #001523;
   animation: splash-failsafe .4s 4s forwards;
@@ -1739,36 +1740,15 @@ html.wg-splash body::after {
 @keyframes splash-failsafe { to { opacity: 0; visibility: hidden; } }
 html.splash-on { overflow: hidden; }
 html.splash-on .site-header .logo { opacity: 0; }
-.splash { position: fixed; inset: 0; z-index: 1000; pointer-events: auto; cursor: default; }
-.splash-bg {
-  position: absolute; inset: 0; background: #001523;
-  background-image: radial-gradient(ellipse 60% 50% at 50% 50%, #062538 0%, #001523 70%);
-}
-.splash-edge {
-  position: absolute; left: 0; right: 0; top: 0; height: 3px; background: #ff4545; opacity: 0;
-  box-shadow: 0 0 24px 4px rgba(255, 69, 69, .55);
-}
+.splash { position: fixed; inset: 0; z-index: 1000; cursor: default; }
+.splash-bg { position: absolute; inset: 0; background: #001523; }
+.splash-edge { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: #ff4545; opacity: 0; }
 .splash-stage { position: absolute; inset: 0; display: grid; place-items: center; }
-.splash-beam {
-  position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; opacity: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 69, 69, .15) 20%, #ff6b6b 50%, rgba(255, 69, 69, .15) 80%, transparent);
-  box-shadow: 0 0 18px 2px rgba(255, 69, 69, .45);
-}
-.splash-lockup { position: relative; width: min(78vw, 540px); transform-origin: 0 0; }
-.splash-lockup svg { display: block; width: 100%; height: auto; overflow: visible; }
-.splash-mark { fill: #ff4545; }
-.splash-mark-line { fill: none; stroke: #ff4545; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(255, 90, 90, .9)); }
-.splash-word-wrap { position: absolute; inset: 0; clip-path: inset(-20% 71% -20% 29%); }
-.splash-word { fill: #fff; }
-.splash-glow {
-  position: absolute; left: 14%; top: 50%; width: 46%; aspect-ratio: 1; translate: -50% -50%;
-  border-radius: 50%; background: radial-gradient(circle, rgba(255, 69, 69, .55), rgba(255, 69, 69, 0) 65%);
-  opacity: 0; pointer-events: none;
-}
-.splash-ring {
-  position: absolute; left: 14.5%; top: 50%; width: 30%; aspect-ratio: 1; translate: -50% -50%;
-  border-radius: 50%; border: 1.5px solid rgba(255, 69, 69, .7); opacity: 0; pointer-events: none;
-}
+.splash-lockup { position: relative; width: min(80vw, 560px); transform-origin: 0 0; }
+.splash-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.splash-wipe { position: absolute; inset: 0; }
+.splash-wipe--word, .splash-wipe--tech { clip-path: inset(-10% 66% -10% 34%); }
+.splash-trace { fill: none !important; stroke: #ff4545; stroke-width: 1.4; stroke-linejoin: round; }
 .splash-skip {
   position: absolute; right: 20px; bottom: 18px; padding: 6px 12px; border: 0; border-radius: 999px;
   background: rgba(255, 255, 255, .06); color: #9fb3c1; font: 500 13px/1.4 var(--font); cursor: pointer; opacity: 0;

@@ -20,6 +20,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
 | `contact.html` | Contact details, map and a form that opens WhatsApp pre-filled |
 | `driver-checker.html` | Uber & Bolt driver checker — what to bring for fingerprint capture, proof-of-residence date check, visit day, WhatsApp checklist |
 | `signature-maker.html` | Signature maker — draw a signature, or type a name and get a realistic pen-style signature (style, flourish, "Try another"), download a trimmed transparent PNG, JPG or SVG |
+| `photos-to-pdf.html` | Photos to PDF — combine document photos into one PDF (reorder, rotate, scanned look, A4/Letter, download or share) |
 | `qr-code.html` | QR code studio — 10 content types, dot/corner styles, colours and gradients, logos, frames, PNG/SVG/JPG/WebP export |
 
 ## Files
@@ -30,6 +31,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
   scroll reveals, pricing tabs and nav dropdown, theme toggle, bundle calculator, FAQ search, contact form.
 - `js/driver-checker.js` — the Uber & Bolt driver checker, used by `driver-checker.html` only (opening hours are repeated at the top).
 - `js/signature.js` — the signature maker (drawing pad, handwriting fonts, exports), used by `signature-maker.html` only.
+- `js/photos-to-pdf.js` — the photos to PDF tool, with its own small PDF writer, used by `photos-to-pdf.html` only.
 - `js/color-picker.js` — the custom colour picker used on the QR and signature pages (replaces the browser's colour popup).
 - `js/qr-studio.js` — the QR code studio (content builders, styling, SVG and canvas export), used by `qr-code.html` only.
 - `js/vendor/qrcode.js` — QR code engine (MIT, Kazuhiko Arase), used by the studio.
@@ -45,7 +47,7 @@ to any static host (Hostinger, Netlify, GitHub Pages, cPanel) and it works.
   pricing preview on `index.html`, the services page and the FAQ).
 - **Course bundles and prices** — update the `BUNDLES` list in `js/site.js` and the
   price table in `courses.html`.
-- **Header and footer** — they are repeated in every page; change all ten files.
+- **Header and footer** — they are repeated in every page; change all eleven files.
 
 ## Opening intro
 

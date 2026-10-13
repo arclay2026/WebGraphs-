@@ -408,7 +408,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .svc-card-media { aspect-ratio: 16 / 10; overflow: hidden; background: var(--mist-2); }
 .svc-card-body { display: flex; flex-direction: column; gap: 10px; flex: 1; padding: 22px 24px 24px; }
 .svc-card-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.svc-num { font-size: 13px; color: var(--mute); font-variant-numeric: tabular-nums; }
 .tag {
   display: inline-block; padding: 4px 10px; border-radius: 999px;
   background: var(--mist); color: var(--text); font-size: 13px; font-weight: 500;
@@ -865,7 +864,6 @@ a.price-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift)
   transition: border-color .15s, background-color .15s;
 }
 .jump-links a:hover { border-color: var(--ink); background: var(--mist); }
-.jump-links span { color: var(--mute); font-size: 13px; font-variant-numeric: tabular-nums; }
 
 /* ---------- Services page rows ---------- */
 .svc-row {
@@ -914,7 +912,6 @@ a.price-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift)
 .feature-list span { color: var(--mute); font-size: 16px; }
 .value-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .value-card { display: grid; gap: 10px; align-content: start; padding: 28px; border-radius: var(--r); border: 1px solid var(--line); background: var(--paper); }
-.value-card .num { font-size: 13px; color: var(--accent-ink); font-weight: 500; }
 .value-card p { color: var(--mute); font-size: 16px; }
 @media (max-width: 860px) {
   .split { grid-template-columns: 1fr; }

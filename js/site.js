@@ -432,6 +432,23 @@
     items.forEach((el) => io.observe(el));
   }
 
+  /* ---------- Motion scenes: run only while on screen ----------
+     Each .mg scene starts its loop when it scrolls into view and pauses when
+     it leaves, so the choreography is seen from the top and nothing animates
+     off screen. */
+  function initScenes() {
+    const scenes = document.querySelectorAll('.mg');
+    if (!scenes.length) return;
+    if (!('IntersectionObserver' in window)) {
+      scenes.forEach((el) => el.classList.add('mg-play'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => entry.target.classList.toggle('mg-play', entry.isIntersecting));
+    }, { threshold: 0.15 });
+    scenes.forEach((el) => io.observe(el));
+  }
+
   /* ---------- Services page: quick picker → WhatsApp ---------- */
   function initQuickPick() {
     const form = document.getElementById('quick-pick');
@@ -790,6 +807,7 @@
     initStatus();
     initHeadlines();
     initReveal();
+    initScenes();
     initQuickPick();
     initBundle();
     initPricingTabs();

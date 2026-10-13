@@ -425,6 +425,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
    proportions on every screen. The resting state of each element is its
    finished state, so with reduced motion each scene shows a full frame. */
 .mg {
+  --mg-io: cubic-bezier(.65, 0, .35, 1);
   --ink2: var(--ink); --soft: var(--mute); --hair: var(--line-soft);
   --a-08: color-mix(in srgb, var(--a) 9%, var(--card));
   --a-15: color-mix(in srgb, var(--a) 15%, transparent);
@@ -442,6 +443,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .mg-stage--top { padding: 1.4em 1.6em 0; display: grid; align-content: start; gap: .8em; }
 .mg svg { width: 1em; height: 1em; display: block; }
+/* Scenes start when they scroll into view and pause off screen (js/site.js). */
+.js .mg:not(.mg-play) *, .js .mg:not(.mg-play)::before { animation-play-state: paused !important; }
 
 /* shared parts */
 .mg-card {
@@ -523,13 +526,16 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .web-win { overflow: hidden; }
 .web-top { display: flex; align-items: center; gap: .35em; padding: .6em .8em; border-bottom: 1px solid var(--hair); }
 .web-top i { width: .55em; height: .55em; border-radius: 50%; background: var(--line); }
-.web-url { margin-left: .6em; flex: 1; padding: .25em .7em; border-radius: .5em; background: var(--surface); font-size: .72em; color: var(--soft); }
+.web-url { margin-left: .6em; flex: 1; padding: .25em .7em; border-radius: .5em; background: var(--surface); font-size: .72em; color: var(--soft); white-space: nowrap; }
+.web-url span { display: inline-block; position: relative; animation: web-type 6s steps(18, end) infinite; }
+.web-url span::after { content: ""; position: absolute; right: -.25em; top: 10%; bottom: 10%; width: 1px; background: var(--a); animation: web-caret 1s steps(1, end) infinite; }
+.web-win .mg-dot { animation: web-live 2s ease-out infinite; animation-delay: calc(var(--i, 0) * .66s); }
 .web-win .mg-list { padding: .45em; gap: .2em; }
-.web-win .mg-row { animation: web-focus 6s ease-in-out infinite; animation-delay: calc(var(--i) * 2s - 6s); }
+.web-win .mg-row { animation: web-focus 6s var(--mg-io) infinite; animation-delay: calc(var(--i) * 2s - 6s); }
 .mg-prog {
   position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--a);
   transform-origin: left; transform: scaleX(0);
-  animation: web-prog 6s ease-in-out infinite; animation-delay: calc(var(--i) * 2s - 6s);
+  animation: web-prog 6s var(--mg-io) infinite; animation-delay: calc(var(--i) * 2s - 6s);
 }
 
 /* 3 · graphic design */
@@ -541,13 +547,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .ds-select {
   position: absolute; left: 1.3em; top: 1.2em; width: 4em; height: 4em;
   border: 1.5px solid #3b82f6; border-radius: .2em;
-  animation: ds-select 6s var(--ease) infinite;
+  animation: ds-select 6s var(--mg-io) infinite;
 }
 .ds-select i { position: absolute; width: .5em; height: .5em; background: var(--card); border: 1.5px solid #3b82f6; border-radius: .1em; }
 .ds-select i:nth-child(1) { left: -.3em; top: -.3em; } .ds-select i:nth-child(2) { right: -.3em; top: -.3em; }
 .ds-select i:nth-child(3) { left: -.3em; bottom: -.3em; } .ds-select i:nth-child(4) { right: -.3em; bottom: -.3em; }
-.ds-cursor { position: absolute; left: 4.6em; top: 4.4em; color: #001523; animation: ds-cursor 6s var(--ease) infinite; }
-.ds-cursor svg { width: 1.3em; height: 1.3em; filter: drop-shadow(0 .15em .2em rgba(0, 21, 35, .25)); }
+.ds-cursor { position: absolute; left: 4.6em; top: 4.4em; color: #001523; animation: ds-cursor 6s var(--mg-io) infinite; }
+.ds-cursor svg { width: 1.3em; height: 1.3em; filter: drop-shadow(0 .15em .2em rgba(0, 21, 35, .25)); transform-origin: 20% 15%; animation: ds-click 2s var(--mg-io) infinite; }
+.ds-shape { animation: ds-pick 6s var(--mg-io) infinite; }
+.ds-square { animation-delay: -4s; } .ds-bar { animation-delay: -2s; }
 .ds-palette { position: absolute; left: 50%; top: 82%; translate: -50% -50%; }
 .ds-palette i { width: .9em; height: .9em; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px var(--line-strong); }
 .ds-palette i:nth-child(3) { animation: ds-swatch 2s ease-in-out infinite; }
@@ -558,18 +566,22 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .mg-bar {
   display: block; height: 100%; border-radius: inherit; background: var(--a);
   transform-origin: left; transform: scaleX(var(--w));
-  animation: mg-grow 5s var(--ease) infinite; animation-delay: calc(var(--i) * .25s);
+  animation: mg-grow 6s var(--mg-io) infinite; animation-delay: calc(var(--i) * .45s);
 }
 
 /* 5 · printing */
 .pq-active { border-color: var(--a-30) !important; }
 .pq-prog {
   position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--a);
-  transform-origin: left; animation: pq-prog 4s ease-in-out infinite;
+  transform-origin: left; animation: pq-prog 4s var(--mg-io) infinite;
 }
 .pq-status { position: relative; }
-.pq-a { color: var(--a); animation: pq-a 4s steps(1, end) infinite; opacity: 0; }
-.pq-b { position: absolute; inset: 0; display: inline-flex; align-items: center; justify-content: center; gap: .35em; color: var(--ok-ink); animation: pq-b 4s steps(1, end) infinite; }
+.pq-status { overflow: hidden; }
+.pq-a { display: inline-block; color: var(--a); opacity: 0; animation: pq-a 4s var(--mg-io) infinite; }
+.pq-b { position: absolute; inset: 0; display: inline-flex; align-items: center; justify-content: center; gap: .35em; color: var(--ok-ink); animation: pq-b 4s var(--mg-io) infinite; }
+.pq-active { animation: pq-done 4s ease-out infinite; }
+.pq-next { display: inline-flex; align-items: center; gap: .4em; }
+.pq-next::before { content: ""; width: .45em; height: .45em; border-radius: 50%; background: var(--line-strong); animation: pq-wait 1.6s ease-in-out infinite; }
 
 /* 6 · software */
 .sw-ring { position: absolute; left: 50%; top: 40%; translate: -50% -50%; width: 7.4em !important; height: 7.4em !important; rotate: -90deg; }
@@ -577,7 +589,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .sw-ring .sw-arc { stroke: var(--a); stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 0; animation: sw-arc 4s var(--ease) infinite; }
 .sw-tile { top: 40%; }
 .sw-tile .mg-check { animation: mg-pop 4s var(--ease) infinite; animation-delay: .4s; }
-.sw-icon { animation: sw-bob 1.4s ease-in-out infinite alternate; }
+.sw-icon { overflow: visible; }
+.sw-icon path:first-child { animation: sw-drop 1.2s var(--mg-io) infinite; }
 .sw-steps { position: absolute; left: 0; right: 0; top: 80%; translate: 0 -50%; display: flex; justify-content: center; gap: .5em; }
 .sw-steps .mg-chip { font-size: .76em; }
 .sw-steps i { width: 1.3em; height: 1.3em; border-radius: 50%; display: grid; place-items: center; background: var(--a); color: #fff; animation: mg-pop 4s var(--ease) infinite; animation-delay: calc(var(--i) * .5s); }
@@ -607,6 +620,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @keyframes web-focus {
   0%, 2% { background: transparent; } 8%, 30% { background: var(--a-08); } 36%, 100% { background: transparent; }
 }
+@keyframes web-type { 0%, 3% { clip-path: inset(0 100% 0 0); } 24%, 92% { clip-path: inset(0 -1em 0 0); } 100% { clip-path: inset(0 100% 0 0); } }
+@keyframes web-caret { 50% { opacity: 0; } }
+@keyframes web-live { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, .5); } 70%, 100% { box-shadow: 0 0 0 .45em rgba(34, 197, 94, 0); } }
 @keyframes web-prog { 0%, 4% { transform: scaleX(0); opacity: 1; } 30% { transform: scaleX(1); opacity: 1; } 36%, 100% { transform: scaleX(1); opacity: 0; } }
 @keyframes ds-select {
   0%, 22% { left: 1.3em; top: 1.2em; width: 4em; height: 4em; }
@@ -618,13 +634,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
   0%, 22% { left: 4.6em; top: 4.4em; } 33%, 55% { left: 8.3em; top: 4.2em; }
   66%, 88% { left: 11.2em; top: 4.1em; } 100% { left: 4.6em; top: 4.4em; }
 }
+@keyframes ds-click { 0%, 100% { scale: 1; } 5% { scale: .78; } 12% { scale: 1; } }
+@keyframes ds-pick { 0%, 100% { scale: 1; } 4% { scale: 1.08; } 10% { scale: 1; } }
 @keyframes ds-swatch { 0%, 100% { box-shadow: 0 0 0 0 var(--a-30); } 50% { box-shadow: 0 0 0 .3em var(--a-30); } }
-@keyframes mg-grow { 0% { transform: scaleX(0); } 45%, 88% { transform: scaleX(var(--w)); opacity: 1; } 100% { transform: scaleX(var(--w)); opacity: 0; } }
-@keyframes pq-prog { 0% { transform: scaleX(0); opacity: 1; } 70% { transform: scaleX(1); opacity: 1; } 78%, 100% { transform: scaleX(1); opacity: 0; } }
-@keyframes pq-a { 0% { opacity: 1; } 72% { opacity: 0; } }
-@keyframes pq-b { 0% { opacity: 0; } 72% { opacity: 1; } }
+@keyframes mg-grow { 0%, 4% { transform: scaleX(0); } 34%, 80% { transform: scaleX(var(--w)); } 96%, 100% { transform: scaleX(0); } }
+@keyframes pq-prog { 0% { transform: scaleX(0); opacity: 1; } 66% { transform: scaleX(1); opacity: 1; } 76%, 100% { transform: scaleX(1); opacity: 0; } }
+@keyframes pq-a { 0%, 66% { opacity: 1; transform: none; } 74%, 94% { opacity: 0; transform: translateY(-110%); } 100% { opacity: 1; transform: none; } }
+@keyframes pq-b { 0%, 68% { opacity: 0; transform: translateY(110%); } 76%, 92% { opacity: 1; transform: none; } 98%, 100% { opacity: 0; transform: translateY(-110%); } }
+@keyframes pq-done { 0%, 70% { background: var(--card); } 76% { background: color-mix(in srgb, #22c55e 12%, var(--card)); } 92%, 100% { background: var(--card); } }
+@keyframes pq-wait { 0%, 100% { opacity: .35; scale: .8; } 50% { opacity: 1; scale: 1; } }
 @keyframes sw-arc { 0% { stroke-dashoffset: 100; } 55%, 92% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
-@keyframes sw-bob { from { translate: 0 -.12em; } to { translate: 0 .16em; } }
+@keyframes sw-drop { 0% { translate: 0 -55%; opacity: 0; } 25% { opacity: 1; } 70% { translate: 0 0; opacity: 1; } 100% { translate: 0 18%; opacity: 0; } }
 
 /* ---------- Fingerprint feature (dark) ----------
    Navy band with a soft red glow. The right column is two glass cards in

@@ -647,37 +647,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @keyframes sw-drop { 0% { translate: 0 -55%; opacity: 0; } 25% { opacity: 1; } 70% { translate: 0 0; opacity: 1; } 100% { translate: 0 18%; opacity: 0; } }
 
 /* ---------- Fingerprint feature (dark) ----------
-   Navy band with a soft red glow. The right column is two glass cards in
+   Navy band. The right column is two glass cards in
    the same language as the light UI scenes: the documents tick off one by
    one and the four steps fill in when the panel scrolls into view. */
 .fp-section { position: relative; overflow: hidden; isolation: isolate; }
-.fp-section { --fp-line: rgba(255, 255, 255, .15); }
-
-/* Line-art fingerprint behind the section. When it scrolls into view the
-   ridges draw from the core outwards, then a scan line sweeps down once
-   and each ridge flashes red as the line passes it (--y is the ridge's
-   height, 0 = top). Resting state is the finished drawing. */
-.fp-art {
-  position: absolute; z-index: -1; left: 50%; top: 50%; translate: -50% -50%;
-  height: min(94%, 760px); aspect-ratio: 400 / 520; pointer-events: none;
-}
-.js .fp-art[data-reveal] { opacity: 1; transform: none; }
-.fp-art svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.fp-art path { stroke: var(--fp-line); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
-.fp-art::after {
-  content: ""; position: absolute; left: 4%; right: 4%; top: 0; height: 2px; border-radius: 2px;
-  background: var(--accent); opacity: 0;
-}
-.js .fp-art:not(.is-visible) path { stroke-dasharray: 1; stroke-dashoffset: 1; }
-.fp-art.is-visible path {
-  stroke-dasharray: 1;
-  animation: fp-draw 1.5s cubic-bezier(.65, 0, .35, 1) calc(var(--r) * 45ms) both,
-             fp-hot .7s ease calc(2.33s + var(--y) * 1.3s);
-}
-.fp-art.is-visible::after { animation: fp-scan 1.3s linear 2.5s both; }
-@keyframes fp-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes fp-hot { 0%, 100% { stroke: var(--fp-line); } 25% { stroke: var(--accent); } }
-@keyframes fp-scan { 0% { top: 0; opacity: 0; } 8%, 88% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 .fp-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(32px, 6vw, 88px); align-items: center; }
 .fp-copy { display: grid; gap: 22px; justify-items: start; }
 .fp-copy p { color: var(--on-dark-mute); font-size: 17px; max-width: 50ch; }
@@ -759,8 +732,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 @media (max-width: 900px) {
   .fp-grid { grid-template-columns: 1fr; }
-  .fp-art { left: auto; right: -38%; top: -1%; translate: none; height: 540px; }
-  .js .fp-art[data-reveal] { opacity: .7; }
 }
 @media (max-width: 520px) {
   .fp-glass { padding: 16px; }
@@ -1471,7 +1442,6 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 :root[data-wg-theme="dark"] :is(.site-footer, .section--dark, .price-strip, .price-card.is-popular) :is(h2, h3), :root[data-wg-theme="dark"] .fp-price b, :root[data-wg-theme="dark"] .fp-glass-head h3, :root[data-wg-theme="dark"] .fp-doc-txt b, :root[data-wg-theme="dark"] .fp-steps b, :root[data-wg-theme="dark"] .price-strip b, :root[data-wg-theme="dark"] .price-card.is-popular .price-amount b, :root[data-wg-theme="dark"] .footer-col h2, :root[data-wg-theme="dark"] .footer-col a:hover, :root[data-wg-theme="dark"] .quick-pick .field :is(input, select), :root[data-wg-theme="dark"] .quick-pick .sel-btn { color: var(--ink); }
 :root[data-wg-theme="dark"] .price-card.is-popular .price-feats svg { color: #16a34a; }
 :root[data-wg-theme="dark"] .section--dark .eyebrow { background: #fff; color: var(--ink); }
-:root[data-wg-theme="dark"] .fp-section { --fp-line: rgba(0, 21, 35, .13); }
 :root[data-wg-theme="dark"] .fp-price span { color: var(--accent-ink); }
 :root[data-wg-theme="dark"] .fp-glass { background: #fff; border-color: var(--line); }
 :root[data-wg-theme="dark"] .fp-docs li { background: var(--surface); border-color: var(--line-soft); }
@@ -1495,7 +1465,6 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
   :root:not([data-wg-theme="light"]) :is(.site-footer, .section--dark, .price-strip, .price-card.is-popular) :is(h2, h3), :root:not([data-wg-theme="light"]) .fp-price b, :root:not([data-wg-theme="light"]) .fp-glass-head h3, :root:not([data-wg-theme="light"]) .fp-doc-txt b, :root:not([data-wg-theme="light"]) .fp-steps b, :root:not([data-wg-theme="light"]) .price-strip b, :root:not([data-wg-theme="light"]) .price-card.is-popular .price-amount b, :root:not([data-wg-theme="light"]) .footer-col h2, :root:not([data-wg-theme="light"]) .footer-col a:hover, :root:not([data-wg-theme="light"]) .quick-pick .field :is(input, select), :root:not([data-wg-theme="light"]) .quick-pick .sel-btn { color: var(--ink); }
   :root:not([data-wg-theme="light"]) .price-card.is-popular .price-feats svg { color: #16a34a; }
   :root:not([data-wg-theme="light"]) .section--dark .eyebrow { background: #fff; color: var(--ink); }
-  :root:not([data-wg-theme="light"]) .fp-section { --fp-line: rgba(0, 21, 35, .13); }
   :root:not([data-wg-theme="light"]) .fp-price span { color: var(--accent-ink); }
   :root:not([data-wg-theme="light"]) .fp-glass { background: #fff; border-color: var(--line); }
   :root:not([data-wg-theme="light"]) .fp-docs li { background: var(--surface); border-color: var(--line-soft); }
@@ -2121,7 +2090,6 @@ html:active-view-transition .ph-hero-media { background: transparent; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .js [data-reveal] { opacity: 1; transform: none; }
-  .js .fp-art path { stroke-dashoffset: 0; }
 }
 
 /* ---------- Print ---------- */

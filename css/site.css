@@ -1780,7 +1780,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 .dc-visit dt { color: var(--mute); }
 .dc-visit dd { margin: 0; color: var(--ink); }
 .dc-actions { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
-.dc-reset { justify-self: center; margin-top: -8px; }
+.dc-reset { justify-self: center; margin-top: -8px; color: var(--pick-ink); }
 .dc-fine { font-size: 13px; color: var(--mute); padding-inline: 6px; text-align: center; }
 
 .dc-next { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; counter-reset: none; }

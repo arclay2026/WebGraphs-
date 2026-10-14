@@ -432,6 +432,17 @@
     items.forEach((el) => io.observe(el));
   }
 
+  /* ---------- Protect site images ----------
+     Right-click "Save image", dragging an image out of the page and the
+     phone long-press menu are blocked for the site's own images (anything
+     under assets/). Images people add to the free tools are left alone.
+     This deters casual copying only; it can't stop screenshots. */
+  function initImageGuard() {
+    const own = (el) => el instanceof HTMLImageElement && (el.getAttribute('src') || '').startsWith('assets/');
+    document.addEventListener('contextmenu', (e) => { if (own(e.target)) e.preventDefault(); });
+    document.addEventListener('dragstart', (e) => { if (own(e.target)) e.preventDefault(); });
+  }
+
   /* ---------- Motion scenes: run only while on screen ----------
      Each .mg scene starts its loop when it scrolls into view and pauses when
      it leaves, so the choreography is seen from the top and nothing animates
@@ -808,6 +819,7 @@
     initHeadlines();
     initReveal();
     initScenes();
+    initImageGuard();
     initQuickPick();
     initBundle();
     initPricingTabs();

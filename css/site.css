@@ -2190,3 +2190,6 @@ body.has-tray main { padding-bottom: 96px; }
   :root:not([data-wg-theme="light"]) .sw-tray-txt b { color: #001523; }
   :root:not([data-wg-theme="light"]) .sw-tray #sw-clear { border-color: #b4c2cb; color: #001523; }
 }
+
+/* Site images: no drag-out, no long-press save menu on phones (see initImageGuard in js/site.js) */
+img[src^="assets/"] { -webkit-user-drag: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }

@@ -2130,6 +2130,9 @@ html.wg-lock { overflow: hidden; }
 /* Icon files with a built-in margin around their tile (Ps/Ai/Lr/Pr: 2 of
    32 units each side) are drawn a little larger so they match the others. */
 .sw-app-ic.is-logo.is-padded img { width: 34px; height: 34px; }
+/* Adobe and Acrobat tiles read better a little larger, with less white around them */
+.sw-app-ic.is-adobe img { width: 37px; height: 37px; }
+.sw-app-ic.is-adobe.is-padded img { width: 42px; height: 42px; }
 .sw-app-ic svg { width: 26px; height: 26px; }
 .sw-app-txt { flex: 1; min-width: 0; display: grid; gap: 2px; }
 .sw-app-txt b { font-weight: 500; font-size: 15.5px; line-height: 1.3; color: var(--ink); }

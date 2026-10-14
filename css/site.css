@@ -1385,6 +1385,17 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 .footer-col h2 { font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: #fff; margin-bottom: 6px; }
 .footer-col a { color: var(--on-dark-mute); text-decoration: none; width: fit-content; }
 .footer-col a:hover { color: #fff; }
+/* WhatsApp QR in the footer: desktop and tablet only. Phones keep the
+   tappable number instead, since a phone can't scan its own screen. */
+.foot-qr { display: none; }
+@media (min-width: 761px) {
+  .foot-wa-num { display: none; }
+  .foot-qr { display: grid; gap: 10px; justify-items: start; margin-top: 8px; width: fit-content; text-decoration: none; color: inherit; }
+  .foot-qr img { width: 120px; height: 120px; border-radius: 14px; box-shadow: 0 10px 24px -14px rgba(0, 0, 0, .6); transition: transform .3s var(--ease); }
+  .foot-qr:hover img { transform: translateY(-3px); }
+  .foot-qr span { display: grid; gap: 2px; font-size: 13px; line-height: 1.35; }
+  .foot-qr b { font-weight: 500; color: var(--on-dark); }
+}
 .socials { display: flex; gap: 10px; }
 .socials a {
   width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
@@ -1448,6 +1459,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 :root[data-wg-theme="dark"] .theme-switch button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0, 21, 35, .12); }
 :root[data-wg-theme="dark"] .footer-brand .logo-on-navy { display: none; }
 :root[data-wg-theme="dark"] .footer-brand .logo-on-light { display: block; }
+:root[data-wg-theme="dark"] .foot-qr img { box-shadow: 0 0 0 1px var(--line), 0 10px 24px -16px rgba(0, 21, 35, .35); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-wg-theme="light"]) :is(.site-footer, .section--dark, .cta-band, .price-strip, .price-card.is-popular) { --ink: #001523; --text: #0d2232; --mute: #4d5f6c; --line: #d5dee4; --line-strong: #b4c2cb; --line-soft: #e8eef1; --card: #ffffff; --surface: #f4f7f9; --mist: #e2e9ed; --mist-2: #d3dde3; --accent-ink: #d92f2f; --accent-tint: #ffe9e9; --ok-ink: #166534; --green-tint: #e8f5e9; --on-dark: #001523; --on-dark-mute: #4d5f6c; --dark-line: #cfd9e0; --accent-on-dark: #d92f2f; --navy-2: #ffffff; background: #edf2f5; color: var(--text); }
   :root:not([data-wg-theme="light"]) .price-card.is-popular { border-color: rgba(255, 69, 69, .5); box-shadow: 0 0 0 1px rgba(255, 69, 69, .2), 0 24px 50px -28px rgba(0, 0, 0, .7); }
@@ -1473,6 +1485,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
   :root:not([data-wg-theme="light"]) .theme-switch button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0, 21, 35, .12); }
   :root:not([data-wg-theme="light"]) .footer-brand .logo-on-navy { display: none; }
   :root:not([data-wg-theme="light"]) .footer-brand .logo-on-light { display: block; }
+  :root:not([data-wg-theme="light"]) .foot-qr img { box-shadow: 0 0 0 1px var(--line), 0 10px 24px -16px rgba(0, 21, 35, .35); }
 }
 
 /* ---------- Home: photo band ----------

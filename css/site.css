@@ -2130,7 +2130,6 @@ img.sw-app-ic { background: none; box-shadow: 0 6px 14px -8px rgba(0, 21, 35, .4
 .sw-app-txt b { font-weight: 500; font-size: 15.5px; line-height: 1.3; color: var(--ink); }
 .sw-app-txt small { font-size: 13px; color: var(--mute); }
 .sw-app-txt .is-free { color: var(--ok-ink); }
-.sw-app-txt .is-lic { color: var(--accent-ink); }
 .sw-add {
   flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
   border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer;

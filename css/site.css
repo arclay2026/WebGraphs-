@@ -1391,7 +1391,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 @media (min-width: 761px) {
   .foot-wa-num { display: none; }
   .foot-qr { display: grid; gap: 10px; justify-items: start; margin-top: 8px; width: fit-content; text-decoration: none; color: inherit; }
-  .foot-qr img { width: 120px; height: 120px; border-radius: 14px; box-shadow: 0 10px 24px -14px rgba(0, 0, 0, .6); transition: transform .3s var(--ease); }
+  .foot-qr img { width: 152px; height: 152px; border-radius: 16px; box-shadow: 0 10px 24px -14px rgba(0, 0, 0, .6); transition: transform .3s var(--ease); }
   .foot-qr:hover img { transform: translateY(-3px); }
   .foot-qr span { display: grid; gap: 2px; font-size: 13px; line-height: 1.35; }
   .foot-qr b { font-weight: 500; color: var(--on-dark); }

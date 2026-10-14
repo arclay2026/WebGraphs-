@@ -2109,6 +2109,9 @@ html.wg-lock { overflow: hidden; }
 .sw-search svg { width: 17px; height: 17px; flex-shrink: 0; }
 .sw-search input { flex: 1; min-width: 0; height: 42px; border: 0; background: none; color: var(--ink); font: inherit; font-size: 15px; outline: none; }
 
+.sw-groups { display: grid; gap: clamp(32px, 4vw, 48px); }
+.sw-group[hidden] { display: none; }
+.sw-group-h { font-size: clamp(20px, 2vw, 24px); font-weight: 500; letter-spacing: -.01em; margin-bottom: 16px; }
 .sw-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
 .sw-app {
   display: flex; align-items: center; gap: 14px; padding: 14px 14px 14px 16px; border-radius: var(--r);

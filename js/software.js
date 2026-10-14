@@ -6,6 +6,7 @@
   if (!grid) return;
   const apps = Array.from(grid.querySelectorAll('.sw-app'));
   const chips = Array.from(document.querySelectorAll('.sw-chip'));
+  const groups = Array.from(grid.querySelectorAll('.sw-group'));
   const q = document.getElementById('sw-q');
   const empty = document.getElementById('sw-empty');
   const tray = document.getElementById('sw-tray');
@@ -24,6 +25,8 @@
       li.hidden = !ok;
       if (ok) shown++;
     });
+    // Hide the Software or Drivers heading when nothing in that group matches
+    groups.forEach((g) => { g.hidden = !g.querySelector('.sw-app:not([hidden])'); });
     empty.hidden = shown > 0;
   }
 

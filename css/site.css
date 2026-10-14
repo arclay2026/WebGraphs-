@@ -687,10 +687,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
   padding: 5px 12px; border-radius: 999px; font-size: 14px; color: #fff;
   background: rgba(255, 69, 69, .16); border: 1px solid rgba(255, 69, 69, .35);
 }
-.fp-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.fp-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 22px; }
 .fp-tags li {
-  display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px;
-  font-size: 14px; color: var(--on-dark); background: rgba(255, 255, 255, .05); border: 1px solid var(--dark-line);
+  display: inline-flex; align-items: center; gap: 8px; padding: 4px 0;
+  font-size: 14px; color: var(--on-dark);
 }
 .fp-tags li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
 
@@ -1472,7 +1472,6 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 :root[data-wg-theme="dark"] .price-card.is-popular .price-feats svg { color: #16a34a; }
 :root[data-wg-theme="dark"] .section--dark .eyebrow { background: #fff; color: var(--ink); }
 :root[data-wg-theme="dark"] .fp-section { --fp-line: rgba(0, 21, 35, .13); }
-:root[data-wg-theme="dark"] .fp-tags li { background: #fff; }
 :root[data-wg-theme="dark"] .fp-price span { color: var(--accent-ink); }
 :root[data-wg-theme="dark"] .fp-glass { background: #fff; border-color: var(--line); }
 :root[data-wg-theme="dark"] .fp-docs li { background: var(--surface); border-color: var(--line-soft); }
@@ -1497,7 +1496,6 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
   :root:not([data-wg-theme="light"]) .price-card.is-popular .price-feats svg { color: #16a34a; }
   :root:not([data-wg-theme="light"]) .section--dark .eyebrow { background: #fff; color: var(--ink); }
   :root:not([data-wg-theme="light"]) .fp-section { --fp-line: rgba(0, 21, 35, .13); }
-  :root:not([data-wg-theme="light"]) .fp-tags li { background: #fff; }
   :root:not([data-wg-theme="light"]) .fp-price span { color: var(--accent-ink); }
   :root:not([data-wg-theme="light"]) .fp-glass { background: #fff; border-color: var(--line); }
   :root:not([data-wg-theme="light"]) .fp-docs li { background: var(--surface); border-color: var(--line-soft); }
@@ -1694,7 +1692,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 .dc-step-head h2 { font-size: clamp(17px, 1.5vw, 19px); letter-spacing: -0.01em; }
 .dc-n {
   flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
-  background: var(--accent-tint); color: var(--accent-ink); font-size: 13.5px; font-weight: 600;
+  background: var(--pick-tint); color: var(--pick-ink); font-size: 13.5px; font-weight: 600;
   transition: background-color .2s, color .2s;
 }
 .dc-step.is-done .dc-n { position: relative; background: var(--green-tint); color: var(--ok-ink); font-size: 0; }
@@ -1703,7 +1701,9 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 
 .dc-choices { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .dc-choices--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.dc-choice, .dc-day { position: relative; --pick: #2563eb; --pick-tint: #eff6ff; --pick-ink: #1d4ed8; }
+/* driver checker accent: blue for picks, step numbers and the progress ring */
+:root { --pick: #2563eb; --pick-tint: #eff6ff; --pick-ink: #1d4ed8; }
+.dc-choice, .dc-day { position: relative; }
 .dc-choice input, .dc-day input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
 .dc-choice span, .dc-day span {
   display: grid; align-content: start; gap: 2px; height: 100%; padding: 12px 14px; border-radius: 12px;
@@ -1719,8 +1719,8 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 .dc-day input:disabled + span { opacity: .45; }
 .dc-day:has(input:disabled):hover span { border-color: var(--line); }
 .dc-day input:checked + span .dc-day-h { color: var(--pick-ink); }
-:root[data-wg-theme="dark"] :is(.dc-choice, .dc-day) { --pick: #3b82f6; --pick-tint: rgba(59, 130, 246, .16); --pick-ink: #93c5fd; }
-@media (prefers-color-scheme: dark) { :root:not([data-wg-theme="light"]) :is(.dc-choice, .dc-day) { --pick: #3b82f6; --pick-tint: rgba(59, 130, 246, .16); --pick-ink: #93c5fd; } }
+:root[data-wg-theme="dark"] { --pick: #3b82f6; --pick-tint: rgba(59, 130, 246, .16); --pick-ink: #93c5fd; }
+@media (prefers-color-scheme: dark) { :root:not([data-wg-theme="light"]) { --pick: #3b82f6; --pick-tint: rgba(59, 130, 246, .16); --pick-ink: #93c5fd; } }
 
 .dc-more { display: grid; gap: 10px; }
 .dc-q { font-size: 15px; font-weight: 500; color: var(--ink); }
@@ -1755,7 +1755,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 .dc-meter svg { width: 100%; height: 100%; rotate: -90deg; }
 .dc-meter circle { fill: none; stroke-width: 6; }
 .dc-meter-bg { stroke: var(--line-soft); }
-.dc-meter-fg { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset .5s var(--ease), stroke .3s; }
+.dc-meter-fg { stroke: var(--pick); stroke-linecap: round; transition: stroke-dashoffset .5s var(--ease), stroke .3s; }
 .dc-card[data-state="ready"] .dc-meter-fg { stroke: var(--green); }
 .dc-meter span { position: absolute; inset: 0; display: grid; place-items: center; font-size: 15px; font-weight: 600; color: var(--ink); }
 

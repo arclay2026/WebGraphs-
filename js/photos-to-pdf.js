@@ -59,26 +59,139 @@
     if (files.length) addFiles(files);
   });
 
-  /* ---------- page grid ---------- */
+  /* ---------- page grid ----------
+     Cards are kept (keyed by page id) rather than redrawn, so they move
+     with real physics. Each card hangs on a damped spring tied to its slot
+     in the grid: when the order changes it is pushed back to where it was
+     and the spring pulls it home, overshooting a little and leaning with
+     its sideways speed. Dragging (mouse, or press and hold on a phone)
+     lifts the card; let go and it is thrown back into its slot with the
+     speed it had. Removed pages hop and fall under gravity, new ones drop
+     in and settle, and rotating swings the photo round on a spring. */
   const ICON = {
     left: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>',
     right: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>',
     rotate: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v5h-5"/></svg>',
     remove: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   };
+  const calm = matchMedia('(prefers-reduced-motion: reduce)');
+  const MOVE = { k: 230, c: 21 };   // position spring: stiffness, damping (mass 1)
+  const TILT = { k: 320, c: 20 };   // lean that follows sideways speed
+  const SCALE = { k: 380, c: 22 };
+  const SPIN = { k: 170, c: 15 };   // photo rotation: a looser, wobblier spring
+  const GRAVITY = 2600;             // px/s² for pages that are removed
+  const bodies = new Map();         // page id -> spring state of its card
+  const falling = new Set();
+  let raf = 0; let last = 0;
+
+  const cards = () => $$('.p2p-page:not(.is-falling)', grid);
+  const bodyOf = (li) => bodies.get(li.dataset.id);
+  function wake() { if (!raf) { last = 0; raf = requestAnimationFrame(tick); } }
+  const spring = (pos, vel, target, sp, dt) => vel + (-sp.k * (pos - target) - sp.c * vel) * dt;
+
+  function step(b, dt) {
+    if (b.delay > 0) { b.delay -= dt; return; }
+    if (!b.held) {
+      b.vx = spring(b.x, b.vx, 0, MOVE, dt); b.vy = spring(b.y, b.vy, 0, MOVE, dt);
+      b.x += b.vx * dt; b.y += b.vy * dt;
+    }
+    const lean = Math.max(-9, Math.min(9, b.vx * (b.held ? 0.018 : 0.012)));
+    b.vr = spring(b.r, b.vr, lean, TILT, dt); b.r += b.vr * dt;
+    b.vs = spring(b.s, b.vs, b.held ? 1.06 : 1, SCALE, dt); b.s += b.vs * dt;
+    b.va = spring(b.a, b.va, b.aT, SPIN, dt); b.a += b.va * dt;
+  }
+  const still = (b) => !b.held && b.delay <= 0 && Math.abs(b.x) + Math.abs(b.y) + Math.abs(b.r) + Math.abs(b.s - 1) + Math.abs(b.a - b.aT) < 0.08
+    && Math.abs(b.vx) + Math.abs(b.vy) + Math.abs(b.vr) + Math.abs(b.vs) + Math.abs(b.va) < 0.5;
+  function draw(b) {
+    b.el.style.transform = `translate3d(${b.x.toFixed(2)}px, ${b.y.toFixed(2)}px, 0) rotate(${b.r.toFixed(2)}deg) scale(${b.s.toFixed(4)})`;
+    b.el.style.zIndex = b.held ? 5 : (Math.abs(b.vx) + Math.abs(b.vy) > 40 ? 2 : '');
+    b.img.style.rotate = `${b.a.toFixed(2)}deg`;
+  }
+  function rest(b) {
+    b.x = b.y = b.r = b.vx = b.vy = b.vr = b.vs = b.va = 0; b.s = 1; b.a = b.aT; b.delay = 0;
+    b.el.style.transform = ''; b.el.style.zIndex = ''; b.img.style.rotate = `${b.aT}deg`;
+    b.awake = false;
+  }
+  function tick(t) {
+    const dt = last ? Math.min(0.034, (t - last) / 1000) : 1 / 60; last = t;
+    let busy = false;
+    bodies.forEach((b) => {
+      if (!b.awake) return;
+      if (calm.matches && !b.held) { rest(b); return; }
+      for (let n = 0, sub = Math.ceil(dt / 0.008); n < sub; n += 1) step(b, dt / sub);
+      if (still(b)) rest(b); else { draw(b); busy = true; }
+    });
+    falling.forEach((f) => {
+      f.vy += GRAVITY * dt; f.x += f.vx * dt; f.y += f.vy * dt; f.r += f.vr * dt; f.t += dt;
+      f.el.style.transform = `translate3d(${f.x}px, ${f.y}px, 0) rotate(${f.r}deg) scale(${Math.max(0.7, 1 - f.t * 0.25)})`;
+      f.el.style.opacity = Math.max(0, 1 - Math.max(0, f.y) / 320);
+      if (calm.matches || f.t > 1.4 || f.y > 360) { f.el.remove(); falling.delete(f); } else busy = true;
+    });
+    raf = busy ? requestAnimationFrame(tick) : 0;
+  }
+  function nudge(b) { b.awake = true; wake(); }
+
+  function make(p) {
+    const li = document.createElement('li');
+    li.className = 'p2p-page'; li.dataset.id = p.id;
+    li.innerHTML = `
+        <div class="p2p-thumb"><img src="${p.url}" alt="" draggable="false"></div>
+        <span class="p2p-num"></span>
+        <div class="p2p-actions">
+          <button type="button" data-act="left">${ICON.left}</button>
+          <button type="button" data-act="rotate">${ICON.rotate}</button>
+          <button type="button" data-act="right">${ICON.right}</button>
+          <button type="button" data-act="remove" class="p2p-del">${ICON.remove}</button>
+        </div>`;
+    const b = { el: li, img: li.querySelector('img'), x: 0, y: 0, vx: 0, vy: 0, r: 0, vr: 0, s: 1, vs: 0, a: p.rot, va: 0, aT: p.rot, delay: 0, held: false, awake: false };
+    bodies.set(String(p.id), b);
+    b.img.style.rotate = `${p.rot}deg`;
+    return li;
+  }
+  function fall(li) {
+    const b = bodyOf(li); bodies.delete(li.dataset.id);
+    const box = [li.offsetLeft, li.offsetTop, li.offsetWidth];   // measure before it leaves the flow
+    li.classList.add('is-falling'); li.inert = true;
+    li.style.left = `${box[0]}px`; li.style.top = `${box[1]}px`; li.style.width = `${box[2]}px`;
+    // a small hop, a sideways drift and a spin, then gravity takes it
+    falling.add({ el: li, x: b ? b.x : 0, y: b ? b.y : 0, r: b ? b.r : 0, t: 0,
+      vx: (Math.random() - 0.5) * 220, vy: -420 - Math.random() * 120, vr: (Math.random() < 0.5 ? -1 : 1) * (120 + Math.random() * 160) });
+    wake();
+  }
+
   function paint() {
     const scan = opt().look === 'scan';
-    grid.innerHTML = pages.map((p, i) => `
-      <li class="p2p-page" draggable="true" data-id="${p.id}">
-        <div class="p2p-thumb${scan ? ' is-scan' : ''}"><img src="${p.url}" alt="" style="rotate:${p.rot}deg" draggable="false"></div>
-        <span class="p2p-num">${i + 1}</span>
-        <div class="p2p-actions">
-          <button type="button" data-act="left" aria-label="Move page ${i + 1} earlier"${i === 0 ? ' disabled' : ''}>${ICON.left}</button>
-          <button type="button" data-act="rotate" aria-label="Rotate page ${i + 1}">${ICON.rotate}</button>
-          <button type="button" data-act="right" aria-label="Move page ${i + 1} later"${i === pages.length - 1 ? ' disabled' : ''}>${ICON.right}</button>
-          <button type="button" data-act="remove" class="p2p-del" aria-label="Remove page ${i + 1}">${ICON.remove}</button>
-        </div>
-      </li>`).join('');
+    const before = new Map(cards().map((li) => [li.dataset.id, [li.offsetLeft, li.offsetTop]]));
+    const keep = new Set(pages.map((p) => String(p.id)));
+    cards().forEach((li) => { if (!keep.has(li.dataset.id)) fall(li); });
+    let fresh = 0;
+    pages.forEach((p, i) => {
+      let li = grid.querySelector(`.p2p-page[data-id="${p.id}"]:not(.is-falling)`);
+      if (!li) {
+        li = make(p);
+        const b = bodyOf(li);
+        if (!calm.matches) { b.y = -70; b.s = 0.82; b.vr = (Math.random() - 0.5) * 120; b.delay = fresh * 0.07; li.style.animationDelay = `${fresh * 70}ms`; li.classList.add('is-new'); li.addEventListener('animationend', () => li.classList.remove('is-new'), { once: true }); nudge(b); draw(b); }
+        fresh += 1;
+      }
+      const at = cards()[i];
+      if (at !== li) grid.insertBefore(li, at || null);
+      li.querySelector('.p2p-thumb').classList.toggle('is-scan', scan);
+      li.querySelector('.p2p-num').textContent = i + 1;
+      const n = i + 1;
+      li.querySelector('[data-act="left"]').setAttribute('aria-label', `Move page ${n} earlier`);
+      li.querySelector('[data-act="right"]').setAttribute('aria-label', `Move page ${n} later`);
+      li.querySelector('[data-act="rotate"]').setAttribute('aria-label', `Rotate page ${n}`);
+      li.querySelector('[data-act="remove"]').setAttribute('aria-label', `Remove page ${n}`);
+      li.querySelector('[data-act="left"]').disabled = i === 0;
+      li.querySelector('[data-act="right"]').disabled = i === pages.length - 1;
+    });
+    // FLIP: every card that changed slot starts where it was and springs home
+    cards().forEach((li) => {
+      const was = before.get(li.dataset.id);
+      if (!was) return;
+      const dx = was[0] - li.offsetLeft; const dy = was[1] - li.offsetTop;
+      if (dx || dy) { const b = bodyOf(li); b.x += dx; b.y += dy; nudge(b); }
+    });
     const has = pages.length > 0;
     root.classList.toggle('has-pages', has);
     $('#p2p-count').textContent = has ? `${pages.length} page${pages.length === 1 ? '' : 's'}` : 'No pages yet';
@@ -89,40 +202,93 @@
   grid.addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-act]');
     if (!btn) return;
-    const i = indexOf(btn.closest('.p2p-page').dataset.id);
+    const id = btn.closest('.p2p-page').dataset.id;
+    const i = indexOf(id);
     const act = btn.dataset.act;
-    if (act === 'rotate') pages[i].rot = (pages[i].rot + 90) % 360;
-    else if (act === 'remove') { URL.revokeObjectURL(pages[i].url); pages.splice(i, 1); }
-    else {
+    if (act === 'rotate') {
+      pages[i].rot = (pages[i].rot + 90) % 360;
+      const b = bodies.get(id); b.aT += 90; nudge(b);
+      return;
+    }
+    let focusId = id; let focusAct = act;
+    if (act === 'remove') {
+      URL.revokeObjectURL(pages[i].url); pages.splice(i, 1);
+      const next = pages[Math.min(i, pages.length - 1)];
+      focusId = next ? String(next.id) : null; focusAct = 'rotate';
+    } else {
       const j = act === 'left' ? i - 1 : i + 1;
       if (j < 0 || j >= pages.length) return;
       [pages[i], pages[j]] = [pages[j], pages[i]];
+      const b = bodies.get(id); b.vs += 2.4; b.vy -= 160;   // the moved page hops over its neighbour
     }
     paint();
-    const again = grid.querySelector(`.p2p-page:nth-child(${Math.min(act === 'left' ? i : act === 'right' ? i + 2 : i + 1, pages.length)}) [data-act="${act === 'remove' ? 'rotate' : act}"]`);
-    if (again && !again.disabled) again.focus({ preventScroll: true });
+    if (!focusId) return;
+    const card = grid.querySelector(`.p2p-page[data-id="${focusId}"]:not(.is-falling)`);
+    if (!card) return;
+    let again = card.querySelector(`[data-act="${focusAct}"]`);
+    if (again.disabled) again = card.querySelector('[data-act="rotate"]');
+    if (document.activeElement !== again) again.focus({ preventScroll: true });
   });
-  // drag to reorder (mouse); touch users have the arrow buttons
-  let dragId = null;
-  grid.addEventListener('dragstart', (e) => {
-    const li = e.target.closest('.p2p-page'); if (!li) return;
-    dragId = li.dataset.id; li.classList.add('is-dragging');
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', dragId);
+
+  // Drag to reorder with pointer events: a mouse starts dragging after a few
+  // pixels, a finger after a short press and hold (so swiping still scrolls).
+  let drag = null;
+  const slotXY = (li) => { const r = grid.getBoundingClientRect(); return { x: r.left + li.offsetLeft, y: r.top + li.offsetTop }; };
+  function begin() {
+    if (!drag) return;
+    drag.started = true;
+    const b = bodyOf(drag.li); b.held = true; b.vx = 0; b.vy = 0; nudge(b);
+    drag.li.classList.add('is-held'); root.classList.add('is-sorting');
+  }
+  function end() {
+    if (!drag) return;
+    clearTimeout(drag.timer);
+    if (drag.started) {
+      const b = bodyOf(drag.li);
+      if (b) { b.held = false; nudge(b); }        // thrown home with the speed it had
+      drag.li.classList.remove('is-held'); root.classList.remove('is-sorting');
+    }
+    drag = null;
+  }
+  grid.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0 || e.target.closest('button')) return;
+    const li = e.target.closest('.p2p-page:not(.is-falling)');
+    if (!li) return;
+    const b = bodyOf(li); const slot = slotXY(li);
+    drag = { li, pid: e.pointerId, touch: e.pointerType !== 'mouse', started: false, timer: 0,
+      sx: e.clientX, sy: e.clientY, gx: e.clientX - slot.x - b.x, gy: e.clientY - slot.y - b.y, lx: e.clientX, lt: e.timeStamp };
+    if (drag.touch) drag.timer = setTimeout(begin, 260);
   });
-  grid.addEventListener('dragover', (e) => {
-    if (dragId === null) return;
+  window.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.pid) return;
+    if (!drag.started) {
+      const moved = Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy);
+      if (drag.touch) { if (moved > 10) end(); return; }
+      if (moved < 5) return;
+      begin();
+    }
     e.preventDefault();
-    const over = e.target.closest('.p2p-page');
-    if (!over || over.dataset.id === dragId) return;
-    const from = indexOf(dragId); const to = indexOf(over.dataset.id);
-    const [moved] = pages.splice(from, 1);
-    pages.splice(to, 0, moved);
-    paint();
-    grid.querySelector(`[data-id="${dragId}"]`).classList.add('is-dragging');
-  });
-  grid.addEventListener('dragend', () => { dragId = null; $$('.p2p-page.is-dragging', grid).forEach((li) => li.classList.remove('is-dragging')); });
-  grid.addEventListener('drop', (e) => { if (dragId !== null) e.preventDefault(); });
+    const li = drag.li; const b = bodyOf(li);
+    const dt = Math.max(0.004, (e.timeStamp - drag.lt) / 1000);
+    b.vx = b.vx * 0.5 + ((e.clientX - drag.lx) / dt) * 0.5;   // smoothed pointer speed
+    drag.lx = e.clientX; drag.lt = e.timeStamp;
+    const slot = slotXY(li);
+    b.x = e.clientX - drag.gx - slot.x; b.y = e.clientY - drag.gy - slot.y;
+    // swap into whichever slot the card's centre is now over
+    const cx = li.offsetLeft + b.x + li.offsetWidth / 2; const cy = li.offsetTop + b.y + li.offsetHeight / 2;
+    const over = cards().find((o) => o !== li && cx > o.offsetLeft && cx < o.offsetLeft + o.offsetWidth && cy > o.offsetTop && cy < o.offsetTop + o.offsetHeight);
+    if (over) {
+      const from = indexOf(li.dataset.id); const to = indexOf(over.dataset.id);
+      const [moved] = pages.splice(from, 1); pages.splice(to, 0, moved);
+      paint();
+    }
+  }, { passive: false });
+  window.addEventListener('pointerup', end);
+  window.addEventListener('pointercancel', end);
+  // while a finger is dragging a page, stop the page from scrolling instead
+  grid.addEventListener('touchmove', (e) => { if (drag && drag.started) e.preventDefault(); }, { passive: false });
+  grid.addEventListener('contextmenu', (e) => { if (drag) e.preventDefault(); });
+  grid.addEventListener('dragstart', (e) => e.preventDefault());
 
   $('#p2p-clear').addEventListener('click', () => { pages.forEach((p) => URL.revokeObjectURL(p.url)); pages = []; say(''); paint(); });
   $$('input[name="p2p-look"]').forEach((r) => r.addEventListener('change', paint));

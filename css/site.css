@@ -1899,16 +1899,21 @@ kbd { display: inline-block; padding: 1px 6px; border-radius: 6px; border: 1px s
 .p2p-add-row .btn { cursor: pointer; }
 .p2p-meta { margin-left: auto; display: flex; align-items: center; gap: 12px; }
 .p2p-count { font-size: 14px; color: var(--mute); }
-.p2p-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.p2p-grid { position: relative; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
 .p2p-grid:empty { display: none; }
 .p2p-page {
   position: relative; display: grid; gap: 8px; padding: 8px; border-radius: 16px; background: var(--card);
-  border: 1px solid var(--line); cursor: grab; transition: box-shadow .2s, opacity .2s, border-color .2s;
+  border: 1px solid var(--line); cursor: grab; transition: box-shadow .25s, border-color .2s;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; will-change: transform;
 }
 .p2p-page:hover { border-color: var(--line-strong); box-shadow: var(--shadow); }
-.p2p-page.is-dragging { opacity: .45; border-style: dashed; border-color: var(--accent); }
+.p2p-page.is-held { cursor: grabbing; border-color: var(--line-strong); box-shadow: 0 28px 50px -18px rgba(0, 21, 35, .4), 0 8px 18px -10px rgba(0, 21, 35, .25); }
+.p2p.is-sorting, .p2p.is-sorting * { cursor: grabbing !important; }
+.p2p-page.is-falling { position: absolute; margin: 0; z-index: 3; pointer-events: none; }
+.p2p-page.is-new { animation: p2p-in .3s ease both; }
+@keyframes p2p-in { from { opacity: 0; } }
 .p2p-thumb { aspect-ratio: 3 / 4; display: grid; place-items: center; overflow: hidden; border-radius: 10px; background: #eef2f5; }
-.p2p-thumb img { width: 100%; height: 100%; object-fit: contain; transition: rotate .25s var(--ease); }
+.p2p-thumb img { width: 100%; height: 100%; object-fit: contain; }
 .p2p-thumb.is-scan img { filter: grayscale(1) contrast(1.45) brightness(1.08); }
 .p2p-num {
   position: absolute; top: 14px; left: 14px; min-width: 26px; height: 26px; padding: 0 8px; border-radius: 999px;

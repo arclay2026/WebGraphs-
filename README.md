@@ -75,4 +75,4 @@ Every page has share tags in its `<head>` pointing at a card in `assets/og/` (12
 
 ## Software & drivers page
 
-`software.html` lists the software and drivers we install as app cards (each `<li class="sw-app">` in the grid: tile colour, name, category, and Free / Licence needed / Included). To add or remove an app, copy or delete one `<li>`; `data-cat` must be one of the filter chips' `data-filter` values. `js/software.js` handles the filters, search and the install list that is sent on WhatsApp.
+`software.html` lists the software and drivers we install as app cards (each `<li class="sw-app">` in the grid: tile colour, name, category, and Free / Licence needed / Included). To add or remove an app, copy or delete one `<li>`; `data-cat` must be one of the filter chips' `data-filter` values. App logos live in `assets/apps/` (shown on a white tile with `class="sw-app-ic is-logo"`); apps without a logo use a coloured tile with a line icon. `js/software.js` handles the filters, search and the install list that is sent on WhatsApp.

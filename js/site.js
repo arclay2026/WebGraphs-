@@ -808,6 +808,60 @@
   }
 
   /* ---------- Boot ---------- */
+  /* Page-to-page photo morph. A photo hero always carries the
+     view-transition name "wg-photo" (CSS). When a link with a photo (or a
+     photo marked data-morph="page.html") leads to a page with such a hero,
+     that photo takes the same name, so it grows into the hero instead of
+     the page just fading. Back runs it in reverse when the page comes
+     back from the browser's cache. Browsers without cross-document view
+     transitions simply load the page. */
+  function initMorph() {
+    if (!('onpageswap' in window)) return;
+    const NAME = 'wg-photo';
+    const clean = (u) => { const x = new URL(u, location.href); x.hash = ''; x.search = ''; return x.href; };
+    const onScreen = (el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.bottom > 0 && r.top < innerHeight; };
+    const hero = () => document.querySelector('.page-hero--photo .ph-hero-media img');
+    let named = null;
+    const reset = () => {
+      if (named) named.style.viewTransitionName = '';
+      named = null;
+      const h = hero(); if (h) h.style.viewTransitionName = '';
+    };
+    const use = (el) => {
+      const h = hero();
+      if (h && h !== el) h.style.viewTransitionName = 'none';   // names must be unique
+      el.style.viewTransitionName = NAME; named = el;
+    };
+    const photoFor = (target) => [...document.querySelectorAll('a[href] img[src^="assets/photos/"], img[data-morph]')]
+      .find((i) => clean(i.dataset.morph || i.closest('a').href) === target && onScreen(i)) || null;
+    let lastLink = null;
+    document.addEventListener('click', (e) => { lastLink = e.target.closest ? e.target.closest('a[href]') : null; }, true);
+
+    window.addEventListener('pageswap', (e) => {
+      reset();
+      const h = hero();
+      if (h && !onScreen(h)) h.style.viewTransitionName = 'none';
+      if (!e.viewTransition || !e.activation || !e.activation.entry) return;
+      const url = new URL(e.activation.entry.url);
+      if (url.hash || e.activation.navigationType === 'traverse') return;
+      const target = clean(url.href);
+      let src = null;
+      if (lastLink && clean(lastLink.href) === target) src = lastLink.querySelector('img[src^="assets/photos/"]');
+      if (!src || !onScreen(src)) src = [...document.querySelectorAll('img[data-morph]')].find((i) => clean(i.dataset.morph) === target && onScreen(i)) || null;
+      if (src) use(src);
+    });
+
+    window.addEventListener('pagereveal', (e) => {
+      reset();
+      const h = hero();
+      if (h && !onScreen(h)) h.style.viewTransitionName = 'none';
+      const act = window.navigation && navigation.activation;
+      if (!e.viewTransition || !act || act.navigationType !== 'traverse' || !act.from) return;
+      const dest = photoFor(clean(act.from.url));
+      if (dest) { use(dest); e.viewTransition.finished.finally(reset); }
+    });
+  }
+
   function boot() {
     document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
     initSplash();
@@ -820,6 +874,7 @@
     initReveal();
     initScenes();
     initImageGuard();
+    initMorph();
     initQuickPick();
     initBundle();
     initPricingTabs();

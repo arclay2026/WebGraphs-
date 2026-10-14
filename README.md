@@ -76,3 +76,7 @@ Every page has share tags in its `<head>` pointing at a card in `assets/og/` (12
 ## Software & drivers page
 
 `software.html` lists the software and drivers we install as app cards (each `<li class="sw-app">`, in either the "Software & apps" or the "Drivers" group). To add or remove an app, copy or delete one `<li>`; `data-cat` must be one of the filter chips' `data-filter` values. App logos live in `assets/apps/` (shown on a white tile with `class="sw-app-ic is-logo"`); apps without a logo use a coloured tile with a line icon. `js/software.js` handles the filters, search and the install list that is sent on WhatsApp.
+
+## Page-to-page photo morph
+
+On browsers with cross-document view transitions (Chrome, Edge, Safari 18+), a photo that links to a page with a photo hero (`.page-hero--photo`) grows into that hero instead of the page just fading, and Back shrinks it again. Any photo inside a link works automatically; a photo that is not itself a link can be tied to a page with `data-morph="page.html"` (the courses photo on the home page uses this for "Full curriculum"). The CSS is under "Photo morph" in `css/site.css`, the script is `initMorph` in `js/site.js`.

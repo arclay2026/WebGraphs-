@@ -2093,6 +2093,19 @@ html.wg-lock { overflow: hidden; }
 @keyframes vt-out { to { opacity: 0; transform: translateY(-14px); } }
 @keyframes vt-in { from { opacity: 0; transform: translateY(28px); } }
 
+/* Photo morph (see initMorph in site.js): the photo flies from its tile
+   into the page hero, clipped to the same rounded corners all the way.
+   A hero with nothing to morph from or to just moves with the page. */
+.page-hero--photo .ph-hero-media img { view-transition-name: wg-photo; }
+::view-transition-group(wg-photo) { animation-duration: .7s; animation-timing-function: cubic-bezier(.16, 1, .3, 1); }
+::view-transition-image-pair(wg-photo) { overflow: hidden; border-radius: var(--r-lg); }
+::view-transition-old(wg-photo), ::view-transition-new(wg-photo) { height: 100%; object-fit: cover; animation-duration: .45s; }
+::view-transition-new(wg-photo):only-child { animation: vt-in .5s cubic-bezier(.16, 1, .3, 1) both; }
+::view-transition-old(wg-photo):only-child { animation: vt-out .2s cubic-bezier(.4, 0, 1, 1) both; }
+/* the hero arrives with the transition, so skip its own wipe-in reveal */
+html:active-view-transition .page-hero--photo .ph-hero-media[data-reveal] img { clip-path: none; transform: none; transition: none; }
+html:active-view-transition .ph-hero-media { background: transparent; }
+
 /* ---------- Headline reveals ----------
    site.js wraps each word of the big headings in a mask; the words rise
    into place one after another when the heading scrolls into view. */

@@ -1703,7 +1703,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 
 .dc-choices { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .dc-choices--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.dc-choice, .dc-day { position: relative; }
+.dc-choice, .dc-day { position: relative; --pick: #2563eb; --pick-tint: #eff6ff; --pick-ink: #1d4ed8; }
 .dc-choice input, .dc-day input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
 .dc-choice span, .dc-day span {
   display: grid; align-content: start; gap: 2px; height: 100%; padding: 12px 14px; border-radius: 12px;
@@ -1713,12 +1713,14 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 .dc-choice b, .dc-day b { font-size: 15px; font-weight: 500; line-height: 1.3; }
 .dc-choice small, .dc-day small { font-size: 13px; color: var(--mute); line-height: 1.35; }
 .dc-choice:hover span, .dc-day:hover span { border-color: var(--line-strong); }
-.dc-choice input:checked + span, .dc-day input:checked + span { border-color: var(--accent); background: var(--accent-tint); box-shadow: inset 0 0 0 1px var(--accent); }
-.dc-choice input:focus-visible + span, .dc-day input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
+.dc-choice input:checked + span, .dc-day input:checked + span { border-color: var(--pick); background: var(--pick-tint); box-shadow: inset 0 0 0 1px var(--pick); }
+.dc-choice input:focus-visible + span, .dc-day input:focus-visible + span { outline: 3px solid var(--pick); outline-offset: 2px; }
 .dc-day input:disabled { cursor: not-allowed; }
 .dc-day input:disabled + span { opacity: .45; }
 .dc-day:has(input:disabled):hover span { border-color: var(--line); }
-.dc-day input:checked + span .dc-day-h { color: var(--accent-ink); }
+.dc-day input:checked + span .dc-day-h { color: var(--pick-ink); }
+:root[data-wg-theme="dark"] :is(.dc-choice, .dc-day) { --pick: #3b82f6; --pick-tint: rgba(59, 130, 246, .16); --pick-ink: #93c5fd; }
+@media (prefers-color-scheme: dark) { :root:not([data-wg-theme="light"]) :is(.dc-choice, .dc-day) { --pick: #3b82f6; --pick-tint: rgba(59, 130, 246, .16); --pick-ink: #93c5fd; } }
 
 .dc-more { display: grid; gap: 10px; }
 .dc-q { font-size: 15px; font-weight: 500; color: var(--ink); }

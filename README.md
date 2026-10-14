@@ -72,3 +72,7 @@ Every page has share tags in its `<head>` pointing at a card in `assets/og/` (12
 ## Driver checklist PDF
 
 `assets/downloads/uber-bolt-registration-checklist.pdf` (linked from the home, services and driver checker pages) is built from `tools/checklist/checklist.html`. Edit the wording there, then run `node tools/checklist/render.js` (needs Node and Playwright) to rebuild the PDF. The QR code on it opens a WhatsApp chat with the studio.
+
+## Software & drivers page
+
+`software.html` lists the software and drivers we install as app cards (each `<li class="sw-app">` in the grid: tile colour, name, category, and Free / Licence needed / Included). To add or remove an app, copy or delete one `<li>`; `data-cat` must be one of the filter chips' `data-filter` values. `js/software.js` handles the filters, search and the install list that is sent on WhatsApp.

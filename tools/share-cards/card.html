@@ -35,6 +35,9 @@ h1 em { font-style:normal; color:var(--accent); }
 .icon { width:340px; height:340px; border-radius:64px; background:#fff; display:grid; place-items:center; align-self:center; margin-right:30px; color:var(--accent); }
 .icon svg { width:170px; height:170px; }
 .icon.navy { color:var(--navy); }
+.swts { display:grid; grid-template-columns:repeat(3,120px); gap:20px; align-content:center; padding-right:16px; }
+.swt { width:120px; height:120px; border-radius:30px; display:grid; place-items:center; color:#fff; }
+.swt svg { width:60px; height:60px; }
 </style></head><body>
 <div class="card" id="card"></div>
 <script>
@@ -67,6 +70,7 @@ const C = {
     `<div class="tiles"><div class="tile q"><i>?</i>How much does fingerprint capture cost?</div><div class="tile q"><i>?</i>What documents do I need to bring?</div><div class="tile q"><i>?</i>Do I need to book an appointment?</div></div>`),
   'qr-code': page('Free tool', 'QR code<br><em>studio.</em>', 'Turn a link, WhatsApp number or text<br>into a QR code. Free, in your browser.', `<div class="icon navy">${ico.qr}</div>`),
   'signature-maker': page('Free tool', 'Signature<br><em>maker.</em>', 'Draw or type your signature, then<br>download a clean, transparent image.', `<div class="icon navy">${ico.sig}</div>`),
+  software: page('Software installation', 'Software &amp; drivers,<br><em>installed and ready.</em>', 'Windows, Office, browsers, antivirus,<br>Adobe apps and all your drivers.', `<div class="swts"><span class="swt" style="background:#0067c0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" stroke="none" d="M4 4h7.2v7.2H4zM12.8 4H20v7.2h-7.2zM4 12.8h7.2V20H4zM12.8 12.8H20V20h-7.2z"/></svg></span><span class="swt" style="background:#1a73e8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><span class="swt" style="background:#25d366"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5a8.5 8.5 0 0 0-7.4 12.7L3.5 20.5l4.4-1.1A8.5 8.5 0 1 0 12 3.5Z"/></svg></span><span class="swt" style="background:#16a34a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.2 3 7.8 7 9.5 4-1.7 7-5.3 7-9.5V6Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span><span class="swt" style="background:#334155"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V4h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v6H7z"/></svg></span><span class="swt" style="background:#76b900"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M10 10h4v4h-4zM9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg></span></div>`),
   'photos-to-pdf': page('Free tool', 'Photos<br><em>to PDF.</em>', 'Turn photos of your documents into<br>one neat PDF. Free, in your browser.', `<div class="icon navy">${ico.pdf}</div>`),
 };
 document.getElementById('card').innerHTML = C[new URLSearchParams(location.search).get('c') || 'index'];

@@ -3,7 +3,7 @@
 // Edit the wording per page in card.html (the C object), then re-run.
 const path = require('path');
 const { chromium } = require('playwright');
-const pages = ['index', 'driver-checker', 'courses', 'services', 'about', 'pricing', 'contact', 'faq', 'qr-code', 'signature-maker', 'photos-to-pdf'];
+const pages = ['index', 'driver-checker', 'courses', 'services', 'about', 'pricing', 'contact', 'faq', 'qr-code', 'signature-maker', 'photos-to-pdf', 'software'];
 const out = path.join(__dirname, '..', '..', 'assets', 'og');
 (async () => {
   const browser = await chromium.launch();

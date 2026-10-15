@@ -67,7 +67,7 @@ Then open <http://localhost:8000>.
 
 Every page has share tags in its `<head>` pointing at a card in `assets/og/` (1200×630 JPG, one per page). To change a card's wording, edit `tools/share-cards/card.html` and run `node tools/share-cards/render.js` (needs Node and Playwright).
 
-**Once the site has its domain:** WhatsApp and Facebook only show the picture when `og:image` is a full web address. In every page, change `content="assets/og/` to `content="https://YOUR-DOMAIN/assets/og/` — one find-and-replace across the `.html` files.
+**Once the site has its domain:** see "Going live" below — one command puts the full web address into the share previews.
 
 ## Driver checklist PDF
 
@@ -80,3 +80,19 @@ Every page has share tags in its `<head>` pointing at a card in `assets/og/` (12
 ## Page-to-page photo morph
 
 On browsers with cross-document view transitions (Chrome, Edge, Safari 18+), a photo that links to a page with a photo hero (`.page-hero--photo`) grows into that hero instead of the page just fading, and Back shrinks it again. Any photo inside a link works automatically; a photo that is not itself a link can be tied to a page with `data-morph="page.html"` (the courses photo on the home page uses this for "Full curriculum"). The CSS is under "Photo morph" in `css/site.css`, the script is `initMorph` in `js/site.js`.
+
+## Going live (SEO)
+
+Everything search engines need is in place, waiting for the domain:
+
+- `sitemap.xml` and `robots.txt` — the page list for Google, and where to find it.
+- A canonical address and full share-picture address (`og:url`, `og:image`) on every page.
+- Business details for Google Search and Maps (address, hours, phone, socials) in a `application/ld+json` block in `index.html`.
+- `favicon.ico`, `assets/apple-touch-icon.png` and `site.webmanifest` for search results and phone home screens.
+- `404.html` — the page shown for broken links (`.htaccess` points Apache/LiteSpeed hosts to it, adds compression and browser caching).
+
+All of these use the placeholder `https://YOUR-DOMAIN`. **Before uploading**, run once from the site folder:
+
+    python3 tools/set-domain.py https://www.your-domain.co.za
+
+(or do a find-and-replace of `https://YOUR-DOMAIN` across the `.html` files, `sitemap.xml` and `robots.txt`). Then, after the site is live: turn on SSL and un-comment the https lines at the bottom of `.htaccess`, add the site to Google Search Console and submit `sitemap.xml`, and create/claim the Google Business Profile with the same address and hours. When a page's content changes a lot, update its `<lastmod>` date in `sitemap.xml`.

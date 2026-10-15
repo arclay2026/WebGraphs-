@@ -1103,7 +1103,7 @@ a.price-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift)
 }
 
 /* ---------- Forms ---------- */
-.field { display: grid; gap: 8px; }
+.field { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
 .field label { font-size: 15px; font-weight: 500; color: var(--ink); }
 .field label .label-hint { color: var(--mute); font-weight: 400; }
 .field input, .field select, .field textarea {
@@ -1122,9 +1122,9 @@ a.price-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift)
 .field .error { min-height: 0; font-size: 14px; color: var(--error); }
 .field .error:empty { display: none; }
 .field.has-error input, .field.has-error select, .field.has-error textarea { border-color: var(--error); }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .form-grid .full { grid-column: 1 / -1; }
-@media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .form-grid { grid-template-columns: minmax(0, 1fr); } }
 .form-card { padding: clamp(24px, 3.5vw, 40px); border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line-soft); }
 .form-card h2 { font-size: clamp(21px, 2.2vw, 26px); margin-bottom: 8px; }
 .form-card > p { color: var(--mute); margin-bottom: 24px; }
@@ -1135,7 +1135,7 @@ a.price-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift)
 .form-success[hidden] { display: none; }
 .form-success strong { display: block; }
 
-.contact-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(28px, 5vw, 64px); align-items: start; }
+.contact-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
 .contact-methods { display: grid; gap: 12px; }
 .contact-method {
   display: flex; align-items: center; gap: 16px; padding: 18px 20px;
@@ -1146,8 +1146,9 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 .contact-method .ic { width: 44px; height: 44px; border-radius: 12px; background: var(--accent-tint); color: var(--accent-ink); display: grid; place-items: center; flex-shrink: 0; }
 .contact-method .ic svg { width: 22px; height: 22px; }
 .contact-method small { display: block; color: var(--mute); font-size: 14px; }
-.contact-method b { font-weight: 500; word-break: break-word; }
-@media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; } }
+.contact-method > span:last-child { min-width: 0; }
+.contact-method b { font-weight: 500; overflow-wrap: anywhere; }
+@media (max-width: 900px) { .contact-grid { grid-template-columns: minmax(0, 1fr); } }
 
 /* ---------- Custom dropdowns (initSelects in site.js) ---------- */
 .sel { position: relative; }
@@ -2218,3 +2219,5 @@ img[src^="assets/"] { -webkit-user-drag: none; -webkit-touch-callout: none; -web
 .nf-links { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 8px; }
 .nf-links a { color: var(--mute); text-decoration: none; font-size: 15px; }
 .nf-links a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+.nowrap { white-space: nowrap; }

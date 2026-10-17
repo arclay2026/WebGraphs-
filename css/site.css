@@ -2222,28 +2222,64 @@ img[src^="assets/"] { -webkit-user-drag: none; -webkit-touch-callout: none; -web
 
 .nowrap { white-space: nowrap; }
 
-/* ---------- Footer clock ----------
-   Live Johannesburg time (the studio's time, whoever is looking) with the
-   open/closed dot, and the visitor's own local time underneath when it
-   differs. Each digit rolls up when it changes; site.js drives it. */
-.wclock { display: grid; gap: 12px; width: min(100%, 330px); padding: 16px 18px 14px; border: 1px solid var(--dark-line); border-radius: 18px; }
-.wclock-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--on-dark-mute); }
-.wclock-city { color: var(--on-dark); font-weight: 500; }
-.wclock-status { display: flex; align-items: center; gap: 8px; margin: -2px 0 0; font-size: 13.5px; color: var(--on-dark-mute); }
-.wclock-status i { flex-shrink: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--on-dark-mute); }
-.wclock-status.is-open i { background: #22c55e; }
-.wclock-status.is-open { color: var(--on-dark); }
-.wclock-time { display: flex; align-items: baseline; gap: 6px; color: var(--on-dark); font-variant-numeric: tabular-nums; line-height: 1; }
-.wclock-hm { display: inline-flex; align-items: baseline; font-size: 46px; font-weight: 500; letter-spacing: -0.03em; }
-.wclock-colon { margin-inline: .02em; translate: 0 -.06em; }
-.wclock-sec { display: inline-flex; font-size: 19px; font-weight: 500; color: var(--on-dark-mute); }
-.wclock-zone { letter-spacing: .04em; }
-[data-wc] { position: relative; display: inline-block; height: 1.04em; overflow: hidden; }
+/* ---------- Corner clock ----------
+   Fixed to the bottom-left of the screen on every page: the studio's
+   Johannesburg time (right whatever country the visitor is in), a dot for
+   open / closed, and on hover or tap a small card with the status and the
+   visitor's own time. Digits roll when they change; site.js drives it. */
+.wclock {
+  position: fixed; left: max(20px, env(safe-area-inset-left)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 80;
+  display: grid; justify-items: start; gap: 8px; font-variant-numeric: tabular-nums;
+  transition: opacity .25s, transform .35s cubic-bezier(.16, 1, .3, 1);
+}
+.wclock-pill {
+  display: inline-flex; align-items: center; gap: 9px; height: 40px; padding: 0 14px 0 13px; border-radius: 999px;
+  border: 1px solid var(--line); background: color-mix(in srgb, var(--paper) 78%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: 0 10px 28px -16px rgba(0, 21, 35, .35); color: var(--ink); font: inherit; cursor: pointer;
+}
+.wclock-pill:hover { border-color: var(--line-strong); }
+.wclock-pill:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.wclock-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mute); }
+.wclock.is-open .wclock-dot, .wclock.is-open .wclock-status i { background: #22c55e; }
+.wclock-tag { font-size: 11.5px; font-weight: 600; letter-spacing: .1em; color: var(--mute); }
+.wclock-time { display: inline-flex; align-items: baseline; font-size: 17px; font-weight: 500; letter-spacing: -0.01em; line-height: 1; }
+.wclock-colon { margin-inline: .04em; translate: 0 -.05em; }
+.wclock-sec { display: inline-flex; margin-left: 5px; font-size: 12px; color: var(--mute); }
+[data-wc] { position: relative; display: inline-block; height: 1.06em; overflow: hidden; }
 [data-wc] > span { display: block; }
 [data-wc] > .wc-in { animation: wc-in .5s cubic-bezier(.2, .85, .25, 1) both; }
 [data-wc] > .wc-out { position: absolute; inset: 0; animation: wc-out .5s cubic-bezier(.2, .85, .25, 1) both; }
 @keyframes wc-in { from { transform: translateY(100%); opacity: 0; } }
 @keyframes wc-out { to { transform: translateY(-100%); opacity: 0; } }
-.wclock-you { margin: 0; padding-top: 11px; border-top: 1px solid var(--dark-line); font-size: 13.5px; color: var(--on-dark-mute); }
-.wclock-you b { color: var(--on-dark); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* the card that opens above the pill */
+.wclock-card {
+  display: grid; gap: 10px; width: max-content; max-width: min(300px, calc(100vw - 40px)); padding: 14px 16px; border-radius: 16px;
+  border: 1px solid var(--line); background: var(--card); box-shadow: 0 18px 40px -20px rgba(0, 21, 35, .4);
+  font-size: 13.5px; color: var(--mute);
+  opacity: 0; visibility: hidden; transform: translateY(6px) scale(.98); transform-origin: bottom left;
+  transition: opacity .2s, transform .3s cubic-bezier(.16, 1, .3, 1), visibility 0s .3s;
+}
+.wclock.is-expanded .wclock-card { opacity: 1; visibility: visible; transform: none; transition: opacity .2s, transform .3s cubic-bezier(.16, 1, .3, 1), visibility 0s; }
+@media (hover: hover) { .wclock:hover .wclock-card { opacity: 1; visibility: visible; transform: none; transition: opacity .2s, transform .3s cubic-bezier(.16, 1, .3, 1), visibility 0s; } }
+.wclock-head { display: flex; justify-content: space-between; gap: 16px; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; }
+.wclock-city { color: var(--ink); font-weight: 600; }
+.wclock-status { display: flex; align-items: center; gap: 8px; margin: 0; }
+.wclock-status i { flex-shrink: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--mute); }
+.wclock.is-open .wclock-status { color: var(--ink); }
+.wclock-you { margin: 0; padding-top: 10px; border-top: 1px solid var(--line-soft); }
+.wclock-you b { color: var(--ink); font-weight: 500; }
+
+/* step aside for the fingerprint reminder and the software list bar on phones */
+@media (max-width: 520px) {
+  .wclock { left: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .wclock-pill { height: 36px; padding: 0 12px 0 11px; gap: 8px; }
+  .wclock-time { font-size: 15.5px; }
+  body:has(.wg-nudge.is-in) .wclock, body.has-tray .wclock { opacity: 0; transform: translateY(12px); pointer-events: none; }
+}
+@media (prefers-reduced-motion: reduce) { .wclock-card { transition: none; } }
 @media print { .wclock { display: none; } }
+/* room under the footer so the clock never covers the copyright line */
+.site-footer { padding-bottom: 84px; }
+@media (max-width: 520px) { .site-footer { padding-bottom: 72px; } }

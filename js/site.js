@@ -862,13 +862,18 @@
     });
   }
 
-  /* Footer clock: the studio's Johannesburg time, correct wherever the
+  /* Corner clock: the studio's Johannesburg time, correct wherever the
      visitor is (it reads the time zone, not the visitor's clock setting),
      plus the visitor's own time and city when theirs is different. Digits
-     roll when they change; the clock only ticks while it is on screen. */
+     roll when they change; it pauses while the tab is hidden. */
   function initClock() {
     const box = document.querySelector('[data-wclock]');
     if (!box || !window.Intl) return;
+    const pill = box.querySelector('.wclock-pill');
+    const setOpen = (on) => { box.classList.toggle('is-expanded', on); pill.setAttribute('aria-expanded', String(on)); };
+    pill.addEventListener('click', () => setOpen(!box.classList.contains('is-expanded')));
+    document.addEventListener('click', (e) => { if (!box.contains(e.target)) setOpen(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
     const calm = matchMedia('(prefers-reduced-motion: reduce)');
     const slots = {};
     box.querySelectorAll('[data-wc]').forEach((el) => {

@@ -26,8 +26,10 @@ ErrorDocument 404 /404.html
 
 AddType application/manifest+json .webmanifest
 
-# Once the SSL certificate is active, remove the # from the three lines
-# below so every visit goes to the secure https:// address.
+# Once the SSL certificate is active, remove the # from the four lines
+# below. Every visit then goes to https://webgraphs.co.za (secure, no www),
+# the one address search engines should see.
 # RewriteEngine On
-# RewriteCond %{HTTPS} off
-# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# RewriteCond %{HTTPS} off [OR]
+# RewriteCond %{HTTP_HOST} ^www\. [NC]
+# RewriteRule ^ https://webgraphs.co.za%{REQUEST_URI} [L,R=301]

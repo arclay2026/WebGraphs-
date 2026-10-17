@@ -91,8 +91,6 @@ Everything search engines need is in place, waiting for the domain:
 - `favicon.ico`, `assets/apple-touch-icon.png` and `site.webmanifest` for search results and phone home screens.
 - `404.html` — the page shown for broken links (`.htaccess` points Apache/LiteSpeed hosts to it, adds compression and browser caching).
 
-All of these use the placeholder `https://YOUR-DOMAIN`. **Before uploading**, run once from the site folder:
+The domain is set: everything points to **https://webgraphs.co.za** (no www). If the domain ever changes, run `python3 tools/set-domain.py https://new-domain` after replacing `https://webgraphs.co.za` with `https://YOUR-DOMAIN` (a find-and-replace across the `.html` files, `sitemap.xml` and `robots.txt` also works).
 
-    python3 tools/set-domain.py https://www.your-domain.co.za
-
-(or do a find-and-replace of `https://YOUR-DOMAIN` across the `.html` files, `sitemap.xml` and `robots.txt`). Then, after the site is live: turn on SSL and un-comment the https lines at the bottom of `.htaccess`, add the site to Google Search Console and submit `sitemap.xml`, and create/claim the Google Business Profile with the same address and hours. When a page's content changes a lot, update its `<lastmod>` date in `sitemap.xml`.
+Then, after the site is live: turn on SSL and un-comment the four redirect lines at the bottom of `.htaccess` (sends http:// and www. visitors to https://webgraphs.co.za), add the site to Google Search Console and submit `sitemap.xml`, and create/claim the Google Business Profile with the same address and hours. When a page's content changes a lot, update its `<lastmod>` date in `sitemap.xml`.

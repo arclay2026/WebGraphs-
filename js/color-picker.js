@@ -52,10 +52,11 @@
     btn.className = 'cp-trigger';
     btn.id = input.id + '-btn';
     btn.setAttribute('aria-haspopup', 'dialog');
-    btn.innerHTML = '<span class="cp-chip"></span><span class="cp-hex"></span>';
+    btn.innerHTML = `<span class="cp-chip"></span><span class="cp-hex" id="${input.id}-hex"></span>`;
     input.after(btn);
     const label = document.querySelector(`label[for="${input.id}"]`);
-    if (label) { label.htmlFor = btn.id; btn.setAttribute('aria-label', `${label.textContent.trim()}: choose colour`); }
+    // name = label + the hex shown on the button, so the spoken name matches what is visible
+    if (label) { label.htmlFor = btn.id; label.id = label.id || `${input.id}-label`; btn.setAttribute('aria-labelledby', `${label.id} ${input.id}-hex`); }
     triggers.set(input, btn);
     btn.addEventListener('click', () => (current === input ? close() : open(input)));
   });

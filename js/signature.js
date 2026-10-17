@@ -343,8 +343,14 @@
 
   // Re-render once the handwriting fonts have loaded.
   if (document.fonts) {
-    FONTS.forEach((f) => document.fonts.load(fontString(f, 40), 'Aa').then(() => { fontsVersion += 1; render(); }).catch(() => {}));
-    document.fonts.ready.then(() => { fontsVersion += 1; paintFontSamples(); render(); });
+    // the handwriting stylesheet loads without blocking the page; load (again) once it arrives
+    const loadFonts = () => {
+      FONTS.forEach((f) => document.fonts.load(fontString(f, 40), 'Aa').then(() => { fontsVersion += 1; render(); }).catch(() => {}));
+      document.fonts.ready.then(() => { fontsVersion += 1; paintFontSamples(); render(); });
+    };
+    // fetched after the page has loaded, so they don't compete with it (they're only needed for typing)
+    if (document.readyState === 'complete') loadFonts(); else window.addEventListener('load', loadFonts, { once: true });
+    window.addEventListener('wg-sigfonts', () => { if (document.readyState === 'complete') loadFonts(); });
   }
 
   /* ---------- export ---------- */

@@ -4,6 +4,11 @@
    inner pages, pricing, courses, FAQ, forms, QR tool, footer, motion.
    ===================================================================== */
 
+/* Arial resized to Google Sans' measured width and height, used while the
+   web font downloads, so text doesn't reflow when Google Sans swaps in. */
+@font-face { font-family: "Google Sans Fallback"; src: local("Arial"), local("Helvetica"), local("Liberation Sans"); font-weight: 400; size-adjust: 100.4%; ascent-override: 96.6%; descent-override: 28.9%; line-gap-override: 0%; }
+@font-face { font-family: "Google Sans Fallback"; src: local("Arial"), local("Helvetica"), local("Liberation Sans"); font-weight: 500 700; size-adjust: 103.8%; ascent-override: 93.4%; descent-override: 27.9%; line-gap-override: 0%; }
+
 /* ---------- Tokens ---------- */
 /* Brand: red #ff4545, navy #001523, mist #e2e9ed, white #ffffff.
    Red fills buttons and marks; the deeper --accent-ink is for small red text
@@ -24,7 +29,7 @@
   --mist-2: #d3dde3;
   --surface: #f4f7f9;
   --accent: #ff4545;
-  --accent-ink: #d92f2f;
+  --accent-ink: #c62828;
   --accent-deep: #c22626;
   --accent-tint: #ffe9e9;
   --accent-on-dark: #ff6b6b;
@@ -43,7 +48,7 @@
   --shadow: 0 1px 2px rgba(0, 21, 35, .06), 0 2px 8px rgba(0, 21, 35, .05);
   --shadow-lift: 0 14px 40px -14px rgba(0, 21, 35, .3);
 
-  --font: "Google Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font: "Google Sans", "Google Sans Fallback", "Segoe UI", system-ui, -apple-system, sans-serif;
   --max: 1440px;
   --gutter: clamp(16px, 2.6vw, 32px);
   --header-h: 60px;
@@ -130,6 +135,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 ::selection { background: var(--accent); color: #fff; }
 
 [hidden] { display: none !important; }
+picture { display: contents; }
 .sr-only {
   position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
@@ -869,6 +875,7 @@ a.price-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift)
   display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: center;
   padding: clamp(32px, 5vw, 64px); border-radius: var(--r-lg);
   background: var(--navy) url("../assets/photos/cta-laptop-2200.jpg") center / cover no-repeat;
+  background-image: image-set(url("../assets/photos/cta-laptop-2200.webp") type("image/webp"), url("../assets/photos/cta-laptop-2200.jpg") type("image/jpeg"));
   color: #fff;
 }
 .cta-band::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(0, 21, 35, .58); }
@@ -1438,7 +1445,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
    Footer, dark sections, the price strip and the "Most asked for"
    price card are navy on the light site. On the dark site they would
    melt into the page, so there they switch back to the light palette. */
-:root[data-wg-theme="dark"] :is(.site-footer, .section--dark, .price-strip, .price-card.is-popular) { --ink: #001523; --text: #0d2232; --mute: #4d5f6c; --line: #d5dee4; --line-strong: #b4c2cb; --line-soft: #e8eef1; --card: #ffffff; --surface: #f4f7f9; --mist: #e2e9ed; --mist-2: #d3dde3; --accent-ink: #d92f2f; --accent-tint: #ffe9e9; --ok-ink: #166534; --green-tint: #e8f5e9; --on-dark: #001523; --on-dark-mute: #4d5f6c; --dark-line: #cfd9e0; --accent-on-dark: #d92f2f; --navy-2: #ffffff; background: #edf2f5; color: var(--text); }
+:root[data-wg-theme="dark"] :is(.site-footer, .section--dark, .price-strip, .price-card.is-popular) { --ink: #001523; --text: #0d2232; --mute: #4d5f6c; --line: #d5dee4; --line-strong: #b4c2cb; --line-soft: #e8eef1; --card: #ffffff; --surface: #f4f7f9; --mist: #e2e9ed; --mist-2: #d3dde3; --accent-ink: #c62828; --accent-tint: #ffe9e9; --ok-ink: #166534; --green-tint: #e8f5e9; --on-dark: #001523; --on-dark-mute: #4d5f6c; --dark-line: #cfd9e0; --accent-on-dark: #d92f2f; --navy-2: #ffffff; background: #edf2f5; color: var(--text); }
 :root[data-wg-theme="dark"] .price-card.is-popular { border-color: rgba(255, 69, 69, .5); box-shadow: 0 0 0 1px rgba(255, 69, 69, .2), 0 24px 50px -28px rgba(0, 0, 0, .7); }
 :root[data-wg-theme="dark"] :is(.site-footer, .section--dark, .price-strip, .price-card.is-popular) :is(h2, h3), :root[data-wg-theme="dark"] .fp-price b, :root[data-wg-theme="dark"] .fp-glass-head h3, :root[data-wg-theme="dark"] .fp-doc-txt b, :root[data-wg-theme="dark"] .fp-steps b, :root[data-wg-theme="dark"] .price-strip b, :root[data-wg-theme="dark"] .price-card.is-popular .price-amount b, :root[data-wg-theme="dark"] .footer-col h2, :root[data-wg-theme="dark"] .footer-col a:hover, :root[data-wg-theme="dark"] .quick-pick .field :is(input, select), :root[data-wg-theme="dark"] .quick-pick .sel-btn { color: var(--ink); }
 :root[data-wg-theme="dark"] .price-card.is-popular .price-feats svg { color: #16a34a; }
@@ -1461,7 +1468,7 @@ a.contact-method:hover { border-color: var(--ink); color: var(--ink); }
 :root[data-wg-theme="dark"] .footer-brand .logo-on-light { display: block; }
 :root[data-wg-theme="dark"] .foot-qr img { box-shadow: 0 0 0 1px var(--line), 0 10px 24px -16px rgba(0, 21, 35, .35); }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-wg-theme="light"]) :is(.site-footer, .section--dark, .price-strip, .price-card.is-popular) { --ink: #001523; --text: #0d2232; --mute: #4d5f6c; --line: #d5dee4; --line-strong: #b4c2cb; --line-soft: #e8eef1; --card: #ffffff; --surface: #f4f7f9; --mist: #e2e9ed; --mist-2: #d3dde3; --accent-ink: #d92f2f; --accent-tint: #ffe9e9; --ok-ink: #166534; --green-tint: #e8f5e9; --on-dark: #001523; --on-dark-mute: #4d5f6c; --dark-line: #cfd9e0; --accent-on-dark: #d92f2f; --navy-2: #ffffff; background: #edf2f5; color: var(--text); }
+  :root:not([data-wg-theme="light"]) :is(.site-footer, .section--dark, .price-strip, .price-card.is-popular) { --ink: #001523; --text: #0d2232; --mute: #4d5f6c; --line: #d5dee4; --line-strong: #b4c2cb; --line-soft: #e8eef1; --card: #ffffff; --surface: #f4f7f9; --mist: #e2e9ed; --mist-2: #d3dde3; --accent-ink: #c62828; --accent-tint: #ffe9e9; --ok-ink: #166534; --green-tint: #e8f5e9; --on-dark: #001523; --on-dark-mute: #4d5f6c; --dark-line: #cfd9e0; --accent-on-dark: #d92f2f; --navy-2: #ffffff; background: #edf2f5; color: var(--text); }
   :root:not([data-wg-theme="light"]) .price-card.is-popular { border-color: rgba(255, 69, 69, .5); box-shadow: 0 0 0 1px rgba(255, 69, 69, .2), 0 24px 50px -28px rgba(0, 0, 0, .7); }
   :root:not([data-wg-theme="light"]) :is(.site-footer, .section--dark, .price-strip, .price-card.is-popular) :is(h2, h3), :root:not([data-wg-theme="light"]) .fp-price b, :root:not([data-wg-theme="light"]) .fp-glass-head h3, :root:not([data-wg-theme="light"]) .fp-doc-txt b, :root:not([data-wg-theme="light"]) .fp-steps b, :root:not([data-wg-theme="light"]) .price-strip b, :root:not([data-wg-theme="light"]) .price-card.is-popular .price-amount b, :root:not([data-wg-theme="light"]) .footer-col h2, :root:not([data-wg-theme="light"]) .footer-col a:hover, :root:not([data-wg-theme="light"]) .quick-pick .field :is(input, select), :root:not([data-wg-theme="light"]) .quick-pick .sel-btn { color: var(--ink); }
   :root:not([data-wg-theme="light"]) .price-card.is-popular .price-feats svg { color: #16a34a; }

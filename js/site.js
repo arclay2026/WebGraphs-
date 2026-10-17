@@ -862,6 +862,77 @@
     });
   }
 
+  /* Footer clock: the studio's Johannesburg time, correct wherever the
+     visitor is (it reads the time zone, not the visitor's clock setting),
+     plus the visitor's own time and city when theirs is different. Digits
+     roll when they change; the clock only ticks while it is on screen. */
+  function initClock() {
+    const box = document.querySelector('[data-wclock]');
+    if (!box || !window.Intl) return;
+    const calm = matchMedia('(prefers-reduced-motion: reduce)');
+    const slots = {};
+    box.querySelectorAll('[data-wc]').forEach((el) => {
+      el.textContent = '';
+      el.appendChild(document.createElement('span'));
+      slots[el.dataset.wc] = el;
+    });
+    const sr = box.querySelector('[data-wc-sr]');
+    const you = box.querySelector('[data-wc-you]');
+    const youTime = box.querySelector('[data-wc-you-time]');
+    const youPlace = box.querySelector('[data-wc-you-place]');
+    const opts = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' };
+    let jhb; let local;
+    try {
+      jhb = new Intl.DateTimeFormat('en-GB', { ...opts, timeZone: 'Africa/Johannesburg' });
+      local = new Intl.DateTimeFormat('en-GB', opts);
+    } catch (err) { return; }
+    const zone = (local.resolvedOptions().timeZone || '').split('/').pop().replace(/_/g, ' ');
+    const parts = (fmt, d) => {
+      const p = {}; fmt.formatToParts(d).forEach((x) => { p[x.type] = x.value; });
+      if (p.hour === '24') p.hour = '00';
+      return p;
+    };
+    const put = (key, ch, roll) => {
+      const el = slots[key]; const cur = el.lastElementChild;
+      if (cur.textContent === ch && !cur.classList.contains('wc-out')) return;
+      if (!roll || calm.matches) { el.textContent = ''; const s = document.createElement('span'); s.textContent = ch; el.appendChild(s); return; }
+      el.querySelectorAll('.wc-out').forEach((o) => o.remove());
+      cur.className = 'wc-out';
+      const s = document.createElement('span'); s.className = 'wc-in'; s.textContent = ch;
+      el.appendChild(s);
+      setTimeout(() => cur.remove(), 520);
+    };
+    let lastMinute = '';
+    const render = (roll) => {
+      const now = new Date();
+      const j = parts(jhb, now);
+      const t = j.hour + j.minute + j.second;
+      ['h0', 'h1', 'm0', 'm1', 's0', 's1'].forEach((k, i) => put(k, t[i], roll));
+      if (j.minute !== lastMinute) {
+        lastMinute = j.minute;
+        sr.textContent = `Local time in Johannesburg: ${j.hour}:${j.minute}`;
+        const l = parts(local, now);
+        const differs = l.hour !== j.hour || l.minute !== j.minute;
+        you.hidden = !differs;
+        if (differs) {
+          const lDay = l.year + l.month + l.day; const jDay = j.year + j.month + j.day;
+          youTime.textContent = `${l.hour}:${l.minute}`;
+          youPlace.textContent = (zone ? `· ${zone}` : '') + (lDay > jDay ? ' · next day' : lDay < jDay ? ' · previous day' : '');
+        }
+      }
+    };
+    let timer = 0; let running = false;
+    const loop = () => { render(true); timer = setTimeout(loop, 1000 - (Date.now() % 1000) + 8); };
+    const start = () => { if (running || document.hidden) return; running = true; render(false); timer = setTimeout(loop, 1000 - (Date.now() % 1000) + 8); };
+    const stop = () => { running = false; clearTimeout(timer); };
+    render(false);
+    if ('IntersectionObserver' in window) {
+      let seen = false;
+      new IntersectionObserver((es) => { seen = es[0].isIntersecting; if (seen) start(); else stop(); }, { rootMargin: '200px 0px' }).observe(box);
+      document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else if (seen) start(); });
+    } else start();
+  }
+
   function boot() {
     document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
     initSplash();
@@ -870,6 +941,7 @@
     initNavMenus();
     initHeader();
     initStatus();
+    initClock();
     initHeadlines();
     initReveal();
     initScenes();

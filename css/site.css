@@ -2221,3 +2221,29 @@ img[src^="assets/"] { -webkit-user-drag: none; -webkit-touch-callout: none; -web
 .nf-links a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 
 .nowrap { white-space: nowrap; }
+
+/* ---------- Footer clock ----------
+   Live Johannesburg time (the studio's time, whoever is looking) with the
+   open/closed dot, and the visitor's own local time underneath when it
+   differs. Each digit rolls up when it changes; site.js drives it. */
+.wclock { display: grid; gap: 12px; width: min(100%, 330px); padding: 16px 18px 14px; border: 1px solid var(--dark-line); border-radius: 18px; }
+.wclock-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--on-dark-mute); }
+.wclock-city { color: var(--on-dark); font-weight: 500; }
+.wclock-status { display: flex; align-items: center; gap: 8px; margin: -2px 0 0; font-size: 13.5px; color: var(--on-dark-mute); }
+.wclock-status i { flex-shrink: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--on-dark-mute); }
+.wclock-status.is-open i { background: #22c55e; }
+.wclock-status.is-open { color: var(--on-dark); }
+.wclock-time { display: flex; align-items: baseline; gap: 6px; color: var(--on-dark); font-variant-numeric: tabular-nums; line-height: 1; }
+.wclock-hm { display: inline-flex; align-items: baseline; font-size: 46px; font-weight: 500; letter-spacing: -0.03em; }
+.wclock-colon { margin-inline: .02em; translate: 0 -.06em; }
+.wclock-sec { display: inline-flex; font-size: 19px; font-weight: 500; color: var(--on-dark-mute); }
+.wclock-zone { letter-spacing: .04em; }
+[data-wc] { position: relative; display: inline-block; height: 1.04em; overflow: hidden; }
+[data-wc] > span { display: block; }
+[data-wc] > .wc-in { animation: wc-in .5s cubic-bezier(.2, .85, .25, 1) both; }
+[data-wc] > .wc-out { position: absolute; inset: 0; animation: wc-out .5s cubic-bezier(.2, .85, .25, 1) both; }
+@keyframes wc-in { from { transform: translateY(100%); opacity: 0; } }
+@keyframes wc-out { to { transform: translateY(-100%); opacity: 0; } }
+.wclock-you { margin: 0; padding-top: 11px; border-top: 1px solid var(--dark-line); font-size: 13.5px; color: var(--on-dark-mute); }
+.wclock-you b { color: var(--on-dark); font-weight: 500; font-variant-numeric: tabular-nums; }
+@media print { .wclock { display: none; } }

@@ -2234,18 +2234,18 @@ img[src^="assets/"] { -webkit-user-drag: none; -webkit-touch-callout: none; -web
 }
 .wclock-pill {
   display: inline-flex; align-items: center; gap: 9px; height: 40px; padding: 0 14px 0 13px; border-radius: 999px;
-  border: 1px solid var(--line); background: color-mix(in srgb, var(--paper) 78%, transparent);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4);
-  box-shadow: 0 10px 28px -16px rgba(0, 21, 35, .35); color: var(--ink); font: inherit; cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, .14); background: #001523; color: #fff;
+  box-shadow: 0 12px 30px -14px rgba(0, 21, 35, .55); font: inherit; cursor: pointer;
+  transition: transform .2s cubic-bezier(.16, 1, .3, 1), box-shadow .2s;
 }
-.wclock-pill:hover { border-color: var(--line-strong); }
+.wclock-pill:hover { transform: translateY(-1px); box-shadow: 0 16px 34px -14px rgba(0, 21, 35, .6); }
 .wclock-pill:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-.wclock-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mute); }
+.wclock-dot { width: 7px; height: 7px; border-radius: 50%; background: #7d93a3; }
 .wclock.is-open .wclock-dot, .wclock.is-open .wclock-status i { background: #22c55e; }
-.wclock-tag { font-size: 11.5px; font-weight: 600; letter-spacing: .1em; color: var(--mute); }
+.wclock-tag { font-size: 11.5px; font-weight: 600; letter-spacing: .1em; color: #9fb3c1; }
 .wclock-time { display: inline-flex; align-items: baseline; font-size: 17px; font-weight: 500; letter-spacing: -0.01em; line-height: 1; }
 .wclock-colon { margin-inline: .04em; translate: 0 -.05em; }
-.wclock-sec { display: inline-flex; margin-left: 5px; font-size: 12px; color: var(--mute); }
+.wclock-sec { display: inline-flex; margin-left: 5px; font-size: 12px; font-weight: 600; color: #ff5a5a; }
 [data-wc] { position: relative; display: inline-block; height: 1.06em; overflow: hidden; }
 [data-wc] > span { display: block; }
 [data-wc] > .wc-in { animation: wc-in .5s cubic-bezier(.2, .85, .25, 1) both; }
@@ -2277,6 +2277,28 @@ img[src^="assets/"] { -webkit-user-drag: none; -webkit-touch-callout: none; -web
   .wclock-pill { height: 36px; padding: 0 12px 0 11px; gap: 8px; }
   .wclock-time { font-size: 15.5px; }
   body:has(.wg-nudge.is-in) .wclock, body.has-tray .wclock { opacity: 0; transform: translateY(12px); pointer-events: none; }
+}
+/* dark theme: navy would vanish on the dark page, so the pill turns white */
+:root[data-wg-theme="dark"] .wclock-pill { background: #fff; color: #001523; border-color: transparent; box-shadow: 0 12px 30px -14px rgba(0, 0, 0, .7); }
+:root[data-wg-theme="dark"] .wclock-tag { color: #4d5f6c; }
+:root[data-wg-theme="dark"] .wclock-sec { color: #d92f2f; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-wg-theme="light"]) .wclock-pill { background: #fff; color: #001523; border-color: transparent; box-shadow: 0 12px 30px -14px rgba(0, 0, 0, .7); }
+  :root:not([data-wg-theme="light"]) .wclock-tag { color: #4d5f6c; }
+  :root:not([data-wg-theme="light"]) .wclock-sec { color: #d92f2f; }
+}
+/* over the footer the pill swaps to the opposite colour so it never blends in */
+.wclock-pill { transition: transform .2s cubic-bezier(.16, 1, .3, 1), box-shadow .2s, background-color .3s, color .3s; }
+.wclock.is-over-footer .wclock-pill { background: #fff; color: #001523; border-color: transparent; }
+.wclock.is-over-footer .wclock-tag { color: #4d5f6c; }
+.wclock.is-over-footer .wclock-sec { color: #d92f2f; }
+:root[data-wg-theme="dark"] .wclock.is-over-footer .wclock-pill { background: #001523; color: #fff; }
+:root[data-wg-theme="dark"] .wclock.is-over-footer .wclock-tag { color: #9fb3c1; }
+:root[data-wg-theme="dark"] .wclock.is-over-footer .wclock-sec { color: #ff5a5a; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-wg-theme="light"]) .wclock.is-over-footer .wclock-pill { background: #001523; color: #fff; }
+  :root:not([data-wg-theme="light"]) .wclock.is-over-footer .wclock-tag { color: #9fb3c1; }
+  :root:not([data-wg-theme="light"]) .wclock.is-over-footer .wclock-sec { color: #ff5a5a; }
 }
 @media (prefers-reduced-motion: reduce) { .wclock-card { transition: none; } }
 @media print { .wclock { display: none; } }

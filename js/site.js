@@ -874,6 +874,11 @@
     pill.addEventListener('click', () => setOpen(!box.classList.contains('is-expanded')));
     document.addEventListener('click', (e) => { if (!box.contains(e.target)) setOpen(false); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+    // swap the pill's colours while it sits over the footer
+    const foot = document.querySelector('.site-footer');
+    if (foot && 'IntersectionObserver' in window) {
+      new IntersectionObserver((es) => box.classList.toggle('is-over-footer', es[0].isIntersecting), { rootMargin: '0px 0px -40px 0px' }).observe(foot);
+    }
     const calm = matchMedia('(prefers-reduced-motion: reduce)');
     const slots = {};
     box.querySelectorAll('[data-wc]').forEach((el) => {

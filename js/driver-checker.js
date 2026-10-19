@@ -14,7 +14,7 @@
 
   const KEY = 'wg-driver-check';
   const WA = '27787347867';
-  const HOURS = { 1: [8, 17], 2: [8, 17], 3: [8, 17], 4: [8, 17], 5: [8, 17], 6: [8, 13] };
+  const HOURS = { 0: [8, 19], 1: [8, 19], 2: [8, 19], 3: [8, 19], 4: [8, 19], 5: [8, 19], 6: [8, 19] };
   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const $ = (s, r = document) => r.querySelector(s);
@@ -197,7 +197,7 @@
     ];
     $('#dc-list').innerHTML = items.map((it) => `<li class="dc-item is-${it.state}"><span class="dc-ic">${ICON[it.state]}</span><span class="dc-item-t"><b>${it.title}</b><small>${it.text}</small></span>${it.state === 'opt' ? '<span class="dc-tag">Optional</span>' : ''}</li>`).join('');
 
-    let when = 'Any day we’re open — Mon–Fri 8:00–17:00, Sat 8:00–13:00';
+    let when = 'Any day — we’re open every day 8:00–19:00';
     if (s.day) {
       const d = new Date(`${s.day}T12:00:00`);
       const h = HOURS[d.getDay()];

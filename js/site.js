@@ -321,8 +321,8 @@
   }
 
   /* ---------- Open / closed status (Johannesburg time) ----------
-     Mon–Fri 8:00–17:00, Sat 8:00–13:00, closed Sunday. */
-  const HOURS = { 1: [8, 17], 2: [8, 17], 3: [8, 17], 4: [8, 17], 5: [8, 17], 6: [8, 13] };
+     Every day 8:00–19:00, Sundays included. */
+  const HOURS = { 0: [8, 19], 1: [8, 19], 2: [8, 19], 3: [8, 19], 4: [8, 19], 5: [8, 19], 6: [8, 19] };
   const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   function johannesburgNow() {

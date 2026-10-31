@@ -10,7 +10,8 @@ const { chromium } = require('playwright'); const { spawn } = require('child_pro
   const args = ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(fps), '-i', '-'];
   if (audio) args.push('-i', audio);
   args.push('-c:v', 'libx264', '-preset', 'slow', '-crf', '15', '-pix_fmt', 'yuv420p', '-profile:v', 'high', '-r', String(fps), '-movflags', '+faststart');
-  if (audio) args.push('-c:a', 'aac', '-b:a', '192k', '-shortest');
+  // pad the voice with silence so the video keeps its full length (end card hold)
+  if (audio) args.push('-af', 'apad', '-c:a', 'aac', '-b:a', '192k', '-shortest');
   args.push(out);
   const ff = spawn('ffmpeg', args, { stdio: ['pipe', 'inherit', 'inherit'] });
   const t0 = Date.now();

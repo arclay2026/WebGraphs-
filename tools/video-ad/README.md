@@ -6,3 +6,9 @@
   `node render.js out.mp4 60 png [voiceover.mp3] [cues.json]`
 
 `ad.html` loads the site's images from `/webgraphs-/assets/`, so serve the folder *above* the site (e.g. `python3 -m http.server 8800` from the parent folder) and open `http://localhost:8800/webgraphs-/tools/video-ad/ad.html` after changing `const A` to `'/webgraphs-/assets/'` or `'../../assets/'`.
+
+## Sync to the voiceover
+
+`voiceover.mp3` is the ElevenLabs read of the script. `voiceover-word-timings.json` holds when each word is spoken (forced alignment of the script with pocketsphinx); the cue times in `ad.html` (`const C`) come from it. Render the final ad with:
+
+    node render.js webgraphs-ad.mp4 60 png voiceover.mp3

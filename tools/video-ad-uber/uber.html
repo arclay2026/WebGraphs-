@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Web Graphs — Uber &amp; Bolt fingerprint capture ad</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --navy:#001523; --ink:#f2f6f8; --mute:#9fb3c1; --red:#ff4545; --green:#22c55e; --wa:#25d366; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { width:1080px; height:1920px; overflow:hidden; background:var(--navy); }
+body { font-family:'Google Sans', system-ui, sans-serif; color:var(--ink); -webkit-font-smoothing:antialiased; }
+#stage { position:relative; width:1080px; height:1920px; overflow:hidden; background:var(--navy); }
+.a { position:absolute; left:0; top:0; will-change:transform, opacity; transform-origin:50% 50%; }
+/* brand shapes that drift behind the glass */
+.shape { border-radius:50%; }
+/* frosted glass */
+.glass { background:rgba(255,255,255,.075); -webkit-backdrop-filter:blur(30px) saturate(1.5); backdrop-filter:blur(30px) saturate(1.5);
+  border:1.5px solid rgba(255,255,255,.17); box-shadow:inset 0 1.5px 0 rgba(255,255,255,.22), 0 50px 90px -50px rgba(0,0,0,.75); }
+.glass-2 { background:rgba(255,255,255,.12); -webkit-backdrop-filter:blur(22px) saturate(1.4); backdrop-filter:blur(22px) saturate(1.4);
+  border:1.5px solid rgba(255,255,255,.2); box-shadow:inset 0 1.5px 0 rgba(255,255,255,.25), 0 30px 60px -30px rgba(0,0,0,.7); }
+.line { position:absolute; left:80px; overflow:hidden; padding-bottom:.12em; white-space:nowrap; }
+.w { display:inline-block; will-change:transform; }
+.h-l { font-size:112px; font-weight:500; letter-spacing:-.04em; line-height:1.02; }
+.red { color:var(--red); }
+.chip { display:inline-flex; align-items:center; gap:14px; height:62px; padding:0 26px; border-radius:99px; font-size:28px; font-weight:500; white-space:nowrap; }
+.chip i { width:12px; height:12px; border-radius:50%; background:var(--red); }
+.row { display:flex; align-items:center; gap:18px; }
+.bar { display:block; border-radius:8px; background:rgba(255,255,255,.85); }
+.bar.dim { background:rgba(255,255,255,.28); }
+.tick { width:42px; height:42px; border-radius:50%; background:var(--green); display:grid; place-items:center; flex:none; }
+.tick svg { width:24px; height:24px; }
+.mono { font-variant-numeric:tabular-nums; }
+.layer { position:absolute; left:0; top:0; }
+</style></head>
+<body><div id="stage"></div>
+<script>
+/* =====================================================================
+   Deterministic animation engine: every property is a pure function of
+   time, so render(t) gives the same frame every time (60 fps capture).
+   Adds w / h / rad tweens so one glass panel can morph between shapes.
+   ===================================================================== */
+const A = '../../assets/';
+const stage = document.getElementById('stage');
+const ELS = [];
+const P = (n) => n + 'px';
+function mk(cls, html = '', css = {}, parent = stage) {
+  const e = document.createElement('div');
+  e.className = 'a ' + cls; e.innerHTML = html; Object.assign(e.style, css);
+  parent.appendChild(e); e._t = []; ELS.push(e); return e;
+}
+function bez(x1, y1, x2, y2) {
+  return (x) => {
+    if (x <= 0) return 0; if (x >= 1) return 1;
+    let t = x;
+    for (let i = 0; i < 8; i++) {
+      const cx = 3 * x1 * t * (1 - t) ** 2 + 3 * x2 * t * t * (1 - t) + t ** 3 - x;
+      const dx = 3 * x1 * (1 - t) ** 2 + 6 * (x2 - x1) * t * (1 - t) + 3 * (1 - x2) * t * t;
+      if (Math.abs(cx) < 1e-6) break; t -= cx / (dx || 1e-6); t = Math.min(1, Math.max(0, t));
+    }
+    return 3 * y1 * t * (1 - t) ** 2 + 3 * y2 * t * t * (1 - t) + t ** 3;
+  };
+}
+const EASE = { out: bez(.16, 1, .3, 1), io: bez(.65, 0, .35, 1), morph: bez(.7, 0, .2, 1), in: bez(.55, 0, .9, .4), lin: (x) => x };
+function springAt(s, k = 1) {
+  const w = 15 * k, z = .6, wd = w * Math.sqrt(1 - z * z);
+  if (s <= 0) return 0;
+  return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + (z * w / wd) * Math.sin(wd * s));
+}
+function tw(e, prop, t0, dur, from, to, ease = 'out', k = 1) { e._t.push({ prop, t0, dur, from, to, ease, k }); return e; }
+const lerp = (a, b, p) => Array.isArray(a) ? a.map((v, i) => v + (b[i] - v) * p) : a + (b - a) * p;
+function val(e, prop, t, def) {
+  const ts = e._t.filter((x) => x.prop === prop);
+  if (!ts.length) return def;
+  if (t < ts[0].t0) return ts[0].from;
+  let cur = ts[0];
+  for (const x of ts) if (x.t0 <= t) cur = x;
+  const s = t - cur.t0;
+  let p = cur.ease === 'spring' ? springAt(s, cur.k) : (cur.dur ? EASE[cur.ease](Math.min(1, s / cur.dur)) : 1);
+  if (cur.ease !== 'spring' && s >= cur.dur) p = 1;
+  return lerp(cur.from, cur.to, p);
+}
+function render(t) {
+  for (const e of ELS) {
+    const x = val(e, 'x', t, 0), y = val(e, 'y', t, 0), s = val(e, 's', t, 1), r = val(e, 'r', t, 0), sx = val(e, 'sx', t, 1), o = val(e, 'o', t, 1);
+    e.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${r.toFixed(3)}deg) scale(${(s * sx).toFixed(4)}, ${s.toFixed(4)})`;
+    e.style.opacity = Math.max(0, Math.min(1, o)).toFixed(3);
+    const w = val(e, 'w', t, null), h = val(e, 'h', t, null), rad = val(e, 'rad', t, null);
+    if (w !== null) e.style.width = w.toFixed(2) + 'px';
+    if (h !== null) e.style.height = h.toFixed(2) + 'px';
+    if (rad !== null) e.style.borderRadius = rad.toFixed(2) + 'px';
+    const c = val(e, 'clip', t, null);
+    if (c) e.style.clipPath = `inset(${c[0].toFixed(2)}% ${c[1].toFixed(2)}% ${c[2].toFixed(2)}% ${c[3].toFixed(2)}% round ${(c[4] || 0).toFixed(1)}px)`;
+    if (e._fn) e._fn(t);
+  }
+}
+window.render = render;
+
+/* ---------- helpers ---------- */
+const W = (t, c) => ({ t, c });
+function words(lines, top, cls, t0, gap = 0.07, lineH = 1.06) {
+  const out = []; let n = 0;
+  lines.forEach((ln, li) => {
+    const L = document.createElement('div'); L.className = 'line ' + cls; stage.appendChild(L);
+    const fs = parseFloat(getComputedStyle(L).fontSize); L.style.top = P(top + li * fs * lineH);
+    ln.forEach((wd, wi) => {
+      const w = mk('w' + (wd.c ? ' ' + wd.c : ''), (wi ? '&nbsp;' : '') + wd.t, { position: 'relative' }, L);
+      tw(w, 'y', t0 + n * gap, 0.9, fs * 1.2, 0, 'out'); w._fs = fs; n++; out.push(w);
+    });
+  });
+  return out;
+}
+const LEAD = 0.5;
+function wordsExit(ws, t0) { ws.forEach((w, i) => tw(w, 'y', t0 + i * 0.022, 0.36, 0, -w._fs * 1.2, 'in')); }
+function exit(list, t0, dy = -70, gap = 0.012) {
+  list.forEach((e, i) => { const y0 = val(e, 'y', 1e9, 0); tw(e, 'y', t0 + i * gap, 0.42, y0, y0 + dy, 'in'); tw(e, 'o', t0 + i * gap + 0.08, 0.3, 1, 0, 'lin'); });
+}
+function fadeOut(list, t0, d = 0.3) { list.forEach((e) => tw(e, 'o', t0, d, 1, 0, 'lin')); }
+function pop(e, t0, k = 1, from = 0.6) { tw(e, 's', t0, 1, from, 1, 'spring', k); tw(e, 'o', t0, 0.18, 0, 1, 'lin'); return e; }
+function rise(e, t0, dy = 60, k = 0.85) { tw(e, 'y', t0, 1, dy, 0, 'spring', k); tw(e, 'o', t0, 0.25, 0, 1, 'lin'); return e; }
+function fadeIn(e, t0, d = 0.35) { tw(e, 'o', t0, d, 0, 1, 'lin'); return e; }
+const TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+const ICON = (d, size = 30, col = '#fff', sw = 1.9) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const WA_PATH = 'M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.08-.13-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.83 9.83 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.89 9.88M20.46 3.49A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.69 1.45c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.16-3.48-8.41Z';
+const WA = (s, col = '#fff') => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="${col}"><path d="${WA_PATH}"/></svg>`;
+const chip = (txt, t0) => rise(mk('chip glass-2', `<i></i>${txt}`, { left: P(80), top: P(300) }), t0, 40);
+const UBER = `<img src="${A}partners/uber.svg" style="height:34px;filter:brightness(0) invert(1);display:block">`;
+const BOLT = `<img src="${A}partners/bolt.svg" style="height:44px;display:block">`;
+
+/* =====================================================================
+   CUES (seconds). Re-timed to the voiceover once the MP3 arrives.
+   ===================================================================== */
+const C = window.CUES || {
+  s1: 0, s1b: 2.4, s2: 4.5, walk: 6.6, appt: 7.2, wait: 8.6,
+  s3: 10.4, id: 11.2, por: 12.4, lic: 15.6,
+  s4: 18.5, price: 19.0, reg: 21.5, platform: 23.3,
+  s5: 26.2, ready: 27.6, end: 29.9, addr: 31.4, hours: 33.0, total: 37.5,
+};
+const END = C.total;
+
+/* ---------- background ---------- */
+const grid = mk('', '', { left: P(-60), top: P(-60), width: P(1200), height: P(2040), opacity: '.45',
+  backgroundImage: 'radial-gradient(circle, rgba(159,179,193,.16) 1.6px, transparent 2px)', backgroundSize: '60px 60px' });
+tw(grid, 'y', 0, END, 0, -60, 'lin');
+const red = mk('shape', '', { left: P(540), top: P(520), width: P(560), height: P(560), background: '#ff4545' });
+tw(red, 'x', 0, END, 0, -300, 'io'); tw(red, 'y', 0, END, 0, 460, 'io'); tw(red, 's', 0, END, 1, 0.84, 'io');
+const green = mk('shape', '', { left: P(-160), top: P(1100), width: P(440), height: P(440), background: '#52bc81', opacity: '.55' });
+tw(green, 'x', 0, END, 0, 300, 'io'); tw(green, 'y', 0, END, 0, -420, 'io');
+const sq = mk('', '', { left: P(720), top: P(1320), width: P(300), height: P(300), borderRadius: '70px', background: '#2a5b7d' });
+tw(sq, 'r', 0, END, 12, -30, 'io'); tw(sq, 'x', 0, END, 0, -440, 'io'); tw(sq, 'y', 0, END, 0, -540, 'io');
+mk('', '', { left: 0, top: 0, width: P(1080), height: P(1920), background: 'rgba(0,21,35,.7)' });
+const logoTop = mk('', `<img src="${A}logo-footer.svg" style="width:290px;display:block">`, { left: P(72), top: P(150) });
+fadeIn(logoTop, 0.1, 0.5); tw(logoTop, 'o', C.end - 0.2, 0.3, 1, 0, 'lin');
+
+/* =====================================================================
+   THE MORPHING GLASS PANEL
+   ===================================================================== */
+const M = mk('glass', '', { overflow: 'hidden' });
+const SHAPES = {
+  card:  { x: 150, y: 660, w: 780, h: 560, rad: 44 },
+  photo: { x: 240, y: 620, w: 600, h: 877, rad: 44 },
+  list:  { x: 80, y: 640, w: 920, h: 660, rad: 36 },
+  price: { x: 140, y: 640, w: 800, h: 520, rad: 48 },
+  phone: { x: 300, y: 600, w: 480, h: 940, rad: 70 },
+  end:   { x: 110, y: 560, w: 860, h: 880, rad: 48 },
+};
+function morph(t0, from, to, dur = 0.95) { const a = SHAPES[from], b = SHAPES[to]; ['x', 'y', 'w', 'h', 'rad'].forEach((k) => tw(M, k, t0, dur, a[k], b[k], 'morph')); }
+['x', 'y', 'w', 'h', 'rad'].forEach((k) => tw(M, k, 0, 0, SHAPES.card[k], SHAPES.card[k], 'lin'));
+tw(M, 's', 0.35, 1, 0.82, 1, 'spring', .8); tw(M, 'o', 0.35, 0.3, 0, 1, 'lin');
+morph(C.s2 - 0.1, 'card', 'photo');
+morph(C.s3 - 0.1, 'photo', 'list');
+morph(C.s4 - 0.1, 'list', 'price');
+morph(C.s5 - 0.1, 'price', 'phone');
+morph(C.end - 0.1, 'phone', 'end', 1.05);
+const layer = (html, w, h) => mk('layer', html, { width: P(w), height: P(h) }, M);
+const FP = '<path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/>';
+
+/* ===================== 1. DRIVE FOR UBER OR BOLT? ===================== */
+{
+  const t = C.s1;
+  const c = chip('For Uber &amp; Bolt drivers', t + 0.2);
+  const h = words([[W('Drive'), W('for')], [W('Uber'), W('or'), W('Bolt?', 'red')]], 390, 'h-l', t + 0.3, 0.08);
+  const rowsHtml = [['Profile', 'Done', true], ['Vehicle &amp; documents', 'Done', true], ['Fingerprint capture', 'Required', false]].map(([n, s, ok], i) => `
+      <div class="row" style="height:96px;border-radius:24px;padding:0 24px;margin-top:${i ? 14 : 0}px;background:rgba(255,255,255,${ok ? '.07' : '.13'});border:1.5px solid ${ok ? 'rgba(255,255,255,.1)' : 'rgba(255,69,69,.55)'}">
+        <span style="width:54px;height:54px;border-radius:16px;background:${ok ? 'rgba(255,255,255,.12)' : '#ff4545'};display:grid;place-items:center">${ok ? ICON('<path d="M20 6 9 17l-5-5"/>', 28, '#22c55e', 2.6) : ICON(FP, 30, '#fff', 1.8)}</span>
+        <b style="flex:1;font-size:31px;font-weight:500">${n}</b><span class="${ok ? '' : 'req'}" style="font-size:24px;font-weight:500;color:${ok ? '#9fb3c1' : '#ff6b6b'}">${s}</span></div>`).join('');
+  const card = layer(`<div style="padding:34px 36px">
+      <div class="row" style="justify-content:space-between"><div><div style="font-size:24px;color:#9fb3c1">Driver-partner sign-up</div><b style="font-size:40px;font-weight:500;letter-spacing:-.02em">Almost there</b></div><div class="row" style="gap:22px">${UBER}<i style="width:2px;height:40px;background:rgba(255,255,255,.25)"></i>${BOLT}</div></div>
+      <div style="height:10px;border-radius:5px;background:rgba(255,255,255,.12);margin:26px 0 30px;overflow:hidden"><i class="pb" style="display:block;height:100%;width:66%;background:#22c55e;border-radius:5px"></i></div>
+      ${rowsHtml}</div>`, 780, 560);
+  fadeIn(card, t + 0.6, 0.35); tw(card, 'o', C.s2 - 0.25, 0.2, 1, 0, 'lin');
+  const req = card.querySelector('.req'); const lastRow = req.parentElement;
+  card._fn = (tt) => { const on = tt >= C.s1b; const p = on ? 0.5 + 0.5 * Math.cos((tt - C.s1b) * 7) : 1; lastRow.style.borderColor = on ? `rgba(255,69,69,${(0.35 + 0.6 * p).toFixed(2)})` : 'rgba(255,69,69,.55)'; };
+  const note = mk('chip glass-2', `${ICON(FP, 30, '#ff6b6b', 1.8)}First: your fingerprints`, { left: P(150), top: P(1270) });
+  rise(note, C.s1b, 40);
+  wordsExit(h, C.s2 - LEAD); exit([c, note], C.s2 - LEAD);
+}
+
+/* ===================== 2. QUICK & EASY ===================== */
+{
+  const t = C.s2;
+  const c = chip('Fingerprint capture · Web Graphs', t + 0.1);
+  const h = words([[W('Quick')], [W('&amp;'), W('easy.', 'red')]], 390, 'h-l', t + 0.15, 0.08);
+  const L = layer(`<img src="${A}photos/fingerprint-uber-bolt-1050.jpg" style="width:600px;height:877px;object-fit:cover;display:block">`, 600, 877);
+  const img = L.querySelector('img'); img.classList.add('a'); img.style.position = 'relative'; img._t = []; ELS.push(img);
+  tw(L, 'clip', t + 0.7, 1.1, [100, 0, 0, 0, 0], [0, 0, 0, 0, 0], 'out'); tw(img, 's', t + 0.7, 1.4, 1.2, 1.04, 'out'); tw(img, 's', t + 2.1, 4, 1.04, 1, 'lin');
+  // scan line sweeps over the scanner
+  const scan = mk('', '', { left: P(40), top: P(0), width: P(520), height: P(5), borderRadius: '4px', background: '#ff4545' }, M);
+  tw(scan, 'o', 0, 0, 0, 0, 'lin'); tw(scan, 'o', t + 1.6, 0.15, 0, 1, 'lin'); tw(scan, 'y', t + 1.6, 1.3, 200, 760, 'io'); tw(scan, 'o', t + 2.8, 0.2, 1, 0, 'lin');
+  const done = mk('glass-2', `<div class="row" style="padding:16px 26px 16px 16px;gap:14px"><span class="tick">${TICK}</span><b style="font-size:30px;font-weight:500">Captured</b></div>`, { left: P(600), top: P(1070), borderRadius: '99px' });
+  pop(done, t + 3.0, 1, 0.5);
+  const chips = [['Walk in', ICON('<circle cx="13" cy="4" r="2"/><path d="m9 20 3-6 2 3v5M7 12l3-4 4 1 3 3"/>', 30), 80, 1180, C.walk], ['No appointment', ICON('<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 14l6 5M15 14l-6 5"/>', 30), 560, 1280, C.appt], ['Done while you wait', ICON('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>', 30), 140, 1400, C.wait]].map(([txt, ic, x, y, at]) => rise(mk('chip glass-2', `${ic}${txt}`, { left: P(x), top: P(y), height: '76px', fontSize: '31px' }), at, 40));
+  fadeOut([L, scan], C.s3 - 0.3, 0.25);
+  wordsExit(h, C.s3 - LEAD); exit([c, done, ...chips], C.s3 - LEAD);
+}
+
+/* ===================== 3. WHAT TO BRING ===================== */
+{
+  const t = C.s3;
+  const c = chip('What to bring', t + 0.1);
+  const h = words([[W('Bring'), W('these')], [W('with'), W('you.', 'red')]], 390, 'h-l', t + 0.15, 0.08);
+  const L = layer('', 920, 660);
+  const rowsDef = [
+    ['<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.6-1.3 1.7-2 3-2s2.4.7 3 2M14 10h4M14 13h3"/>', 'SA ID or passport', 'The original document', C.id, false, ''],
+    ['<path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9v12h13V9"/><path d="M10 21v-6h4v6"/>', 'Proof of residence', 'Not older than 3 months', C.por, false, '<div class="row" style="gap:10px;margin-top:12px">' + ['Utility bill', 'Bank statement', 'Affidavit'].map((s) => `<span style="height:40px;padding:0 16px;border-radius:99px;background:rgba(255,255,255,.1);font-size:21px;display:grid;place-items:center">${s}</span>`).join('') + '</div>'],
+    ['<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7 10h6M7 14h10"/>', 'Licence or PrDP', 'Speeds up registration', C.lic, true, ''],
+  ];
+  const rows = rowsDef.map(([ic, n, sub, at, opt, extra], i) => {
+    const e = mk('', `<div class="row" style="width:856px;min-height:${i === 1 ? 226 : 176}px;border-radius:26px;padding:22px 26px;gap:24px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.1);align-items:center">
+        <span style="width:84px;height:84px;border-radius:24px;background:rgba(255,69,69,.18);display:grid;place-items:center;flex:none">${ICON(ic, 44, '#ff6b6b', 1.8)}</span>
+        <div style="flex:1"><b style="font-size:36px;font-weight:500">${n}</b><div style="font-size:24px;color:#9fb3c1;margin-top:4px">${sub}</div>${extra}</div>
+        ${opt ? '<span style="height:46px;padding:0 18px;border-radius:12px;border:1.5px solid rgba(255,255,255,.3);font-size:22px;display:grid;place-items:center;color:#9fb3c1">Optional</span>' : ''}<span class="tick tk" style="width:52px;height:52px">${TICK}</span></div>`,
+      { left: P(32), top: P(32 + [0, 196, 442][i]) }, L);
+    rise(e, at - 0.15, 40);
+    const tk = e.querySelector('.tk'); tk.classList.add('a'); tk.style.position = 'relative'; tk._t = []; ELS.push(tk); pop(tk, at + 0.35, 1.2, 0);
+    return e;
+  });
+  fadeOut([L], C.s4 - 0.3, 0.25);
+  wordsExit(h, C.s4 - LEAD); exit([c], C.s4 - LEAD);
+}
+
+/* ===================== 4. ONE PRICE, THEN REGISTER ===================== */
+{
+  const t = C.s4;
+  const c = chip('One simple price', t + 0.1);
+  const h = words([[W('Only'), W('one')], [W('payment.', 'red')]], 390, 'h-l', t + 0.15, 0.08);
+  const L = layer(`<div style="padding:46px 52px"><div class="row" style="gap:16px;font-size:30px;color:#9fb3c1">${ICON(FP, 36, '#ff6b6b', 1.8)}Fingerprint capture</div>
+      <div class="row" style="align-items:flex-end;gap:18px;margin-top:20px"><b class="mono amt" style="font-size:230px;font-weight:500;letter-spacing:-.06em;line-height:.9;color:#ff4545">R0</b><span style="font-size:34px;color:#9fb3c1;margin-bottom:22px">per capture</span></div>
+      <div class="row" style="gap:14px;margin-top:34px">${['Walk-in', 'No appointment', 'While you wait'].map((s) => `<span style="height:52px;padding:0 20px;border-radius:99px;background:rgba(255,255,255,.1);font-size:24px;display:grid;place-items:center">${s}</span>`).join('')}</div></div>`, 800, 520);
+  fadeIn(L, t + 0.75, 0.3);
+  const amt = L.querySelector('.amt');
+  L._fn = (tt) => { const p = EASE.out(Math.min(1, Math.max(0, (tt - C.price) / 1.2))); amt.textContent = 'R' + Math.round(350 * p); };
+  // the next steps
+  const steps = [['Capture', 'At Web Graphs', t + 0.9, true], ['Register', 'On the Uber or Bolt app', C.reg, false], ['Approval', 'By Uber or Bolt', C.platform, false]].map(([n, s, at, first], i) => {
+    const e = mk('glass-2', `<div style="width:262px;height:170px;padding:22px"><span class="row" style="gap:10px;font-size:22px;color:#9fb3c1"><b class="mono" style="width:38px;height:38px;border-radius:50%;background:${first ? '#22c55e' : '#ff4545'};color:#fff;display:grid;place-items:center;font-size:20px">${i + 1}</b>Step</span><b style="display:block;font-size:32px;font-weight:500;margin-top:12px">${n}</b><div style="font-size:21px;color:#9fb3c1;margin-top:4px">${s}</div></div>`, { left: P(80 + i * 316), top: P(1220), borderRadius: '28px' });
+    rise(e, at, 50); return e;
+  });
+  const arrows = [0, 1].map((i) => { const a = mk('', ICON('<path d="M5 12h14M13 6l6 6-6 6"/>', 34, '#9fb3c1', 2.2), { left: P(356 + i * 316), top: P(1288) }); fadeIn(a, [C.reg, C.platform][i] - 0.1, 0.3); return a; });
+  const fine = mk('', `<span style="font-size:22px;color:#9fb3c1">Approval and timing are set by Uber and Bolt.</span>`, { left: P(80), top: P(1420) });
+  fadeIn(fine, C.platform + 0.4, 0.4);
+  fadeOut([L], C.s5 - 0.3, 0.25);
+  wordsExit(h, C.s5 - LEAD); exit([c, ...steps, ...arrows, fine], C.s5 - LEAD);
+}
+
+/* ===================== 5. FREE DRIVER CHECKER ===================== */
+{
+  const t = C.s5;
+  const c = chip('Free tool', t + 0.1);
+  const h = words([[W('Not'), W('sure')], [W('you’re'), W('ready?', 'red')]], 390, 'h-l', t + 0.15, 0.08);
+  const L = layer(`<div style="padding:44px 30px">
+      <div class="row" style="justify-content:space-between"><i style="width:44px;height:44px;border-radius:13px;background:#ff4545"></i><span style="font-size:22px;color:#9fb3c1">Driver checker</span></div>
+      <div class="row" style="gap:22px;margin-top:34px"><div style="position:relative;width:130px;height:130px"><svg viewBox="0 0 36 36" width="130" height="130" style="transform:rotate(-90deg)"><circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="3"/><circle class="arc" cx="18" cy="18" r="15.5" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg><b class="mono cnt" style="position:absolute;inset:0;display:grid;place-items:center;font-size:34px;font-weight:600">0/3</b></div>
+      <div><b class="st" style="font-size:34px;font-weight:500">Checking…</b><div style="font-size:22px;color:#9fb3c1;margin-top:4px">Uber &amp; Bolt</div></div></div>
+      ${['ID or passport', 'Proof of residence', 'R350 for the capture'].map((n, i) => `<div class="row" style="height:84px;border-radius:20px;padding:0 20px;margin-top:${i ? 12 : 34}px;background:rgba(255,255,255,.08);justify-content:space-between"><span style="font-size:25px">${n}</span><span class="tick ck" style="width:40px;height:40px;opacity:0">${TICK}</span></div>`).join('')}
+      <div class="okp" style="margin-top:28px;height:84px;border-radius:99px;background:#22c55e;color:#04260f;font-size:28px;font-weight:600;display:grid;place-items:center;opacity:0">You’re ready ✓</div></div>`, 480, 940);
+  fadeIn(L, t + 0.75, 0.3);
+  const arc = L.querySelector('.arc'), cnt = L.querySelector('.cnt'), st = L.querySelector('.st'), cks = [...L.querySelectorAll('.ck')], okp = L.querySelector('.okp');
+  L._fn = (tt) => {
+    const k = [0, 1, 2].filter((i) => tt >= C.ready - 0.6 + i * 0.35).length;
+    cks.forEach((e, i) => { const s = Math.max(0, Math.min(1, (tt - (C.ready - 0.6 + i * 0.35)) / 0.25)); e.style.opacity = s; e.style.transform = `scale(${(0.4 + 0.6 * s).toFixed(3)})`; });
+    const p = EASE.out(Math.min(1, Math.max(0, (tt - (C.ready - 0.6)) / 1.3)));
+    arc.setAttribute('stroke-dashoffset', (100 - 100 * p).toFixed(2)); cnt.textContent = `${k}/3`;
+    st.textContent = k === 3 ? 'All set' : 'Checking…';
+    const q = Math.max(0, Math.min(1, (tt - (C.ready + 0.6)) / 0.3)); okp.style.opacity = q; okp.style.transform = `scale(${(0.85 + 0.15 * q).toFixed(3)})`;
+  };
+  const url = mk('chip glass-2', `${ICON('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>', 28)}webgraphs.co.za`, { left: P(560), top: P(1380) });
+  rise(url, t + 1.2, 40);
+  const free = mk('chip glass-2', `<span style="color:#22c55e;font-weight:600">FREE</span> tool`, { left: P(60), top: P(1120) });
+  rise(free, t + 0.9, 40);
+  fadeOut([L], C.end - 0.3, 0.25);
+  wordsExit(h, C.end - LEAD); exit([c, url, free], C.end - LEAD);
+}
+
+/* ===================== 6. END CARD ===================== */
+{
+  const t = C.end;
+  const L = layer('', 860, 880);
+  const logo = mk('', `<img src="${A}logo-footer.svg" style="width:640px;display:block">`, { left: P(110), top: P(100) }, L);
+  tw(logo, 'clip', t + 0.6, 1, [0, 100, 0, 0, 0], [0, 0, 0, 0, 0], 'out'); tw(logo, 's', t + 0.6, 1, 0.92, 1, 'spring', .8);
+  const line = mk('', `<div style="font-size:62px;font-weight:500;letter-spacing:-.035em;line-height:1.08">Uber &amp; Bolt<br>fingerprints · <span class="red">R350</span></div>`, { left: P(110), top: P(270) }, L);
+  rise(line, t + 1.0, 40);
+  const lg = mk('', `<div class="row" style="gap:22px">${UBER}<i style="width:2px;height:40px;background:rgba(255,255,255,.25)"></i>${BOLT}<span style="font-size:26px;color:#9fb3c1;margin-left:8px">Walk in · no appointment</span></div>`, { left: P(110), top: P(440) }, L);
+  rise(lg, t + 1.25, 30);
+  const addr = mk('', `<div class="row" style="gap:14px;font-size:32px">${ICON('<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/>', 36, '#ff4545', 2)}9 Jill Street, Langlaagte North</div>`, { left: P(110), top: P(530) }, L);
+  rise(addr, C.addr, 30);
+  const hrs = mk('', `<div class="row" style="gap:14px;font-size:32px">${ICON('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', 36, '#22c55e', 2)}Open every day · 8:00–19:00</div>`, { left: P(110), top: P(600) }, L);
+  rise(hrs, C.hours, 30);
+  const wa = mk('', `<div class="row" style="height:112px;padding:0 42px 0 32px;gap:18px;border-radius:99px;background:#25d366;color:#04260f;box-shadow:0 40px 80px -40px rgba(0,0,0,.8)">${WA(44, '#04260f')}<span class="mono" style="font-size:46px;font-weight:600">+27 78 734 7867</span></div>`, { left: P(110), top: P(690) }, L);
+  pop(wa, t + 1.5, .9, 0.7);
+}
+
+window.DURATION = END;
+window.__ready = Promise.all([document.fonts.ready, ...[...document.images].map((im) => im.decode().catch(() => {}))]);
+render(0);
+if (!location.search.includes('capture')) {
+  const t0 = performance.now();
+  const loop = () => { render(((performance.now() - t0) / 1000) % END); requestAnimationFrame(loop); };
+  window.__ready.then(() => requestAnimationFrame(loop));
+}
+</script>
+</body></html>

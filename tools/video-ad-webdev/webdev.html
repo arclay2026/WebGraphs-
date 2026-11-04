@@ -125,11 +125,12 @@ const chip = (txt, t0) => rise(mk('chip glass-2', `<i></i>${txt}`, { left: P(80)
 /* =====================================================================
    CUES (seconds). Re-timed to the voiceover once the MP3 arrives.
    ===================================================================== */
+// Timed to the ElevenLabs voiceover (word timings from a forced alignment of the script).
 const C = window.CUES || {
-  s1: 0, s1b: 2.0, s2: 3.9, fast: 7.6, mobile: 8.6, brand: 9.8,
-  s3: 11.4, grow: 15.6, rowBiz: 16.4, rowBook: 17.8, rowStore: 19.4,
-  s4: 22.6, wa: 24.4, maps: 25.4, seo: 26.4, tap: 29.0,
-  s5: 31.0, soon: 34.4, end: 36.6, endWa: 38.4, total: 41.0,
+  s1: 0, s1b: 1.7, s2: 3.15, fast: 6.7, mobile: 7.35, brand: 8.9,
+  s3: 10.15, grow: 13.6, rowBiz: 14.45, rowBook: 15.55, rowStore: 16.7,
+  s4: 19.2, wa: 20.0, maps: 21.0, seo: 21.8, tap: 24.45,
+  s5: 25.9, soon: 28.2, end: 30.0, endWa: 31.7, total: 37.5,
 };
 const END = C.total;
 
@@ -337,13 +338,13 @@ const layer = (html, w, h) => mk('layer', html, { width: P(w), height: P(h) }, M
   const t = C.end;
   const L = layer('', 860, 860);
   const logo = mk('', `<img src="${A}logo-footer.svg" style="width:640px;display:block">`, { left: P(110), top: P(110) }, L);
-  tw(logo, 'clip', t + 0.8, 1, [0, 100, 0, 0, 0], [0, 0, 0, 0, 0], 'out'); tw(logo, 's', t + 0.8, 1, 0.92, 1, 'spring', .8);
+  tw(logo, 'clip', t + 0.6, 1, [0, 100, 0, 0, 0], [0, 0, 0, 0, 0], 'out'); tw(logo, 's', t + 0.6, 1, 0.92, 1, 'spring', .8);
   const line = mk('', `<div style="font-size:64px;font-weight:500;letter-spacing:-.035em;line-height:1.08">Websites that<br>bring <span class="red">customers.</span></div>`, { left: P(110), top: P(290) }, L);
   rise(line, t + 1.1, 40);
   const price = mk('', `<div class="row" style="gap:14px;font-size:30px;color:#9fb3c1">${ICON('<path d="M20 6 9 17l-5-5"/>', 30, '#22c55e', 2.6)}Websites from <b class="mono" style="color:#fff;font-weight:600">R3,500</b></div>`, { left: P(110), top: P(470) }, L);
   rise(price, t + 1.35, 30);
   const wa = mk('', `<div class="row" style="height:116px;padding:0 44px 0 34px;gap:20px;border-radius:99px;background:#25d366;color:#04260f;box-shadow:0 40px 80px -40px rgba(0,0,0,.8)">${WA(46, '#04260f')}<span class="mono" style="font-size:48px;font-weight:600">+27 78 734 7867</span></div>`, { left: P(110), top: P(570) }, L);
-  pop(wa, t + 1.55, .9, 0.7);
+  pop(wa, t + 1.2, .9, 0.7);
   tw(wa, 's', C.endWa, 0.7, 1.08, 1, 'spring', 1.1);
   const ring = mk('', '', { left: P(110), top: P(570), height: P(116), borderRadius: '99px', border: '4px solid #25d366' }, L);
   tw(ring, 'o', 0, 0, 0, 0, 'lin'); tw(ring, 'o', C.endWa, 0.9, 0.9, 0, 'lin'); tw(ring, 's', C.endWa, 0.9, 1, 1.15, 'out');

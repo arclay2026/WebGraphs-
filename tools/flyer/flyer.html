@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Web Graphs — A4 flyer</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* A4 = 210 × 297 mm. With ?bleed=3 the page is 216 × 303 mm and every edge
+   gets 3 mm of extra background for trimming. All text and the logo stay
+   inside the safe area: SAFE mm in from the trimmed edge. */
+:root { --bleed: 0mm; --safe: 13mm; --navy:#001523; --navy2:#0b2537; --line:#1f415a; --red:#ff4545; --ink:#001523; --mute:#55646e; --mist:#f2f5f7; --green:#25d366; }
+@page { size: 210mm 297mm; margin: 0; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { width: calc(210mm + 2 * var(--bleed)); height: calc(297mm + 2 * var(--bleed)); }
+body { font-family:'Google Sans', system-ui, sans-serif; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.page { position:relative; width:100%; height:100%; overflow:hidden; }
+/* trimmed A4 area and the safe area inside it */
+.trim { position:absolute; left:var(--bleed); top:var(--bleed); width:210mm; height:297mm; }
+.safe { position:absolute; inset:var(--safe); display:flex; flex-direction:column; }
+.safe > * { flex-shrink:0; }   /* never squeeze: an overflow shows up in the check instead */
+.row { display:flex; align-items:center; }
+.ic { width:6.2mm; height:6.2mm; flex:none; }
+.tick { width:6mm; height:6mm; border-radius:50%; background:#22c55e; display:grid; place-items:center; flex:none; }
+.tick svg { width:3.6mm; height:3.6mm; }
+.mono { font-variant-numeric:tabular-nums; }
+
+/* ================= DARK ================= */
+.dark .page { background:var(--navy); color:#fff; }
+.dark .dots { position:absolute; inset:0; opacity:.55; background-image:radial-gradient(circle, rgba(159,179,193,.22) .32mm, transparent .4mm); background-size:6mm 6mm; }
+.dark .disc { position:absolute; border-radius:50%; background:var(--red); }
+/* light version */
+.light .page { background:#fff; color:var(--ink); }
+
+/* shared blocks */
+.top { justify-content:space-between; }
+.logo { height:13mm; display:block; }
+.open { gap:2mm; height:8.6mm; padding:0 3.6mm; border-radius:99px; font-size:3.4mm; font-weight:500; }
+.open i { width:2.2mm; height:2.2mm; border-radius:50%; background:#22c55e; }
+.chip { display:inline-flex; align-items:center; gap:2mm; height:8mm; padding:0 3.4mm; border-radius:99px; font-size:3.3mm; font-weight:500; }
+.chip i { width:2mm; height:2mm; border-radius:50%; background:var(--red); }
+.h1 { font-weight:600; letter-spacing:-.045em; line-height:.98; }
+.h1 em { font-style:normal; color:var(--red); }
+.price { font-weight:600; letter-spacing:-.05em; line-height:.9; color:var(--red); }
+.photo { border-radius:6mm; overflow:hidden; position:relative; }
+.photo img { display:block; width:100%; height:100%; object-fit:cover; }
+.svc { border-radius:4.5mm; padding:4.6mm 4.6mm 4.2mm; display:flex; flex-direction:column; gap:1.6mm; }
+.svc b { font-size:4.7mm; font-weight:600; letter-spacing:-.02em; line-height:1.1; }
+.svc span { font-size:3.15mm; line-height:1.35; }
+.svc .from { margin-top:auto; font-size:3.3mm; font-weight:600; }
+.svc .badge { width:10.5mm; height:10.5mm; border-radius:3mm; display:grid; place-items:center; margin-bottom:1mm; }
+.svc .badge svg { width:5.6mm; height:5.6mm; }
+.contact b { font-weight:600; }
+</style></head>
+<body>
+<div class="page"><div class="dots"></div><div class="trim" id="trim"></div></div>
+<script>
+const q = new URLSearchParams(location.search);
+const V = q.get('v') || 'dark';
+const BLEED = Number(q.get('bleed') || 0);
+document.documentElement.classList.add(V);
+document.documentElement.style.setProperty('--bleed', BLEED + 'mm');
+if (BLEED) { const st = document.createElement('style'); st.textContent = `@page { size: ${210 + 2 * BLEED}mm ${297 + 2 * BLEED}mm; margin: 0; }`; document.head.appendChild(st); }
+const A = '../../assets/';
+const I = (d, col, sw = 1.8) => `<svg viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+const WA = (col) => `<svg viewBox="0 0 24 24" fill="${col}"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.08-.13-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.83 9.83 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.89 9.88M20.46 3.49A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.69 1.45c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.16-3.48-8.41Z"/></svg>`;
+const ICONS = {
+  fp: '<path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/>',
+  web: '<rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3M8 9l-2 2 2 2M16 9l2 2-2 2"/>',
+  design: '<path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="m2 2 7.59 7.59"/><circle cx="11" cy="11" r="2"/>',
+  course: '<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/>',
+  print: '<path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/>',
+  soft: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M9 10l2 2 4-4"/>',
+  tools: '<path d="M14.7 6.3a4 4 0 0 0 5 5L22 14l-8 8-2.3-2.3a4 4 0 0 0-5-5L2 10l8-8z"/>',
+  pin: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  id: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.6-1.3 1.7-2 3-2s2.4.7 3 2M14 10h4M14 13h3"/>',
+  home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9v12h13V9"/><path d="M10 21v-6h4v6"/>',
+  card: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7 10h6M7 14h10"/>',
+  biz: '<path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/>',
+  book: '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 15l2 2 4-4"/>',
+  store: '<path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/>',
+};
+const SERVICES = [
+  ['web', 'Web &amp; app development', 'Websites, online stores and booking systems', 'from R3,500'],
+  ['design', 'Graphic design', 'Logos, flyers, banners and social media graphics', 'from R1,500'],
+  ['course', 'Adobe design courses', 'Photoshop, Illustrator, Lightroom and Premiere Pro', 'from R2,000'],
+  ['print', 'Printing', 'Print, copy and scan while you wait', 'Walk in'],
+  ['soft', 'Software installation', 'Windows, everyday apps, Adobe apps and drivers', 'Walk in'],
+  ['tools', 'Free online tools', 'Driver checker, QR codes, signatures, photos to PDF', 'webgraphs.co.za'],
+];
+// white Uber wordmark as a real vector (a CSS filter would turn it into a bitmap in the PDF)
+const UBER = (col) => `<img src="${col === 'white' ? 'img/uber-white.svg' : A + 'partners/uber.svg'}" style="height:6mm">`;
+const BOLT = `<img src="${A}partners/bolt.svg" style="height:7.6mm">`;
+const trim = document.getElementById('trim');
+
+const T = V === 'dark'
+  ? { logo: 'logo-footer.svg', openBg: 'background:rgba(0,21,35,.55);border:.3mm solid rgba(255,255,255,.35)', heroWrap: '', heroText: '#fff', sub: '#9fb3c1',
+      strip: 'background:rgba(255,255,255,.06);border:.3mm solid var(--line)', stripIc: 'rgba(255,69,69,.18)', stripCol: '#ff6b6b', tile: 'background:var(--navy2);border:.3mm solid var(--line)', tileBadge: 'rgba(255,69,69,.16)', tileIc: '#ff6b6b', tileMute: '#9fb3c1', from: '#fff',
+      contact: 'background:#fff;color:var(--ink)', cMute: 'var(--mute)', cIc: '#ff4545', cText: 'var(--ink)', qrBorder: '.3mm solid #dfe5e9', photo: 'fingerprint-uber-bolt.jpg', photoBorder: '.4mm solid rgba(255,255,255,.18)', tagline: '9 Jill Street, Langlaagte North' }
+  : { logo: 'logo-full.svg', openBg: 'background:var(--mist)', heroWrap: 'border-radius:7mm;background:var(--navy);padding:6mm 6mm 6mm 7mm;position:relative;overflow:hidden;', heroText: '#fff', sub: '#9fb3c1',
+      strip: 'border:.35mm solid #dfe5e9', stripIc: '#ffe9e9', stripCol: '#d92f2f', tile: 'background:var(--mist)', tileBadge: '#fff', tileIc: '#ff4545', tileMute: 'var(--mute)', from: 'var(--red)',
+      contact: 'background:var(--navy);color:#fff', cMute: '#9fb3c1', cIc: '#ff6b6b', cText: '#dfe7ec', qrBorder: 'none', photo: 'fingerprint-capture.jpg', photoBorder: 'none', tagline: 'Tech &amp; design, sorted in one stop.' };
+const dark = V === 'dark';
+const MAIN = q.get('main') || 'uber';
+const pill = (t) => `<span style="height:7.4mm;padding:0 3mm;border-radius:99px;background:rgba(255,255,255,.1);border:.3mm solid rgba(255,255,255,.16);font-size:3.1mm;font-weight:500;display:inline-flex;align-items:center">${t}</span>`;
+const H = MAIN === 'web' ? {
+  chip: 'For businesses &amp; start-ups', h1: 'Websites<br><em>&amp; apps.</em>',
+  under: `<div class="row" style="gap:2mm;flex-wrap:wrap">${['Business sites', 'Online stores', 'Booking systems'].map(pill).join('')}</div>`,
+  priceRow: `<div style="font-size:3.9mm;color:#9fb3c1;margin-top:6mm">Websites from</div><div class="row" style="align-items:flex-end;gap:3mm;margin-top:1mm"><div class="price mono" style="font-size:24mm">R3,500</div><div style="font-size:3.9mm;color:#9fb3c1;margin-bottom:2.2mm;line-height:1.2">once-<br>off</div></div>`,
+  photo: 'man-laptop.jpg', ratio: 3125 / 2084,
+  ticks: ['Mobile-friendly design', 'WhatsApp &amp; Google Maps', 'SEO setup'],
+  stripLabel: 'Website<br>packages',
+  strip: [['biz', 'Business website', 'Up to 5 pages · R7,500'], ['book', 'Pro website', 'Bookings or blog · R14,500'], ['store', 'Online store', 'Card &amp; EFT · from R22,000']],
+  services: [['fp', 'Uber &amp; Bolt fingerprints', 'Walk-in capture for driver-partners, done while you wait', 'R350']].concat(SERVICES.slice(1)),
+} : {
+  chip: 'For Uber &amp; Bolt drivers', h1: 'Fingerprint<br><em>capture.</em>',
+  under: `<div class="row" style="gap:4.5mm">${UBER('white')}<i style="width:.35mm;height:7mm;background:rgba(255,255,255,.3)"></i>${BOLT}</div>`,
+  priceRow: null, photo: null, ratio: 3125 / 2138,
+  ticks: ['Walk in — no appointment', 'Done while you wait', 'Fast &amp; professional'],
+  stripLabel: 'What to<br>bring',
+  strip: [['id', 'SA ID or passport', 'The original'], ['home', 'Proof of residence', 'Not older than 3 months'], ['card', 'Licence or PrDP', 'Optional']],
+  services: SERVICES,
+};
+if (dark) document.querySelector('.page').insertAdjacentHTML('afterbegin', `<div class="disc" style="width:150mm;height:150mm;right:-64mm;top:${-50 + BLEED}mm"></div>`);
+const PW = dark ? 64 : 60;                       // photo width (mm); height keeps the photo's own ratio
+const PH = +(PW * H.ratio).toFixed(1);
+trim.innerHTML = `<div class="safe">
+  <div class="row top">
+    <img class="logo" src="${A}${T.logo}">
+    <span class="row open" style="${T.openBg}"><i></i>Open every day · 8:00–19:00</span>
+  </div>
+
+  <div style="margin-top:${dark ? 9 : 7}mm;${T.heroWrap}display:grid;grid-template-columns:1fr ${PW}mm;gap:6mm;align-items:center;color:${T.heroText}">
+    ${dark ? '' : '<div style="position:absolute;width:110mm;height:110mm;border-radius:50%;background:var(--red);right:-56mm;bottom:-72mm"></div>'}
+    <div style="position:relative">
+      <span class="chip" style="background:rgba(255,255,255,.09);border:.3mm solid ${dark ? 'var(--line)' : 'rgba(255,255,255,.18)'}"><i></i>${H.chip}</span>
+      <div class="h1" style="font-size:${dark ? 16.5 : 15.5}mm;margin-top:4.5mm">${H.h1}</div>
+      <div style="margin-top:5mm">${H.under}</div>
+      ${H.priceRow || `<div class="row" style="align-items:flex-end;gap:3mm;margin-top:6mm"><div class="price mono" style="font-size:${dark ? 29 : 27}mm">R350</div><div style="font-size:3.9mm;color:${T.sub};margin-bottom:2.6mm;line-height:1.2">per<br>capture</div></div>`}
+    </div>
+    <div class="photo" style="width:${PW}mm;height:${PH}mm;border:${T.photoBorder}"><img src="img/${H.photo || T.photo}"></div>
+  </div>
+
+  <div class="row" style="justify-content:space-between;margin-top:5mm;font-size:3.9mm;font-weight:500">
+    ${H.ticks.map((s) => `<div class="row" style="gap:2.4mm"><span class="tick">${TICK}</span>${s}</div>`).join('')}
+  </div>
+
+  <div style="margin-top:4.5mm;border-radius:4.5mm;${T.strip};padding:3.6mm 4.4mm;display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:3.6mm;align-items:center">
+    <b style="font-size:3.7mm;font-weight:600;line-height:1.15">${H.stripLabel}</b>
+    ${H.strip.map(([ic, n, s]) => `<div class="row" style="gap:2.2mm"><span style="width:8.2mm;height:8.2mm;border-radius:2.4mm;background:${T.stripIc};display:grid;place-items:center;flex:none"><span class="ic" style="width:4.8mm;height:4.8mm">${I(ICONS[ic], T.stripCol)}</span></span><div style="line-height:1.2"><div style="font-size:3.2mm;font-weight:600">${n}</div><div style="font-size:2.8mm;color:${T.tileMute}">${s}</div></div></div>`).join('')}
+  </div>
+
+  <div class="row" style="justify-content:space-between;margin-top:7mm"><b style="font-size:5.8mm;font-weight:600;letter-spacing:-.025em">More from <span style="color:var(--red)">Web Graphs</span></b><span style="font-size:3.15mm;color:${T.tileMute}">${T.tagline}</span></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin-top:3.4mm">
+    ${H.services.map(([ic, n, d, f]) => `<div style="${T.tile};border-radius:4.2mm;padding:3.6mm 3.6mm 3.4mm;display:grid;grid-template-columns:9mm 1fr;gap:2.6mm;align-items:start;min-height:25mm">
+      <span style="width:9mm;height:9mm;border-radius:2.6mm;background:${T.tileBadge};display:grid;place-items:center"><span class="ic" style="width:5mm;height:5mm">${I(ICONS[ic], T.tileIc)}</span></span>
+      <div style="display:flex;flex-direction:column;gap:1mm;height:100%"><b style="font-size:3.9mm;font-weight:600;letter-spacing:-.015em;line-height:1.12">${n}</b><span style="font-size:2.8mm;line-height:1.32;color:${T.tileMute}">${d}</span><span style="margin-top:auto;padding-top:1mm;font-size:3mm;font-weight:600;color:${T.from}">${f}</span></div></div>`).join('')}
+  </div>
+
+  <div style="margin-top:auto;border-radius:5.5mm;${T.contact};padding:4.6mm 4.6mm 4.6mm 5.6mm;display:grid;grid-template-columns:1fr auto;gap:5mm;align-items:center">
+    <div>
+      <div class="row" style="gap:3mm"><span style="width:11mm;height:11mm;border-radius:50%;background:var(--green);display:grid;place-items:center;flex:none"><span style="width:6.4mm;height:6.4mm;display:block">${WA('#fff')}</span></span><div><div style="font-size:3.1mm;color:${T.cMute}">WhatsApp &amp; calls</div><b class="mono" style="font-size:8.2mm;font-weight:600;letter-spacing:-.02em;line-height:1">+27 78 734 7867</b></div></div>
+      <div style="display:grid;grid-template-columns:auto auto;gap:1.8mm 5.5mm;margin-top:3.6mm;font-size:3.25mm;color:${T.cText}">
+        ${[['globe', '<b style="font-weight:600">webgraphs.co.za</b>'], ['mail', 'webgraphstechnologies@gmail.com'], ['pin', '9 Jill Street, Langlaagte North, Johannesburg'], ['clock', 'Open every day · 8:00–19:00']].map(([ic, s]) => `<div class="row" style="gap:1.8mm"><span class="ic" style="width:4.3mm;height:4.3mm">${I(ICONS[ic], T.cIc, 2)}</span>${s}</div>`).join('')}
+      </div>
+    </div>
+    <div style="text-align:center"><img src="${A}whatsapp-qr.svg" style="width:26mm;height:26mm;display:block;border:${T.qrBorder};border-radius:2mm"><div style="font-size:2.8mm;font-weight:600;margin-top:1.3mm">Scan to WhatsApp</div></div>
+  </div>
+</div>`;
+window.__ready = Promise.all([document.fonts.ready, ...[...document.images].map((im) => im.decode().catch(() => {}))]);
+</script>
+</body></html>

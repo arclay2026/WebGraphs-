@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Web Graphs — fingerprint post v2 (1080×1350)</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --navy:#001523; --red:#ff4545; --sub:#9fb3c1; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { width:1080px; height:1350px; }
+body { font-family:'Google Sans', system-ui, sans-serif; overflow:hidden; }
+.page { position:relative; width:1080px; height:1350px; overflow:hidden; }
+.abs { position:absolute; }
+.num { font-variant-numeric:tabular-nums; }
+
+/* ---------- A: photo poster with a price sticker ---------- */
+.a { background:var(--navy); color:#fff; }
+.a .shot { left:0; top:0; width:1080px; height:790px; overflow:hidden; }
+.a .shot img { width:100%; height:100%; object-fit:cover; object-position:50% 62%; display:block; }
+.a .sticker { width:300px; height:300px; border-radius:50%; background:var(--red); left:716px; top:628px; transform:rotate(-9deg); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.a .sticker b { font-size:104px; font-weight:700; letter-spacing:-.055em; line-height:.9; }
+.a .sticker span { font-size:25px; font-weight:500; margin-top:6px; }
+.a .eyebrow { font-size:22px; font-weight:600; letter-spacing:.16em; color:var(--red); }
+.a .h1 { font-size:108px; font-weight:600; letter-spacing:-.05em; line-height:.92; }
+.a .lede { font-size:29px; line-height:1.3; color:#dfe7ec; }
+.a .rule { height:2px; background:rgba(255,255,255,.16); }
+
+/* ---------- B: red, type-led ---------- */
+.b { background:var(--red); color:var(--navy); }
+.b .h1 { font-size:150px; font-weight:600; letter-spacing:-.058em; line-height:.86; }
+.b .h1 span { color:#fff; }
+.b .list div { display:grid; grid-template-columns:52px 1fr; padding:15px 0; border-top:2px solid rgba(0,21,35,.28); font-size:25px; font-weight:500; line-height:1.2; }
+.b .list div:last-child { border-bottom:2px solid rgba(0,21,35,.28); }
+.b .list i { font-style:normal; font-weight:600; }
+.b .list small { display:block; font-size:19px; font-weight:400; opacity:.75; margin-top:3px; }
+.b .photo { border-radius:34px; overflow:hidden; }
+.b .photo img { width:100%; height:100%; display:block; }
+.b .bar { left:0; right:0; bottom:0; height:190px; background:var(--navy); color:#fff; }
+</style></head>
+<body>
+<div class="page" id="page"></div>
+<script>
+const q = new URLSearchParams(location.search);
+const D = q.get('d') || 'a';
+const A = '../../assets/';
+const WA = (col) => `<svg viewBox="0 0 24 24" fill="${col}"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.08-.13-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.83 9.83 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.89 9.88M20.46 3.49A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.69 1.45c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.16-3.48-8.41Z"/></svg>`;
+const page = document.getElementById('page');
+page.classList.add(D);
+
+if (D === 'a') page.innerHTML = `
+  <div class="abs shot"><img src="fingerprint-full.jpg"></div>
+  <img class="abs" src="${A}logo-footer.svg" style="left:64px;top:60px;height:58px">
+  <div class="abs" style="right:64px;top:66px;display:flex;align-items:center;gap:20px">
+    <img src="uber-white.svg" style="height:30px;display:block"><i style="width:2px;height:36px;background:rgba(255,255,255,.5)"></i><img src="bolt-white.svg" style="height:40px;display:block">
+  </div>
+  <div class="abs sticker"><b class="num">R350</b><span>per capture</span></div>
+
+  <div class="abs" style="left:64px;top:846px;right:64px">
+    <div class="eyebrow">FOR UBER &amp; BOLT DRIVERS</div>
+    <div class="h1" style="margin-top:20px">Fingerprint<br>capture.</div>
+    <div class="lede" style="margin-top:26px">Walk in, no appointment. Done while you wait.</div>
+  </div>
+
+  <div class="abs" style="left:64px;right:64px;top:1206px">
+    <div class="rule"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px">
+      <div style="display:flex;align-items:center;gap:14px"><span style="width:44px;height:44px;display:block">${WA('#25d366')}</span><b class="num" style="font-size:40px;font-weight:600;letter-spacing:-.02em">078 734 7867</b></div>
+      <div style="text-align:right;font-size:20px;line-height:1.35;color:var(--sub)"><b style="color:#fff;font-weight:600">9 Jill Street, Langlaagte North</b><br>Open every day 8:00–19:00 · webgraphs.co.za</div>
+    </div>
+  </div>`;
+
+if (D === 'w') { page.classList.add('a'); page.innerHTML = `
+  <div class="abs shot" style="top:170px;height:620px"><img src="coding-full.jpg" style="object-position:50% 30%"></div>
+  <img class="abs" src="${A}logo-footer.svg" style="left:64px;top:60px;height:58px">
+  <div class="abs" style="right:64px;top:62px;text-align:right;font-size:20px;line-height:1.35;color:var(--sub)">Web &amp; app development<br><b style="color:#fff;font-weight:600">Johannesburg</b></div>
+  <div class="abs sticker" style="width:320px;height:320px;left:700px;top:620px"><span style="margin:0 0 4px;font-size:26px">from</span><b class="num" style="font-size:86px">R3,500</b><span>once-off</span></div>
+
+  <div class="abs" style="left:64px;top:846px;right:64px">
+    <div class="eyebrow">FOR BUSINESSES &amp; START-UPS</div>
+    <div class="h1" style="margin-top:20px">Websites<br>&amp; apps.</div>
+    <div class="lede" style="margin-top:26px">Business sites, online stores and booking systems.</div>
+  </div>
+
+  <div class="abs" style="left:64px;right:64px;top:1206px">
+    <div class="rule"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px">
+      <div style="display:flex;align-items:center;gap:14px"><span style="width:44px;height:44px;display:block">${WA('#25d366')}</span><b class="num" style="font-size:40px;font-weight:600;letter-spacing:-.02em">078 734 7867</b></div>
+      <div style="text-align:right;font-size:20px;line-height:1.35;color:var(--sub)"><b style="color:#fff;font-weight:600">Mobile-friendly · WhatsApp &amp; Maps · SEO</b><br>9 Jill Street, Langlaagte North · webgraphs.co.za</div>
+    </div>
+  </div>`; }
+
+if (D === 'b') {
+  const PW = 372, PH = Math.round(PW * 3125 / 2138);
+  page.innerHTML = `
+  <img class="abs" src="logo-navy.svg" style="left:64px;top:60px;height:56px">
+  <div class="abs" style="right:64px;top:64px;display:flex;align-items:center;gap:18px">
+    <img src="uber-navy.svg" style="height:28px;display:block"><i style="width:2px;height:34px;background:rgba(0,21,35,.35)"></i><img src="bolt-navy.svg" style="height:38px;display:block">
+  </div>
+
+  <div class="abs h1" style="left:58px;top:182px">Fingerprint<br><span>capture.</span></div>
+
+  <div class="abs photo" style="right:64px;top:500px;width:${PW}px;height:${PH}px"><img src="fingerprint-capture.jpg"></div>
+
+  <div class="abs" style="left:64px;top:494px;width:${1080 - 128 - PW - 48}px">
+    <div style="display:flex;align-items:flex-end;gap:14px"><b class="num" style="font-size:150px;font-weight:600;letter-spacing:-.06em;line-height:.8">R350</b><span style="font-size:24px;font-weight:500;line-height:1.15;margin-bottom:4px">per<br>capture</span></div>
+    <div style="font-size:27px;font-weight:600;margin-top:34px">Walk in, no appointment.<br>Done while you wait.</div>
+    <div style="font-size:19px;font-weight:600;letter-spacing:.14em;margin-top:34px;margin-bottom:12px">WHAT TO BRING</div>
+    <div class="list">
+      <div><i>01</i><span>SA ID or passport<small>The original</small></span></div>
+      <div><i>02</i><span>Proof of residence<small>Not older than 3 months</small></span></div>
+      <div><i>03</i><span>Licence or PrDP<small>Optional</small></span></div>
+    </div>
+  </div>
+
+  <div class="abs bar">
+    <div style="position:absolute;left:64px;right:64px;top:0;bottom:0;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:20px;color:var(--sub)">WhatsApp &amp; calls</div>
+        <div style="display:flex;align-items:center;gap:14px;margin-top:6px"><span style="width:46px;height:46px;display:block">${WA('#25d366')}</span><b class="num" style="font-size:50px;font-weight:600;letter-spacing:-.02em;line-height:1">078 734 7867</b></div>
+      </div>
+      <div style="text-align:right;font-size:21px;line-height:1.45;color:var(--sub)"><b style="color:#fff;font-weight:600">9 Jill Street, Langlaagte North</b><br>Open every day 8:00–19:00<br><b style="color:var(--red);font-weight:600">webgraphs.co.za</b></div>
+    </div>
+  </div>`;
+}
+window.__ready = Promise.all([document.fonts.ready, ...[...document.images].map((im) => im.decode().catch(() => {}))]);
+</script>
+</body></html>

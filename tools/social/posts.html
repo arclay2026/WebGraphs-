@@ -110,6 +110,52 @@ if (D === 'c') { page.classList.add('a'); page.innerHTML = `
     </div>
   </div>`; }
 
+if (D === 'cd') {
+  page.classList.add('a');
+  const IC = (k, z) => `<img src="${A}icons/${k.toLowerCase()}.svg" style="width:${z}px;height:${z}px;display:block">`;
+  const NM = { Ps: 'Photoshop', Ai: 'Illustrator', Lr: 'Lightroom', Pr: 'Premiere Pro' };
+  const COURSES = [
+    ['Ps', 'Master photo editing, retouching and mock-up creation.', 'Background removal · Photo compositing · Retouching · Colour correction · Lighting &amp; shadows · Product, packaging &amp; T-shirt mock-ups'],
+    ['Ai', 'Master vector graphics, logo and ad design.', 'Logo design · Typography logos · Symbol &amp; icon design · Pen tool · Brand guidelines · Social media ads · Flyer &amp; outdoor designs'],
+    ['Lr', 'Organise, edit and grade your photography like a pro.', 'Photo import &amp; organisation · Exposure &amp; colour correction · Presets · Portrait editing · Professional colour grading · Exporting for social media &amp; web'],
+    ['Pr', 'Edit professional-quality video from raw footage to final export.', 'Cutting &amp; trimming · Transitions · Text &amp; titles · Basic effects · Audio editing · Colour correction · Video export'],
+  ];
+  const BUNDLES = [[['Ai'], 'R2,000', '1 month'], [['Ai', 'Lr'], 'R2,500', '1–2 months'], [['Ps', 'Ai'], 'R4,500', '2 months'], [['Ps', 'Ai', 'Lr'], 'R4,500', '3 months'], [['Ai', 'Pr'], 'R5,000', '2 months'], [['Ps', 'Ai', 'Lr', 'Pr'], 'R7,500', '4 months', 1]];
+  page.innerHTML = `
+  <img class="abs" src="${A}logo-footer.svg" style="left:64px;top:60px;height:58px">
+  <div class="abs" style="right:64px;top:62px;text-align:right;font-size:20px;line-height:1.35;color:var(--sub)">Adobe design courses<br><b style="color:#fff;font-weight:600">Johannesburg</b></div>
+
+  <div class="abs" style="left:64px;right:64px;top:178px">
+    <div class="eyebrow">COURSE DETAILS &amp; PRICES</div>
+    <div class="h1" style="font-size:76px;margin-top:16px">Graphic design<br>&amp; video courses.</div>
+  </div>
+
+  <div class="abs" style="left:64px;right:64px;top:388px;display:grid;grid-template-columns:1fr 1fr;column-gap:48px">
+    ${COURSES.map(([k, d, t], i) => `<div style="border-top:2px solid rgba(255,255,255,.16);padding:22px 0 24px">
+      <div style="display:flex;align-items:center;gap:16px">${IC(k, 52)}<div><div style="font-size:29px;font-weight:600;letter-spacing:-.02em;line-height:1.05">${NM[k]}</div><div style="font-size:16.5px;color:var(--sub);margin-top:4px;line-height:1.25;text-wrap:balance">${d}</div></div></div>
+      <div style="font-size:18px;line-height:1.5;color:#dfe7ec;margin-top:14px;text-wrap:pretty">${t}</div>
+    </div>`).join('')}
+  </div>
+
+  <div class="abs" style="left:64px;right:64px;top:870px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline"><div class="eyebrow">BUNDLES</div><div style="font-size:18px;color:var(--sub)">Beginner friendly · hands-on projects · flexible learning</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;column-gap:48px;margin-top:14px">
+      ${BUNDLES.map(([c, p, l, all]) => `<div style="display:flex;align-items:center;gap:14px;border-top:2px solid rgba(255,255,255,.16);padding:16px 0">
+        <div style="flex:1;min-width:0"><div style="font-size:18px;font-weight:500;line-height:1.2;${all ? 'color:#fff' : ''}">${all ? 'All four apps' : c.map((k) => NM[k]).join(' + ')}</div><div style="font-size:16px;color:var(--sub);margin-top:2px">${l}</div></div>
+        <b class="num" style="font-size:30px;font-weight:600;letter-spacing:-.03em;color:${all ? 'var(--red)' : '#fff'}">${p}</b>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="abs" style="left:64px;right:64px;top:1206px">
+    <div class="rule"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px">
+      <div style="display:flex;align-items:center;gap:14px"><span style="width:44px;height:44px;display:block">${WA('#25d366')}</span><b class="num" style="font-size:40px;font-weight:600;letter-spacing:-.02em">078 734 7867</b></div>
+      <div style="text-align:right;font-size:20px;line-height:1.35;color:var(--sub)"><b style="color:#fff;font-weight:600">Hands-on, at the studio in Langlaagte North</b><br>Ask about the next intake · webgraphs.co.za</div>
+    </div>
+  </div>`;
+}
+
 if (D === 'b') {
   const PW = 372, PH = Math.round(PW * 3125 / 2138);
   page.innerHTML = `

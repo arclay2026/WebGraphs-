@@ -9,4 +9,5 @@ All text and prices come from the website (services.html, driver checker).
 - `posts.html?d=a` — fingerprint post, photo poster with "Walk in" sticker (no price) → `WebGraphs-fingerprint-post-A-photo.jpg`
 - `posts.html?d=w` — web & app development post, same style, "from R3,500" sticker → `WebGraphs-web-app-post-A.jpg`
 - `posts.html?d=c` — Adobe graphic design & video courses post, same style, "from R2,000" sticker → `WebGraphs-courses-post-A.jpg`
+- `posts.html?d=cd` — courses full details (all four courses, topics and every bundle price) → `WebGraphs-courses-details-post.jpg`. Works as slide 2 after the courses post.
 - `posts.html?d=b` — fingerprint post, red type-led alternative → `WebGraphs-fingerprint-post-B-red.jpg`

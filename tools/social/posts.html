@@ -156,6 +156,52 @@ if (D === 'cd') {
   </div>`;
 }
 
+if (D === 'cl') {
+  page.style.background = '#fff'; page.style.color = 'var(--navy)';
+  const IC = (k, z) => `<img src="${A}icons/${k.toLowerCase()}.svg" style="width:${z}px;height:${z}px;display:block">`;
+  const NM = { Ps: 'Photoshop', Ai: 'Illustrator', Lr: 'Lightroom', Pr: 'Premiere Pro' };
+  const TILE = { Ps: ['#001e36', '#31a8ff'], Ai: ['#330000', '#ff9a00'], Lr: ['#001e36', '#31a8ff'], Pr: ['#00005b', '#9999ff'] };
+  const COURSES = [['Ps', ['Background removal', 'Photo compositing', 'Mock-ups']], ['Ai', ['Logo design', 'Brand guidelines', 'Social media ads']], ['Lr', ['Exposure &amp; colour', 'Presets', 'Colour grading']], ['Pr', ['Cutting &amp; trimming', 'Transitions', 'Audio editing']]];
+  const BUNDLES = [[['Ai'], 'R2,000', '1 month'], [['Ai', 'Lr'], 'R2,500', '1–2 months'], [['Ps', 'Ai'], 'R4,500', '2 months'], [['Ps', 'Ai', 'Lr'], 'R4,500', '3 months'], [['Ai', 'Pr'], 'R5,000', '2 months'], [['Ps', 'Ai', 'Lr', 'Pr'], 'R7,500', '4 months', 1]];
+  page.innerHTML = `
+  <img class="abs" src="${A}logo-full.svg" style="left:64px;top:60px;height:58px">
+  <div class="abs" style="right:64px;top:62px;text-align:right;font-size:20px;line-height:1.35;color:#55646e">Adobe design courses<br><b style="color:var(--navy);font-weight:600">Johannesburg</b></div>
+
+  <div class="abs" style="left:64px;top:176px">
+    <div style="font-size:88px;font-weight:600;letter-spacing:-.05em;line-height:.94">Graphic design<br>&amp; video <span style="color:var(--red)">courses.</span></div>
+  </div>
+  <div class="abs" style="right:72px;top:146px;width:230px;height:230px;border-radius:50%;background:var(--red);color:#fff;transform:rotate(8deg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <b style="font-size:42px;font-weight:700;letter-spacing:-.035em;line-height:1">Beginners<br>welcome</b>
+  </div>
+
+  <div class="abs" style="left:64px;right:64px;top:404px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+    ${COURSES.map(([k, t]) => `<div style="background:${TILE[k][0]};border-radius:26px;padding:24px 22px 26px;color:#fff;height:318px;display:flex;flex-direction:column">
+      ${IC(k, 76)}
+      <div style="font-size:27px;font-weight:600;letter-spacing:-.02em;margin-top:20px;line-height:1.05">${NM[k]}</div>
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:9px">${t.map((x) => `<div style="font-size:17px;line-height:1.2;display:flex;gap:8px;align-items:baseline"><i style="width:7px;height:7px;border-radius:50%;background:${TILE[k][1]};flex:none;transform:translateY(-2px)"></i>${x}</div>`).join('')}</div>
+    </div>`).join('')}
+  </div>
+
+  <div class="abs" style="left:64px;right:64px;top:760px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:34px;font-weight:600;letter-spacing:-.025em">Pick your <span style="color:var(--red)">bundle</span></b><span style="font-size:18px;color:#55646e">Hands-on projects · flexible learning</span></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px">
+      ${BUNDLES.map(([c, p, l, all]) => `<div style="border-radius:20px;padding:20px 22px 20px;background:${all ? 'var(--navy)' : '#f2f5f7'};color:${all ? '#fff' : 'var(--navy)'}">
+        <div style="display:flex;justify-content:space-between;align-items:center"><div style="display:flex;gap:5px">${c.map((k) => IC(k, 32)).join('')}</div><b class="num" style="font-size:36px;font-weight:600;letter-spacing:-.035em;line-height:1;color:${all ? 'var(--red)' : 'var(--navy)'}">${p}</b></div>
+        <div style="font-size:16px;margin-top:16px;line-height:1.2;white-space:nowrap;color:${all ? '#9fb3c1' : '#55646e'}">${all ? 'All four apps' : c.map((k) => NM[k]).join(' + ')}</div>
+        <div style="font-size:17px;font-weight:600;margin-top:4px">${l}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="abs" style="left:64px;right:64px;bottom:64px;border-radius:28px;background:var(--navy);color:#fff;padding:28px 32px;display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <div style="font-size:19px;color:#9fb3c1">Ready to enrol? Ask about the next intake</div>
+      <div style="display:flex;align-items:center;gap:14px;margin-top:8px"><span style="width:46px;height:46px;display:block">${WA('#25d366')}</span><b class="num" style="font-size:46px;font-weight:600;letter-spacing:-.02em;line-height:1">078 734 7867</b></div>
+    </div>
+    <div style="text-align:right;font-size:19px;line-height:1.45;color:#9fb3c1"><b style="color:#fff;font-weight:600">Studio in Langlaagte North</b><br>Open every day 8:00–19:00<br><b style="color:var(--red);font-weight:600">webgraphs.co.za</b></div>
+  </div>`;
+}
+
 if (D === 'b') {
   const PW = 372, PH = Math.round(PW * 3125 / 2138);
   page.innerHTML = `

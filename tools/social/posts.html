@@ -87,6 +87,29 @@ if (D === 'w') { page.classList.add('a'); page.innerHTML = `
     </div>
   </div>`; }
 
+if (D === 'c') { page.classList.add('a'); page.innerHTML = `
+  <img class="abs" src="${A}logo-footer.svg" style="left:64px;top:60px;height:58px">
+  <div class="abs" style="right:64px;top:62px;text-align:right;font-size:20px;line-height:1.35;color:var(--sub)">Adobe design courses<br><b style="color:#fff;font-weight:600">Johannesburg</b></div>
+  <div class="abs shot" style="top:170px;height:620px"><img src="courses-full.jpg" style="object-position:50% 40%"></div>
+  <div class="abs sticker" style="width:320px;height:320px;left:700px;top:620px"><span style="margin:0 0 4px;font-size:26px">from</span><b class="num" style="font-size:86px">R2,000</b><span>1 to 4 months</span></div>
+
+  <div class="abs" style="left:64px;top:846px;right:64px">
+    <div class="eyebrow">BEGINNERS WELCOME</div>
+    <div class="h1" style="margin-top:20px;font-size:96px">Graphic design<br>&amp; video courses.</div>
+    <div style="display:flex;align-items:center;gap:14px;margin-top:30px">
+      ${['ps', 'ai', 'lr', 'pr'].map((k) => `<img src="${A}icons/${k}.svg" style="width:50px;height:50px;display:block">`).join('')}
+      <span class="lede" style="margin-left:8px;font-size:26px">Photoshop · Illustrator · Lightroom · Premiere Pro</span>
+    </div>
+  </div>
+
+  <div class="abs" style="left:64px;right:64px;top:1206px">
+    <div class="rule"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px">
+      <div style="display:flex;align-items:center;gap:14px"><span style="width:44px;height:44px;display:block">${WA('#25d366')}</span><b class="num" style="font-size:40px;font-weight:600;letter-spacing:-.02em">078 734 7867</b></div>
+      <div style="text-align:right;font-size:20px;line-height:1.35;color:var(--sub)"><b style="color:#fff;font-weight:600">Hands-on, at the studio in Langlaagte North</b><br>Ask about the next intake · webgraphs.co.za</div>
+    </div>
+  </div>`; }
+
 if (D === 'b') {
   const PW = 372, PH = Math.round(PW * 3125 / 2138);
   page.innerHTML = `
